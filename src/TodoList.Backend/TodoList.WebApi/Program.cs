@@ -20,4 +20,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateTime.UtcNow}");
+
+app.MapControllerRoute
+(
+    name: "default",
+    pattern: "{controller}/{action}"
+);
+
 app.Run();
