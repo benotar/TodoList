@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using TodoList.Domain.Entities;
+using TodoList.Domain.Entities.Database;
 
-namespace TodoList.Application.Interfaces;
+namespace TodoList.Application.Interfaces.Providers.Persistence;
 
 public interface IDbContext : IDisposable, IInfrastructure<IServiceProvider>
 {
