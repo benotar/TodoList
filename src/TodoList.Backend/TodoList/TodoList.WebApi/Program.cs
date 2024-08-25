@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TodoList.Persistence;
+using TodoList.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ApiDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.AddCustomConfiguration();
+
+builder.Services.AddPersistence();
 
 var app = builder.Build();
 
@@ -28,11 +28,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateTime.UtcNow}");
-
-// app.MapControllerRoute
-// (
-//     name: "default",
-//     pattern: "{controller}/{action}"
-// );
 
 app.Run();
