@@ -7,32 +7,30 @@ services:
       context: ./Postgres
       dockerfile: Dockerfile
       args:
-        - POSTGRES_DB_USER=arg_value
+        - POSTGRES_DB_USERNAME=arg_value
         - POSTGRES_DB_PASSWORD=arg_value
-    hostname: todolist.postgres
-    ports:
-      - '5432:5432'
+#    ports:
+#      - '5432:5432'
     image: postgres
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
   
-#  backend:
-#    container_name: todoList
-#    build:
-#      context: ./TodoList
-#      dockerfile: Dockerfile
-#      args:
-#        - POSTGRES_DB_USER=arg_value
-#        - POSTGRES_DB_PASSWORD=arg_value
-#    hostname: todolist
-#    ports:
-#      - '5000:80'
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
-#    depends_on:
-#      - postgresDb
-#    restart: on-failure
+  backend:
+    container_name: todoList
+    build:
+      context: ./TodoList
+      dockerfile: Dockerfile
+      args:
+        - POSTGRES_DB_USERNAME=arg_value
+        - POSTGRES_DB_PASSWORD=arg_value
+    ports:
+      - '5000:80'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DockerDevelopment
+    depends_on:
+      - postgres
+    restart: always
 
 volumes:
   db_data:

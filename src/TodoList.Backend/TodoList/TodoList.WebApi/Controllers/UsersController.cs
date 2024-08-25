@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TodoList.Application.Interfaces;
 
 namespace TodoList.WebApi.Controllers;
 
@@ -6,9 +8,23 @@ namespace TodoList.WebApi.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    [HttpGet("test")]
-    public IActionResult Test()
+    private readonly IDbContext _db;
+
+    public UsersController(IDbContext db)
     {
-        return Ok("Hello, World!");
+        _db = db;
+    }
+
+    [HttpGet("test")]
+    public async Task<IActionResult> Test()
+    {
+        var users = await _db.Users.AsNoTracking().ToListAsync();
+
+        if (users is null)
+        {
+            return Ok("Empty");
+        }
+
+        return Ok(users);
     }
 }
