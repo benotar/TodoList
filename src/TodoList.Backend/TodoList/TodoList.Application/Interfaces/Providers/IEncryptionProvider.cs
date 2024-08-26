@@ -4,5 +4,7 @@ namespace TodoList.Application.Interfaces.Providers;
 
 public interface IEncryptionProvider
 {
-    public Task<SaltAndHashResult> HashPasswordAsync(string password);
+    Task<SaltAndHash> HashPasswordAsync(string password);
+
+    Task<bool> VerifyPasswordHash(string password, SaltAndHash saltAndHash);
 }

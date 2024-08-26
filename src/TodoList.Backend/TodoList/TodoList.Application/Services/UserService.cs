@@ -2,7 +2,7 @@
 using TodoList.Application.Common;
 using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Providers;
-using TodoList.Application.Interfaces.Providers.Persistence;
+using TodoList.Application.Interfaces.Persistence;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Domain.Entities.Database;
 

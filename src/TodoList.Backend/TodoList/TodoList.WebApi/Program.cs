@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TodoList.Application;
 using TodoList.Application.Common;
 using TodoList.Application.Converters;
 using TodoList.Application.Interfaces.Providers;
@@ -22,11 +23,10 @@ builder.Services.AddSwaggerGen();
 
 builder.AddCustomConfiguration();
 
-builder.Services.AddPersistence();
+builder.Services
+    .AddApplication()
+    .AddPersistence();
 
-// TODO
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IEncryptionProvider, HmacSha256Provider>(); 
 
 var app = builder.Build();
 

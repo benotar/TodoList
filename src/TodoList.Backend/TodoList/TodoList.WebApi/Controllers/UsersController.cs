@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoList.Application.DTOs;
-using TodoList.Application.Interfaces.Providers.Persistence;
+using TodoList.Application.Interfaces.Persistence;
 using TodoList.Application.Interfaces.Services;
 
 namespace TodoList.WebApi.Controllers;

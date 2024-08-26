@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TodoList.Application.Configurations;
-using TodoList.Application.Interfaces.Providers.Persistence;
+using TodoList.Application.Interfaces.Persistence;
 
 namespace TodoList.Persistence;
 

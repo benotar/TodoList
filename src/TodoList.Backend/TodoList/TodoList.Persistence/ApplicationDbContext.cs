@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TodoList.Application.Interfaces.Providers.Persistence;
+using TodoList.Application.Interfaces.Persistence;
 using TodoList.Domain.Entities.Database;
 
 namespace TodoList.Persistence;

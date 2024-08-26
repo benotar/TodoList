@@ -7,7 +7,7 @@ namespace TodoList.Application.Providers;
 
 public class HmacSha256Provider : IEncryptionProvider
 {
-    public async Task<SaltAndHashResult> HashPasswordAsync(string password)
+    public async Task<SaltAndHash> HashPasswordAsync(string password)
     {
         using var hmac = new HMACSHA256();
 
@@ -17,6 +17,17 @@ public class HmacSha256Provider : IEncryptionProvider
 
         var hash = await hmac.ComputeHashAsync(new MemoryStream(passwordBytes));
 
-        return new SaltAndHashResult(salt, hash);
+        return new SaltAndHash(salt, hash);
+    }
+
+    public async Task<bool> VerifyPasswordHash(string password, SaltAndHash saltAndHash)
+    {
+        using var hmac = new HMACSHA256(saltAndHash.Salt);
+        
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+
+        var compute = await hmac.ComputeHashAsync(new MemoryStream(passwordBytes));
+
+        return compute.SequenceEqual(saltAndHash.Hash);
     }
 }
