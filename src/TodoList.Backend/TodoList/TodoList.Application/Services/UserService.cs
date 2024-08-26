@@ -31,7 +31,7 @@ public class UserService : IUserService
         {
             return Result<User>.Error(ErrorCode.UsernameAlreadyExists);
         }
-        
+
         // Convert request password to salt and hash
         var passwordSaltAndHash = await _hmacSha256Provider.HashPasswordAsync(createUserDto.Password);
 
@@ -43,20 +43,24 @@ public class UserService : IUserService
             PasswordHash = passwordSaltAndHash.Hash,
             Name = createUserDto.Name
         };
-        
-        // Check if the userEntry state is correct
-        if ((await _dbContext.Users.AddAsync(newUser)).State != EntityState.Added)
-        {
-            return Result<User>.Error(ErrorCode.UserNotAddedToDatabase);
-        }
-        
-        await _dbContext.SaveChangesAsync();
-        
-        // Check if the user was successfully saved
-        var savedUser = await _dbContext.Users.FindAsync(newUser.Id);
 
-        return savedUser is null 
-            ? Result<User>.Error(ErrorCode.UserNotSavedToDatabase) 
-            : Result<User>.Success(savedUser);
+        // Add new user to database
+        await _dbContext.Users.AddAsync(newUser);
+
+        try
+        {
+            // Try save changes
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            // If the user is not stored in the database
+            return Result<User>.Error(ErrorCode.UserNotSavedToDatabase);
+        }
+
+        // Return result
+        return !newUser.Id.Equals(Guid.Empty)
+            ? Result<User>.Success(newUser)
+            : Result<User>.Error(ErrorCode.UserNotSavedToDatabase);
     }
 }

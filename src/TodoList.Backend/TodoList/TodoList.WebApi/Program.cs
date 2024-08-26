@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using TodoList.Application.Common;
+using TodoList.Application.Converters;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Application.Providers;
@@ -10,7 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -20,7 +26,7 @@ builder.Services.AddPersistence();
 
 // TODO
 builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IEncryptionProvider, HmacSha256Provider>();
+builder.Services.AddTransient<IEncryptionProvider, HmacSha256Provider>(); 
 
 var app = builder.Build();
 

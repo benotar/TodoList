@@ -10,7 +10,7 @@ public class HmacSha256Provider : IEncryptionProvider
     public async Task<SaltAndHashResult> HashPasswordAsync(string password)
     {
         using var hmac = new HMACSHA256();
-        
+
         var salt = hmac.Key;
 
         var passwordBytes = Encoding.UTF8.GetBytes(password);
