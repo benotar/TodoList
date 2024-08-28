@@ -1,6 +1,9 @@
-﻿namespace TodoList.Application.Interfaces.Providers;
+﻿using Microsoft.IdentityModel.Tokens;
+using TodoList.Domain.Entities.Database;
+
+namespace TodoList.Application.Interfaces.Providers;
 
 public interface IJwtProvider
 {
-    string GenerateToken();
+    string GenerateToken(User user);
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Persistence;
+using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
 
 namespace TodoList.WebApi.Controllers;
@@ -15,10 +16,14 @@ public class UsersController : ControllerBase
     // for testing
     private readonly IDbContext _db;
 
-    public UsersController(IUserService userService, IDbContext db)
+    private readonly IJwtProvider _jwtProvider;
+
+    public UsersController(IUserService userService, IDbContext db, IJwtProvider jwtProvider)
     {
         _userService = userService;
         _db = db;
+        
+        _jwtProvider = jwtProvider;
     }
 
     [HttpGet("get")]
@@ -41,6 +46,8 @@ public class UsersController : ControllerBase
             return BadRequest(user.ErrorCode);
         }
 
-        return Ok(user.Data);
+        var token = _jwtProvider.GenerateToken(user.Data);
+        
+        return Ok(token);
     }
 }

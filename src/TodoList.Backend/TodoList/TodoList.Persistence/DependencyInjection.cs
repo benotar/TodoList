@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TodoList.Application.Configurations;
 using TodoList.Application.Interfaces.Persistence;
@@ -7,12 +8,12 @@ namespace TodoList.Persistence;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection services)
+    public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        var scope = services.BuildServiceProvider().CreateScope();
+        var databaseConfiguration = new DatabaseConfiguration();
 
-        var databaseConfiguration = scope.ServiceProvider.GetRequiredService<DatabaseConfiguration>();
-
+        configuration.Bind(DatabaseConfiguration.ConfigurationKey, databaseConfiguration);
+        
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             var filledConnectionString = string.Format(databaseConfiguration.ConnectionStringPattern,
