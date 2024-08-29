@@ -4,6 +4,8 @@ using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Persistence;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
+using TodoList.Domain.Entities.Database;
+using TodoList.Domain.Enums;
 
 namespace TodoList.WebApi.Controllers;
 
@@ -37,7 +39,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpPut("create")]
-    public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
+    public async Task<ActionResult<(string, string, User)>> Create([FromBody] CreateUserDto createUserDto)
     {
         var user = await _userService.CreateAsync(createUserDto);
 
@@ -46,8 +48,9 @@ public class UsersController : ControllerBase
             return BadRequest(user.ErrorCode);
         }
 
-        var token = _jwtProvider.GenerateToken(user.Data);
-        
-        return Ok(token);
+        var accessToken = _jwtProvider.GenerateToken(user.Data, JwtTokenType.Access);
+        var refreshToken = _jwtProvider.GenerateToken(user.Data, JwtTokenType.Refresh);
+
+        return Ok(new { accessToken, refreshToken, user.Data });
     }
 }

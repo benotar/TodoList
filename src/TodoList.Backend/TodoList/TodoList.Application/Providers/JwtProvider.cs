@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using TodoList.Application.Configurations;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Domain.Entities.Database;
+using TodoList.Domain.Enums;
 
 namespace TodoList.Application.Providers;
 
@@ -22,7 +23,7 @@ public class JwtProvider : IJwtProvider
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public string GenerateToken(User user)
+    public string GenerateToken(User user, JwtTokenType jwtTokenType)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.SecretKey));
         
@@ -33,11 +34,18 @@ public class JwtProvider : IJwtProvider
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Name, user.Name),
-            new Claim(JwtRegisteredClaimNames.Nickname, user.Username)
+            new Claim(JwtRegisteredClaimNames.Nickname, user.Username),
+            new Claim(JwtRegisteredClaimNames.Typ, jwtTokenType.ToString())
         };
 
-        var expires = _dateTimeProvider.UtcNow.AddMinutes(_jwtConfig.AccessExpirationMinutes);
-
+        var expires = jwtTokenType switch
+        {
+            JwtTokenType.Access => _dateTimeProvider.UtcNow.AddMinutes(_jwtConfig.AccessExpirationMinutes),
+            JwtTokenType.Refresh => _dateTimeProvider.UtcNow.AddDays(_jwtConfig.RefreshExpirationDays),
+            _ => throw new ArgumentOutOfRangeException(nameof(jwtTokenType), jwtTokenType,
+                "Unknown JWT type enum value!")
+        };
+        
         var securityToken = new JwtSecurityToken(
             issuer: _jwtConfig.Issuer,
             audience: _jwtConfig.Audience,
