@@ -16,15 +16,13 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
-
         services.AddScoped<IRefreshSessionService, RefreshSessionService>();
         
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-        
         services.AddSingleton<IEncryptionProvider, HmacSha256Provider>();
-
         services.AddSingleton<IJwtProvider, JwtProvider>();
-
+        services.AddSingleton<ICookieProvider, CookieProvider>();
+        
         return services;
     }
 
