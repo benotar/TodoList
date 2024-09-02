@@ -15,8 +15,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddTransient<IUserService, UserService>();
+        services.AddScoped<IUserService, UserService>();
 
+        services.AddScoped<IRefreshSessionService, RefreshSessionService>();
+        
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         
         services.AddSingleton<IEncryptionProvider, HmacSha256Provider>();
@@ -49,6 +51,20 @@ public static class DependencyInjection
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = tokenValidationParameters;
             });
+
+        return services;
+    }
+
+    public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
+        var redisConfig = new RedisConfiguration();
+
+        configuration.Bind(RedisConfiguration.ConfigurationKey, redisConfig);
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redisConfig.ConnectionString;
+        });
 
         return services;
     }

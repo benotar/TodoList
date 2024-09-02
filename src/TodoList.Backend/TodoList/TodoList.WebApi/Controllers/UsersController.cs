@@ -14,18 +14,22 @@ namespace TodoList.WebApi.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+
+    private readonly IRefreshSessionService _refreshSessionService;
     
     // for testing
     private readonly IDbContext _db;
 
     private readonly IJwtProvider _jwtProvider;
 
-    public UsersController(IUserService userService, IDbContext db, IJwtProvider jwtProvider)
+    public UsersController(IUserService userService, IDbContext db, IJwtProvider jwtProvider, IRefreshSessionService refreshSessionService)
     {
         _userService = userService;
         _db = db;
         
         _jwtProvider = jwtProvider;
+        
+        _refreshSessionService = refreshSessionService;
     }
 
     [HttpGet("get")]
@@ -41,16 +45,20 @@ public class UsersController : ControllerBase
     [HttpPut("create")]
     public async Task<ActionResult<(string, string, User)>> Create([FromBody] CreateUserDto createUserDto)
     {
-        var user = await _userService.CreateAsync(createUserDto);
+        var userResult = await _userService.CreateAsync(createUserDto);
 
-        if (!user.IsSucceed)
+        if (!userResult.IsSucceed)
         {
-            return BadRequest(user.ErrorCode);
+            return BadRequest(userResult.ErrorCode);
         }
 
-        var accessToken = _jwtProvider.GenerateToken(user.Data, JwtTokenType.Access);
-        var refreshToken = _jwtProvider.GenerateToken(user.Data, JwtTokenType.Refresh);
+        var user = userResult.Data;
+        
+        var accessToken = _jwtProvider.GenerateToken(user, JwtTokenType.Access);
+        var refreshToken = _jwtProvider.GenerateToken(user, JwtTokenType.Refresh);
 
-        return Ok(new { accessToken, refreshToken, user.Data });
+        await _refreshSessionService.CreateOrUpdateAsync(user.Id, "TestFingerprint", refreshToken);
+        
+        return Ok(new { accessToken, refreshToken, user });
     }
 }
