@@ -2,7 +2,7 @@
 
 namespace TodoList.Application.Interfaces.Services;
 
-public interface IRefreshSessionService
+public interface IRefreshTokenSessionService
 {
     Task<Result<None>> CreateOrUpdateAsync(Guid userId, string fingerprint, string refreshToken);
     

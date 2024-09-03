@@ -9,7 +9,7 @@ using TodoList.Domain.Entities.Cache;
 
 namespace TodoList.Application.Services;
 
-public class RefreshSessionService : IRefreshSessionService
+public class RefreshTokenSessionService : IRefreshTokenSessionService
 {
     private readonly IDistributedCache _redis;
 
@@ -17,7 +17,7 @@ public class RefreshSessionService : IRefreshSessionService
 
     private readonly IDateTimeProvider _dateTimeProvider;
     
-    public RefreshSessionService(IDistributedCache redis, RefreshTokenSessionConfiguration refreshTokenSessionConfiguration, IDateTimeProvider dateTimeProvider)
+    public RefreshTokenSessionService(IDistributedCache redis, RefreshTokenSessionConfiguration refreshTokenSessionConfiguration, IDateTimeProvider dateTimeProvider)
     {
         _redis = redis;
         
