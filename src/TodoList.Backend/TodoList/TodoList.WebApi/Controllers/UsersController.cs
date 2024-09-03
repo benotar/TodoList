@@ -15,94 +15,22 @@ namespace TodoList.WebApi.Controllers;
 [Route("[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly IUserService _userService;
-
-    private readonly IRefreshTokenSessionService _refreshTokenSessionService;
-
-    private readonly ICookieProvider _cookieProvider;
-
     // for testing
     private readonly IDbContext _db;
+    
 
-    private readonly IJwtProvider _jwtProvider;
-
-    public UsersController(IUserService userService, IDbContext db, IJwtProvider jwtProvider,
-        IRefreshTokenSessionService refreshTokenSessionService, ICookieProvider cookieProvider)
+    public UsersController(IDbContext db)
     {
-        _userService = userService;
         _db = db;
-
-        _jwtProvider = jwtProvider;
-
-        _refreshTokenSessionService = refreshTokenSessionService;
-        _cookieProvider = cookieProvider;
     }
 
     [HttpGet("get")]
     public async Task<IActionResult> Get()
     {
-        var users = await _db.Users.ToListAsync();
+        var users = await _db.Users.AsNoTracking().ToListAsync();
 
         return users is not null
             ? Ok(users)
             : BadRequest("Empty!");
     }
-
-    [HttpPut("create")]
-    public async Task<ActionResult<(string, string, User)>> Create([FromBody] RegisterRequestModel registerRequestModel)
-    {
-        var userResult = await _userService.CreateAsync(registerRequestModel.Username, registerRequestModel.Password,
-            registerRequestModel.Name);
-
-        if (!userResult.IsSucceed)
-        {
-            return BadRequest(userResult.ErrorCode);
-        }
-
-        var user = userResult.Data;
-
-        var accessToken = _jwtProvider.GenerateToken(user, JwtTokenType.Access);
-        var refreshToken = _jwtProvider.GenerateToken(user, JwtTokenType.Refresh);
-
-        await _refreshTokenSessionService.CreateOrUpdateAsync(user.Id, "TestFingerprint", refreshToken);
-
-        return Ok(new { accessToken, refreshToken, user });
-    }
-
-    [HttpPost("login")]
-    public async Task<ActionResult<(Guid userId, bool isSessionExist)>> Login([FromBody] LoginRequestModel loginRequestModel)
-    {
-        var existingUser = await _db.Users.FirstOrDefaultAsync(us => us.Username.Equals(loginRequestModel.Username));
-
-        if (existingUser is null)
-        {
-            return BadRequest("User not found!");
-        }
-
-        var accessToken = _jwtProvider.GenerateToken(existingUser, JwtTokenType.Access);
-        var refreshToken = _jwtProvider.GenerateToken(existingUser, JwtTokenType.Refresh);
-
-        await _refreshTokenSessionService.CreateOrUpdateAsync(existingUser.Id, loginRequestModel.Fingerprint, refreshToken);
-
-        _cookieProvider.AddTokensCookiesToResponse(HttpContext.Response, accessToken, refreshToken);
-        
-        _cookieProvider.AddFingerprintCookiesToResponse(HttpContext.Response, loginRequestModel.Fingerprint);
-
-        var userId = _jwtProvider.GetUserIdFromRefreshToken(refreshToken);
-
-        if (userId == Guid.Empty)
-        {
-            return BadRequest(userId);
-        }
-
-        var isSessionExistsResult =
-            await _refreshTokenSessionService.SessionKeyExistsAsync(userId, loginRequestModel.Fingerprint);
-
-        var isSessionExist = isSessionExistsResult.Data;
-
-
-        return Ok(new { userId, isSessionExist });
-    }
-    
-
 }
