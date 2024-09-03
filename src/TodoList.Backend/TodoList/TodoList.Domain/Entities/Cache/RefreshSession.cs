@@ -9,5 +9,5 @@ public class RefreshSession : CacheEntity
     public string RefreshToken { get; set; }
 
     public static string GetCacheKey(Guid userId, string fingerprint)
-        => $"{userId}::{fingerprint}";
+        => $"{userId}:{fingerprint}";
 }

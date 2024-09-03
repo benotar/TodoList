@@ -13,15 +13,15 @@ public class RefreshSessionService : IRefreshSessionService
 {
     private readonly IDistributedCache _redis;
 
-    private readonly RefreshSessionConfiguration _refreshSessionConfiguration;
+    private readonly RefreshTokenSessionConfiguration _refreshTokenSessionConfiguration;
 
     private readonly IDateTimeProvider _dateTimeProvider;
     
-    public RefreshSessionService(IDistributedCache redis, RefreshSessionConfiguration refreshSessionConfiguration, IDateTimeProvider dateTimeProvider)
+    public RefreshSessionService(IDistributedCache redis, RefreshTokenSessionConfiguration refreshTokenSessionConfiguration, IDateTimeProvider dateTimeProvider)
     {
         _redis = redis;
         
-        _refreshSessionConfiguration = refreshSessionConfiguration;
+        _refreshTokenSessionConfiguration = refreshTokenSessionConfiguration;
         
         _dateTimeProvider = dateTimeProvider;
     }
@@ -37,7 +37,7 @@ public class RefreshSessionService : IRefreshSessionService
             UserId = userId,
             Fingerprint = fingerprint,
             RefreshToken = refreshToken,
-            DestroysAt = _dateTimeProvider.UtcNow.AddMinutes(_refreshSessionConfiguration.ExpirationMinutes)
+            ExpiryAt = _dateTimeProvider.UtcNow.AddMinutes(_refreshTokenSessionConfiguration.ExpirationDays)
         };
 
         var redisValue = JsonSerializer.Serialize(entity);
@@ -45,7 +45,7 @@ public class RefreshSessionService : IRefreshSessionService
         await _redis.SetStringAsync(redisKey, redisValue,
             new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_refreshSessionConfiguration.ExpirationMinutes)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_refreshTokenSessionConfiguration.ExpirationDays)
             });
 
         return Result<None>.Success();

@@ -17,15 +17,15 @@ public static class DependencyInjection
         builder.Services.AddSingleton(resolver =>
             resolver.GetRequiredService<IOptions<JwtConfiguration>>().Value);
 
+        builder.Services.Configure<RefreshTokenSessionConfiguration>(
+            builder.Configuration.GetSection(RefreshTokenSessionConfiguration.ConfigurationKey));
+        builder.Services.AddSingleton(resolver =>
+            resolver.GetRequiredService<IOptions<RefreshTokenSessionConfiguration>>().Value);
+        
         builder.Services.Configure<RedisConfiguration>(
             builder.Configuration.GetSection(RedisConfiguration.ConfigurationKey));
         builder.Services.AddSingleton(resolver =>
             resolver.GetRequiredService<IOptions<RedisConfiguration>>().Value);
-
-        builder.Services.Configure<RefreshSessionConfiguration>(
-            builder.Configuration.GetSection(RefreshSessionConfiguration.ConfigurationKey));
-        builder.Services.AddSingleton(resolver =>
-            resolver.GetRequiredService<IOptions<RefreshSessionConfiguration>>().Value);
 
         builder.Services.Configure<CookiesConfiguration>(
             builder.Configuration.GetSection(CookiesConfiguration.ConfigurationKey));
