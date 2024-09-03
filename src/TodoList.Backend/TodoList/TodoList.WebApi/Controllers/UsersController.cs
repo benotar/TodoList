@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Persistence;
@@ -9,6 +10,8 @@ using TodoList.Domain.Enums;
 using TodoList.WebApi.Models.Authentication;
 
 namespace TodoList.WebApi.Controllers;
+
+// Testing controller
 
 [ApiController]
 [Route("[controller]")]
@@ -85,7 +88,14 @@ public class UsersController : ControllerBase
         _cookieProvider.AddTokensCookiesToResponse(HttpContext.Response, accessToken, refreshToken);
         
         _cookieProvider.AddFingerprintCookiesToResponse(HttpContext.Response, loginRequestModel.Fingerprint);
-        
-        return Ok(existingUser);
+
+        var userId = _jwtProvider.GetUserIdFromRefreshToken(refreshToken);
+
+        if (userId == Guid.Empty)
+        {
+            return BadRequest(userId);
+        }
+
+        return Ok(userId);
     }
 }

@@ -7,4 +7,5 @@ namespace TodoList.Application.Interfaces.Providers;
 public interface IJwtProvider
 {
     string GenerateToken(User user, JwtTokenType jwtTokenType);
+    Guid GetUserIdFromRefreshToken(string refreshToken);
 }

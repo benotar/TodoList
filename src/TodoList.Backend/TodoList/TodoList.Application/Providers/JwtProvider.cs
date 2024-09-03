@@ -15,18 +15,18 @@ public class JwtProvider : IJwtProvider
     private readonly JwtConfiguration _jwtConfig;
 
     private readonly IDateTimeProvider _dateTimeProvider;
-    
+
     public JwtProvider(IOptions<JwtConfiguration> jwtConfig, IDateTimeProvider dateTimeProvider)
     {
         _jwtConfig = jwtConfig.Value;
-        
+
         _dateTimeProvider = dateTimeProvider;
     }
 
     public string GenerateToken(User user, JwtTokenType jwtTokenType)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.SecretKey));
-        
+
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
         var claims = new List<Claim>
@@ -45,7 +45,7 @@ public class JwtProvider : IJwtProvider
             _ => throw new ArgumentOutOfRangeException(nameof(jwtTokenType), jwtTokenType,
                 "Unknown JWT type enum value!")
         };
-        
+
         var securityToken = new JwtSecurityToken(
             issuer: _jwtConfig.Issuer,
             audience: _jwtConfig.Audience,
@@ -54,5 +54,18 @@ public class JwtProvider : IJwtProvider
             signingCredentials: signingCredentials);
 
         return new JwtSecurityTokenHandler().WriteToken(securityToken);
+    }
+
+    public Guid GetUserIdFromRefreshToken(string refreshToken)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var claims = tokenHandler.ReadJwtToken(refreshToken).Claims;
+
+        var userIdString = claims.FirstOrDefault(claim => claim.Type.Equals(ClaimTypes.NameIdentifier)).Value;
+
+        return Guid.TryParse(userIdString, out var userId)
+            ? userId
+            : Guid.Empty;
     }
 }
