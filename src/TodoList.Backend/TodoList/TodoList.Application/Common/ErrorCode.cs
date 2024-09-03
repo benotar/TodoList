@@ -6,6 +6,7 @@ public enum ErrorCode
     UsernameAlreadyExists,
     UserNotAddedToDatabase,
     UserNotSavedToDatabase,
+    AuthenticationFailed,
     
     Unknown
 }

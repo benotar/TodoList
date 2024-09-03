@@ -51,7 +51,7 @@ public class UsersController : ControllerBase
     [HttpPut("create")]
     public async Task<ActionResult<(string, string, User)>> Create([FromBody] RegisterRequestModel registerRequestModel)
     {
-        var userResult = await _userService.CreateAsync(registerRequestModel.UserName, registerRequestModel.Password,
+        var userResult = await _userService.CreateAsync(registerRequestModel.Username, registerRequestModel.Password,
             registerRequestModel.Name);
 
         if (!userResult.IsSucceed)

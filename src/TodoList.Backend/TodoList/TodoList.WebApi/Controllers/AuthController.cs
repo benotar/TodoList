@@ -1,6 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Domain.Enums;
@@ -13,47 +11,65 @@ namespace TodoList.WebApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;
-
     private readonly IRefreshTokenSessionService _refreshTokenSessionService;
 
     private readonly IJwtProvider _jwtProvider;
-    
-    public AuthController(IUserService userService, IJwtProvider jwtProvider, IRefreshTokenSessionService refreshTokenSessionService)
+    private readonly ICookieProvider _cookieProvider;
+
+    public AuthController(IUserService userService,
+        IRefreshTokenSessionService refreshTokenSessionService,
+        IJwtProvider jwtProvider,
+        ICookieProvider cookieProvider)
     {
         _userService = userService;
-        
-        _jwtProvider = jwtProvider;
-        
         _refreshTokenSessionService = refreshTokenSessionService;
+
+        _jwtProvider = jwtProvider;
+        _cookieProvider = cookieProvider;
     }
 
     [HttpPost("register")]
-    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(IActionResult), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterRequestModel registerRequestModel)
     {
         // ALGORITHM:
         // Try to create user, check success, create user
-        
-        var createUserResult = await _userService.CreateAsync(registerRequestModel.UserName,
+
+        var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
             registerRequestModel.Password, registerRequestModel.Name);
-
-        if (!createUserResult.IsSucceed)
-        {
-            return BadRequest(createUserResult.ErrorCode);
-        }
-
-        return Created();
+        
+        return createUserResult.IsSucceed
+            ? NoContent() // For release - Redirect("/login")
+            : BadRequest(createUserResult.ErrorCode);
     }
 
-    // [HttpPost("login")]
-    // [ProducesResponseType(typeof(IActionResult), StatusCodes.Status200OK)]
-    // [ProducesResponseType(typeof(IActionResult), StatusCodes.Status400BadRequest)]
-    // public async Task<IActionResult> Login([FromBody] LoginRequestModel registerRequestModel)
-    // {
-    //     // ALGORITHM:
-    //     // Get user by credentials, check existing, generate tokens, create/update session, add tokens and fingerprint to response cookies
-    //     
-    //     
-    // }
+    [HttpPost("login")]
+    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Login([FromBody] LoginRequestModel registerRequestModel)
+    {
+        // ALGORITHM:
+        // Get user by login and password, check existing, generate tokens, create/update session, add tokens and fingerprint to response cookies
+
+        var existingUserResult =
+            await _userService.GetExistingUser(registerRequestModel.Username, registerRequestModel.Password);
+
+        if (!existingUserResult.IsSucceed)
+        {
+            return BadRequest(existingUserResult.ErrorCode);
+        }
+
+        var user = existingUserResult.Data;
+
+        var accessToken = _jwtProvider.GenerateToken(user, JwtTokenType.Access);
+        var refreshToken = _jwtProvider.GenerateToken(user, JwtTokenType.Refresh);
+
+        await _refreshTokenSessionService.CreateOrUpdateAsync(user.Id, registerRequestModel.Fingerprint, refreshToken);
+
+        _cookieProvider.AddTokensCookiesToResponse(HttpContext.Response, accessToken, refreshToken);
+        _cookieProvider.AddFingerprintCookiesToResponse(HttpContext.Response, registerRequestModel.Fingerprint);
+
+        return Ok("Login successful");
+    }
 }
