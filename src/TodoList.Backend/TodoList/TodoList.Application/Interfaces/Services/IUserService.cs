@@ -6,5 +6,5 @@ namespace TodoList.Application.Interfaces.Services;
 
 public interface IUserService
 {
-    Task<Result<User>> CreateAsync(CreateUserDto createUserDto);
+    Task<Result<User>> CreateAsync(string username, string password, string name);
 }

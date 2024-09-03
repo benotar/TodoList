@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Persistence;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
@@ -51,9 +49,10 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("create")]
-    public async Task<ActionResult<(string, string, User)>> Create([FromBody] CreateUserDto createUserDto)
+    public async Task<ActionResult<(string, string, User)>> Create([FromBody] RegisterRequestModel registerRequestModel)
     {
-        var userResult = await _userService.CreateAsync(createUserDto);
+        var userResult = await _userService.CreateAsync(registerRequestModel.UserName, registerRequestModel.Password,
+            registerRequestModel.Name);
 
         if (!userResult.IsSucceed)
         {

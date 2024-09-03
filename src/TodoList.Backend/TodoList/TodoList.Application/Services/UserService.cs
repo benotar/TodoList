@@ -21,11 +21,11 @@ public class UserService : IUserService
         _hmacSha256Provider = hmacSha256Provider;
     }
 
-    public async Task<Result<User>> CreateAsync(CreateUserDto createUserDto)
+    public async Task<Result<User>> CreateAsync(string username, string password, string name)
     {
         // Check if the user already exists in database
         var existingUser =
-            await _dbContext.Users.FirstOrDefaultAsync(user => user.Username.Equals(createUserDto.UserName));
+            await _dbContext.Users.FirstOrDefaultAsync(user => user.Username.Equals(username));
 
         if (existingUser is not null)
         {
@@ -33,15 +33,15 @@ public class UserService : IUserService
         }
 
         // Convert request password to salt and hash
-        var passwordSaltAndHash = await _hmacSha256Provider.HashPasswordAsync(createUserDto.Password);
+        var passwordSaltAndHash = await _hmacSha256Provider.HashPasswordAsync(password);
 
         // Create new user
         var newUser = new User
         {
-            Username = createUserDto.UserName,
+            Username = username,
             PasswordSalt = passwordSaltAndHash.Salt,
             PasswordHash = passwordSaltAndHash.Hash,
-            Name = createUserDto.Name
+            Name = name
         };
 
         // Add new user to database
