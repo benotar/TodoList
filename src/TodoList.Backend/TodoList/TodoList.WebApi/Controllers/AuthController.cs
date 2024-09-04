@@ -6,9 +6,7 @@ using TodoList.WebApi.Models.Authentication;
 
 namespace TodoList.WebApi.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-public class AuthController : ControllerBase
+public class AuthController : BaseController
 {
     private readonly IUserService _userService;
     private readonly IRefreshTokenSessionService _refreshTokenSessionService;

@@ -10,6 +10,7 @@ public enum ErrorCode
     
     UsersTableIsEmpty,
     CannotConnectionToRedis,
+    CannotGetUserId,
     
     UnknownError
 }

@@ -17,11 +17,16 @@ public static class DependencyInjection
     {
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRefreshTokenSessionService, RefreshTokenSessionService>();
+        services.AddScoped<ITodoService, TodoService>();
         
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IEncryptionProvider, HmacSha256Provider>();
         services.AddSingleton<IJwtProvider, JwtProvider>();
         services.AddSingleton<ICookieProvider, CookieProvider>();
+        
+        
+        services.AddHttpContextAccessor();
+        services.AddScoped<IUserContextProvider, UserContextProvider>();
         
         return services;
     }
@@ -36,7 +41,7 @@ public static class DependencyInjection
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = true,
+            ValidateLifetime = false,
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtConfig.Issuer,
             ValidAudience = jwtConfig.Audience,
