@@ -1,10 +1,10 @@
-﻿namespace TodoList.WebApi.Models.Authentication;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TodoList.WebApi.Models.Authentication;
 
 public class LoginRequestModel
 {
-    public string Username { get; set; }
-
-    public string Password { get; set; }
-
-    public string Fingerprint { get; set; }
+    [Required] public string Username { get; set; }
+    [Required] public string Password { get; set; }
+    [Required] public string Fingerprint { get; set; }
 }

@@ -9,4 +9,6 @@ public interface IUserService
     Task<Result<User>> CreateAsync(string username, string password, string name);
 
     Task<Result<User>> GetExistingUser(string username, string password);
+
+    Task<Result<IEnumerable<User>>> GetUsersAsync();
 }

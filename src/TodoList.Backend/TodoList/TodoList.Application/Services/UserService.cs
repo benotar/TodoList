@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections;
+using Microsoft.EntityFrameworkCore;
 using TodoList.Application.Common;
 using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Providers;
@@ -67,7 +68,7 @@ public class UserService : IUserService
     public async Task<Result<User>> GetExistingUser(string username, string password)
     {
         var existingUser =
-            await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(us => us.Username.Equals(username));
+            await _dbContext.Users.FirstOrDefaultAsync(us => us.Username.Equals(username));
 
         if (existingUser is null)
         {
@@ -79,5 +80,16 @@ public class UserService : IUserService
         return await _hmacSha256Provider.VerifyPasswordHash(password, existingUserPasswordSaltAndHash)
             ? Result<User>.Success(existingUser)
             : Result<User>.Error(ErrorCode.AuthenticationFailed);
+    }
+
+
+    // For development testing
+    public async Task<Result<IEnumerable<User>>> GetUsersAsync()
+    {
+        var users = await _dbContext.Users.ToListAsync();
+
+        return users.Count is 0
+            ? Result<IEnumerable<User>>.Error(ErrorCode.UsersTableIsEmpty)
+            : Result<IEnumerable<User>>.Success(users);
     }
 }

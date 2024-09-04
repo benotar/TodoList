@@ -29,8 +29,8 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register(RegisterRequestModel registerRequestModel)
     {
         // ALGORITHM:
@@ -40,18 +40,18 @@ public class AuthController : ControllerBase
         {
             return BadRequest("Data must not be empty.");
         }
-        
+
         var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
             registerRequestModel.Password, registerRequestModel.Name);
-        
+
         return createUserResult.IsSucceed
             ? NoContent() // For release - Redirect("/login")
             : BadRequest(createUserResult.ErrorCode);
     }
 
     [HttpPost("login")]
-    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login([FromBody] LoginRequestModel registerRequestModel)
     {
         // ALGORITHM:

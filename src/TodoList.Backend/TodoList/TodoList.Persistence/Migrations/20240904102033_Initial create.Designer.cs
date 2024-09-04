@@ -12,8 +12,8 @@ using TodoList.Persistence;
 namespace TodoList.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240825220834_test")]
-    partial class test
+    [Migration("20240904102033_Initial create")]
+    partial class Initialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,17 +44,14 @@ namespace TodoList.Persistence.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("UserId1")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Todo");
+                    b.ToTable("Todos");
                 });
 
             modelBuilder.Entity("TodoList.Domain.Entities.Database.User", b =>
@@ -67,6 +64,7 @@ namespace TodoList.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<byte[]>("PasswordHash")
@@ -92,8 +90,8 @@ namespace TodoList.Persistence.Migrations
             modelBuilder.Entity("TodoList.Domain.Entities.Database.Todo", b =>
                 {
                     b.HasOne("TodoList.Domain.Entities.Database.User", "User")
-                        .WithMany("Todoes")
-                        .HasForeignKey("UserId1")
+                        .WithMany("Todos")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -102,7 +100,7 @@ namespace TodoList.Persistence.Migrations
 
             modelBuilder.Entity("TodoList.Domain.Entities.Database.User", b =>
                 {
-                    b.Navigation("Todoes");
+                    b.Navigation("Todos");
                 });
 #pragma warning restore 612, 618
         }

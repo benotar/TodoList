@@ -16,21 +16,21 @@ namespace TodoList.WebApi.Controllers;
 public class UsersController : ControllerBase
 {
     // for testing
-    private readonly IDbContext _db;
-    
+    private readonly IUserService _userService;
 
-    public UsersController(IDbContext db)
+
+    public UsersController(IUserService userService)
     {
-        _db = db;
+        _userService = userService;
     }
 
     [HttpGet("get")]
     public async Task<IActionResult> Get()
     {
-        var users = await _db.Users.AsNoTracking().ToListAsync();
+        var usersResult = await _userService.GetUsersAsync();
 
-        return users is not null
-            ? Ok(users)
-            : BadRequest("Empty!");
+        return usersResult.IsSucceed
+            ? Ok(usersResult.Data)
+            : BadRequest(usersResult.ErrorCode);
     }
 }

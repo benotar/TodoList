@@ -8,5 +8,7 @@ public enum ErrorCode
     UserNotSavedToDatabase,
     AuthenticationFailed,
     
+    UsersTableIsEmpty,
+    
     Unknown
 }
