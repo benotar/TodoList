@@ -3,6 +3,7 @@ using TodoList.Application.Common;
 using TodoList.Application.Converters;
 using TodoList.Persistence;
 using TodoList.WebApi;
+using TodoList.WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCustomExceptionHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();

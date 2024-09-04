@@ -9,6 +9,7 @@ public enum ErrorCode
     AuthenticationFailed,
     
     UsersTableIsEmpty,
+    CannotConnectionToRedis,
     
-    Unknown
+    UnknownError
 }
