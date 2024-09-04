@@ -23,11 +23,11 @@ public class UserService : IUserService
 
     public async Task<Result<User>> CreateAsync(string username, string password, string name)
     {
-        // Check if the user already exists in database
-        var existingUser =
-            await _dbContext.Users.FirstOrDefaultAsync(user => user.Username.Equals(username));
+        // Check if the user with username already exists in database
 
-        if (existingUser is not null)
+        var isUserWithUsernameExist = await _dbContext.Users.AnyAsync(us => us.Username.Equals(username));
+
+        if (isUserWithUsernameExist)
         {
             return Result<User>.Error(ErrorCode.UsernameAlreadyExists);
         }
@@ -75,7 +75,7 @@ public class UserService : IUserService
         }
 
         var existingUserPasswordSaltAndHash = new SaltAndHash(existingUser.PasswordSalt, existingUser.PasswordHash);
-        
+
         return await _hmacSha256Provider.VerifyPasswordHash(password, existingUserPasswordSaltAndHash)
             ? Result<User>.Success(existingUser)
             : Result<User>.Error(ErrorCode.AuthenticationFailed);
