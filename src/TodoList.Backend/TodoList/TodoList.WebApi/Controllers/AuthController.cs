@@ -31,11 +31,16 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(typeof(IActionResult), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(IActionResult), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] RegisterRequestModel registerRequestModel)
+    public async Task<IActionResult> Register(RegisterRequestModel registerRequestModel)
     {
         // ALGORITHM:
         // Try to create user, check success, create user
 
+        if (registerRequestModel is null)
+        {
+            return BadRequest("Data must not be empty.");
+        }
+        
         var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
             registerRequestModel.Password, registerRequestModel.Name);
         

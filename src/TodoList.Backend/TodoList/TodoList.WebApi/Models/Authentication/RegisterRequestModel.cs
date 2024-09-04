@@ -1,18 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TodoList.WebApi.Models.Authentication.Validation;
 
 namespace TodoList.WebApi.Models.Authentication;
 
 public class RegisterRequestModel
 {
-    [Required(ErrorMessage = "Username is required.")]
-    [StringLength(20, MinimumLength = 3,
-        ErrorMessage = "Username must be between 3 and 20")]
+    [Required] [StringLength(20, MinimumLength = 3)]
     public string Username { get; set; }
 
-    [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8}$")]
+    [Required] [PasswordValidation]
     public string Password { get; set; }
-    
-    [Required(ErrorMessage = "Name is required")]
-    [StringLength(50, ErrorMessage = "Name cannot be longer than 50 characters.")]
+
+    [Required] [StringLength(50)]
     public string Name { get; set; }
 }
