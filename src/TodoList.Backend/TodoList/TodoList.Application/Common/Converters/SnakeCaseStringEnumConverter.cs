@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace TodoList.Application.Converters;
+namespace TodoList.Application.Common.Converters;
 
 public class SnakeCaseStringEnumConverter<TEnum> : JsonConverter<TEnum>
     where TEnum : struct, Enum

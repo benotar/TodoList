@@ -1,5 +1,6 @@
 ﻿using StackExchange.Redis;
 using TodoList.Application.Common;
+using TodoList.Domain.Enums;
 
 namespace TodoList.WebApi.Middleware;
 
@@ -33,7 +34,7 @@ public class CustomExceptionHandlerMiddleware
         {
             case RedisConnectionException:
                 context.Response.StatusCode = 503;
-                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.CannotConnectionToRedis));
+                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.AuthenticationServiceUnavailable));
                 break;
             default:
                 context.Response.StatusCode = 500;

@@ -1,4 +1,4 @@
-﻿using TodoList.Application.Common;
+﻿using TodoList.Application.DTOs;
 
 namespace TodoList.Application.Interfaces.Providers;
 

@@ -1,3 +1,3 @@
-﻿namespace TodoList.Application.Common;
+﻿namespace TodoList.Application.DTOs;
 
 public record struct SaltAndHash(byte[] Salt, byte[] Hash);

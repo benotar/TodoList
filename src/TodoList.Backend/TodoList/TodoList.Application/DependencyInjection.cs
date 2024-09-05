@@ -24,10 +24,6 @@ public static class DependencyInjection
         services.AddSingleton<IJwtProvider, JwtProvider>();
         services.AddSingleton<ICookieProvider, CookieProvider>();
         
-        
-        services.AddHttpContextAccessor();
-        services.AddScoped<IUserContextProvider, UserContextProvider>();
-        
         return services;
     }
 

@@ -1,15 +1,15 @@
-﻿namespace TodoList.Application.Common;
+﻿namespace TodoList.Domain.Enums;
 
 public enum ErrorCode
 {
     UserNotFound,
     UsernameAlreadyExists,
-    UserNotAddedToDatabase,
     UserNotSavedToDatabase,
-    AuthenticationFailed,
-    
     UsersTableIsEmpty,
-    CannotConnectionToRedis,
+    
+    AuthenticationFailed,
+    AuthenticationServiceUnavailable,
+    
     CannotGetUserId,
     
     UnknownError

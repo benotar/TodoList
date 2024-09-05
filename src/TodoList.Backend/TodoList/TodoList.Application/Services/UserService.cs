@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TodoList.Application.Common;
 using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Persistence;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Domain.Entities.Database;
+using TodoList.Domain.Enums;
 
 namespace TodoList.Application.Services;
 

@@ -1,6 +1,6 @@
 using TodoList.Application;
-using TodoList.Application.Common;
-using TodoList.Application.Converters;
+using TodoList.Domain.Enums;
+using TodoList.Application.Common.Converters;
 using TodoList.Persistence;
 using TodoList.WebApi;
 using TodoList.WebApi.Middleware;

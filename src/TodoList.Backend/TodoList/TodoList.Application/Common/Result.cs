@@ -1,4 +1,6 @@
-﻿namespace TodoList.Application.Common;
+﻿using TodoList.Domain.Enums;
+
+namespace TodoList.Application.Common;
 
 public class Result<TData>
 {
