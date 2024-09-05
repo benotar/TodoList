@@ -21,12 +21,12 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<Result<None>> Get()
+    public async Task<ActionResult<Result<None>>> Get()
     {
         var usersResult = await _userService.GetUsersAsync();
 
         return usersResult.IsSucceed
-            ? Result<None>.Success()
-            : Result<None>.Error(usersResult.ErrorCode);
+            ? Ok(Result<None>.Success())
+            : BadRequest(Result<None>.Error(usersResult.ErrorCode));
     }
 }

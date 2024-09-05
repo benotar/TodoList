@@ -43,6 +43,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseStatusCodeModifier();
+
 app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateTime.UtcNow}");
 
 app.Run();

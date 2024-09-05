@@ -51,7 +51,7 @@ public class AuthController : BaseController
 
         if (!existingUserResult.IsSucceed)
         {
-            Result<None>.Error(existingUserResult.ErrorCode);
+            return Result<None>.Error(existingUserResult.ErrorCode);
         }
 
         var user = existingUserResult.Data;
