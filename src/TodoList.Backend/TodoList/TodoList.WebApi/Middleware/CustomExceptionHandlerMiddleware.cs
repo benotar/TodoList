@@ -1,4 +1,6 @@
-﻿using StackExchange.Redis;
+﻿using System.Text.Json;
+using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using TodoList.Application.Common;
 using TodoList.Domain.Enums;
 
@@ -8,9 +10,12 @@ public class CustomExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public CustomExceptionHandlerMiddleware(RequestDelegate next)
+    private readonly JsonSerializerOptions _jsonOptions;
+    
+    public CustomExceptionHandlerMiddleware(RequestDelegate next, IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions)
     {
         _next = next;
+        _jsonOptions = jsonOptions.Value.JsonSerializerOptions;
     }
 
 
@@ -34,11 +39,12 @@ public class CustomExceptionHandlerMiddleware
         {
             case RedisConnectionException:
                 context.Response.StatusCode = 503;
-                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.AuthenticationServiceUnavailable));
+                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.AuthenticationServiceUnavailable),
+                    _jsonOptions);
                 break;
             default:
                 context.Response.StatusCode = 500;
-                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.UnknownError));
+                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.UnknownError), _jsonOptions);
                 break;
         }
     }
