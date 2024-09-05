@@ -27,7 +27,7 @@ public class UsersController : ControllerBase
         var usersResult = await _userService.GetUsersAsync();
 
         return usersResult.IsSucceed
-            ? Ok(Result<IEnumerable<User>>.Success(usersResult.Data))
-            : BadRequest(Result<None>.Error(usersResult.ErrorCode));
+            ? Result<IEnumerable<User>>.Success(usersResult.Data)
+            : Result<IEnumerable<User>>.Error(usersResult.ErrorCode);
     }
 }

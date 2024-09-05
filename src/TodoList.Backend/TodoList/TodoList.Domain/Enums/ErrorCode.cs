@@ -14,6 +14,9 @@ public enum ErrorCode
     TitleMustNotBeEmpty,
     TodoNotSavedToDatabase,
     TodoAlreadyExists,
+    TodoTableIsEmpty,
+    DataIsTheSame,
+    TodoNotFound,
     
     UnknownError
 }
