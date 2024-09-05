@@ -10,7 +10,10 @@ public enum ErrorCode
     AuthenticationFailed,
     AuthenticationServiceUnavailable,
     
-    CannotGetUserId,
+    UserIdNotValid,
+    TitleMustNotBeEmpty,
+    TodoNotSavedToDatabase,
+    TodoAlreadyExists,
     
     UnknownError
 }

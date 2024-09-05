@@ -5,5 +5,5 @@ namespace TodoList.Application.Interfaces.Services;
 
 public interface ITodoService
 {
-    Task<Result<Todo>> CreateAsync();
+    Task<Result<Todo>> CreateAsync(Guid userId, string title, string? description = default);
 }

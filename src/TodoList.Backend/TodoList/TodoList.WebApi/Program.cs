@@ -36,6 +36,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCustomExceptionHandler();
 
+app.UseTransferAccessTokenInHeader();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

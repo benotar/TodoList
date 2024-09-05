@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Domain.Enums;
@@ -27,30 +28,20 @@ public class AuthController : BaseController
     }
 
     [HttpPost("register")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register(RegisterRequestModel registerRequestModel)
+    public async Task<Result<None>> Register(RegisterRequestModel registerRequestModel)
     {
         // ALGORITHM:
         // Try to create user, check success, create user
-
-        if (registerRequestModel is null)
-        {
-            return BadRequest("Data must not be empty.");
-        }
-
         var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
             registerRequestModel.Password, registerRequestModel.Name);
 
         return createUserResult.IsSucceed
-            ? NoContent() // For release - Redirect("/login")
-            : BadRequest(createUserResult.ErrorCode);
+            ? Result<None>.Success()
+            : Result<None>.Error(createUserResult.ErrorCode);
     }
 
     [HttpPost("login")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Login([FromBody] LoginRequestModel registerRequestModel)
+    public async Task<Result<None>> Login([FromBody] LoginRequestModel registerRequestModel)
     {
         // ALGORITHM:
         // Get user by login and password, check existing, generate tokens, create/update session, add tokens and fingerprint to response cookies
@@ -60,7 +51,7 @@ public class AuthController : BaseController
 
         if (!existingUserResult.IsSucceed)
         {
-            return BadRequest(existingUserResult.ErrorCode);
+            Result<None>.Error(existingUserResult.ErrorCode);
         }
 
         var user = existingUserResult.Data;
@@ -73,6 +64,6 @@ public class AuthController : BaseController
         _cookieProvider.AddTokensCookiesToResponse(HttpContext.Response, accessToken, refreshToken);
         _cookieProvider.AddFingerprintCookiesToResponse(HttpContext.Response, registerRequestModel.Fingerprint);
 
-        return Ok("Login successful");
+        return Result<None>.Success();
     }
 }
