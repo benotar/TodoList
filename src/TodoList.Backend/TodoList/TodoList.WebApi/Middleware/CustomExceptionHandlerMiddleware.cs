@@ -11,8 +11,9 @@ public class CustomExceptionHandlerMiddleware
     private readonly RequestDelegate _next;
 
     private readonly JsonSerializerOptions _jsonOptions;
-    
-    public CustomExceptionHandlerMiddleware(RequestDelegate next, IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions)
+
+    public CustomExceptionHandlerMiddleware(RequestDelegate next,
+        IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions)
     {
         _next = next;
         _jsonOptions = jsonOptions.Value.JsonSerializerOptions;
@@ -37,6 +38,7 @@ public class CustomExceptionHandlerMiddleware
 
         switch (ex)
         {
+            case InvalidOperationException:
             case RedisConnectionException:
                 context.Response.StatusCode = 503;
                 await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.AuthenticationServiceUnavailable),

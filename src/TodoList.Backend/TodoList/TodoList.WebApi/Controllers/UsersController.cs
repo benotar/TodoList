@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Services;
+using TodoList.Domain.Entities.Database;
 
 
 namespace TodoList.WebApi.Controllers;
@@ -21,12 +22,12 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<ActionResult<Result<None>>> Get()
+    public async Task<ActionResult<Result<IEnumerable<User>>>> Get()
     {
         var usersResult = await _userService.GetUsersAsync();
 
         return usersResult.IsSucceed
-            ? Ok(Result<None>.Success())
+            ? Ok(Result<IEnumerable<User>>.Success(usersResult.Data))
             : BadRequest(Result<None>.Error(usersResult.ErrorCode));
     }
 }
