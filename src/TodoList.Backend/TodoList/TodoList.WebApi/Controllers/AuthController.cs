@@ -41,7 +41,7 @@ public class AuthController : BaseController
     }
 
     [HttpPost("login")]
-    public async Task<Result<None>> Login([FromBody] LoginRequestModel registerRequestModel)
+    public async Task<Result<None>> Login( LoginRequestModel registerRequestModel)
     {
         // ALGORITHM:
         // Get user by login and password, check existing, generate tokens, create/update session, add tokens and fingerprint to response cookies
@@ -66,4 +66,5 @@ public class AuthController : BaseController
 
         return Result<None>.Success();
     }
+    
 }

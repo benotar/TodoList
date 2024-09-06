@@ -8,4 +8,5 @@ public interface IJwtProvider
 {
     string GenerateToken(User user, JwtTokenType jwtTokenType);
     Guid GetUserIdFromRefreshToken(string refreshToken);
+    bool IsTokenValid(string refreshToken, JwtTokenType tokenType);
 }

@@ -18,5 +18,10 @@ public enum ErrorCode
     DataIsTheSame,
     TodoNotFound,
     
+    RefreshCookieNotFound,
+    FingerprintCookieNotFound,
+    InvalidRefreshToken,
+    SessionNotFound,
+    
     UnknownError
 }
