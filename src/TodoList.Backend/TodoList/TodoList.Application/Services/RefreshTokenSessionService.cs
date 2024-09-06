@@ -6,6 +6,7 @@ using TodoList.Application.Configurations;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Domain.Entities.Cache;
+using TodoList.Domain.Enums;
 
 namespace TodoList.Application.Services;
 
@@ -37,7 +38,7 @@ public class RefreshTokenSessionService : IRefreshTokenSessionService
             UserId = userId,
             Fingerprint = fingerprint,
             RefreshToken = refreshToken,
-            ExpiryAt = _dateTimeProvider.UtcNow.AddMinutes(_refreshTokenSessionConfiguration.ExpirationDays)
+            ExpiryAt = _dateTimeProvider.UtcNow.AddDays(_refreshTokenSessionConfiguration.ExpirationDays)
         };
 
         var redisValue = JsonSerializer.Serialize(entity);
@@ -45,7 +46,7 @@ public class RefreshTokenSessionService : IRefreshTokenSessionService
         await _redis.SetStringAsync(redisKey, redisValue,
             new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_refreshTokenSessionConfiguration.ExpirationDays)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(_refreshTokenSessionConfiguration.ExpirationDays)
             });
 
         return Result<None>.Success();
@@ -66,6 +67,10 @@ public class RefreshTokenSessionService : IRefreshTokenSessionService
 
         var data = await _redis.GetStringAsync(redisKey);
         
-        return Result<bool>.Success(data is not null);
+        return data is not null
+            ? Result<bool>.Success()
+            : Result<bool>.Error(ErrorCode.SessionNotFound);
+
+        //return Result<bool>.Success(data is not null);
     }
 }

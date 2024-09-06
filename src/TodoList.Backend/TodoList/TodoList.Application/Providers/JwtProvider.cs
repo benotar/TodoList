@@ -16,11 +16,15 @@ public class JwtProvider : IJwtProvider
 
     private readonly IDateTimeProvider _dateTimeProvider;
 
-    public JwtProvider(IOptions<JwtConfiguration> jwtConfig, IDateTimeProvider dateTimeProvider)
+    private readonly TokenValidationParameters _validationParameters;
+
+    public JwtProvider(IOptions<JwtConfiguration> jwtConfig, IDateTimeProvider dateTimeProvider, TokenValidationParameters validationParameters)
     {
         _jwtConfig = jwtConfig.Value;
 
         _dateTimeProvider = dateTimeProvider;
+        
+        _validationParameters = validationParameters;
     }
 
     public string GenerateToken(User user, JwtTokenType jwtTokenType)
@@ -67,5 +71,29 @@ public class JwtProvider : IJwtProvider
         return Guid.TryParse(userIdString, out var userId)
             ? userId
             : Guid.Empty;
+    }
+
+    
+    
+    public bool IsTokenValid(string refreshToken, JwtTokenType tokenType)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        ClaimsPrincipal? principal = null;
+
+        try
+        {
+            principal = tokenHandler.ValidateToken(refreshToken, _validationParameters, out _);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        var tokenTypeClaim = principal.Claims.FirstOrDefault(claim => claim.Type.Equals(JwtRegisteredClaimNames.Typ));
+
+        var tokenTypeValue = tokenTypeClaim?.Value;
+
+        return tokenTypeValue != null && tokenTypeValue.Equals(tokenType.ToString());
     }
 }

@@ -82,6 +82,14 @@ public class UserService : IUserService
             : Result<User>.Error(ErrorCode.AuthenticationFailed);
     }
 
+    public async Task<Result<User>> GetUserById(Guid userId)
+    {
+        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(todo => todo.Id.Equals(userId));
+
+        return existingUser is null
+            ? Result<User>.Error(ErrorCode.UserNotFound)
+            : Result<User>.Success(existingUser);
+    }
 
     // For development testing
     public async Task<Result<IEnumerable<User>>> GetUsersAsync()
