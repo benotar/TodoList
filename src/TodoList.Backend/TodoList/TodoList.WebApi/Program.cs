@@ -35,15 +35,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCustomExceptionHandler();
-
 app.UseTransferAccessTokenInHeader();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
-
 app.UseStatusCodeModifier();
+
+app.MapControllers();
 
 app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateTime.UtcNow}");
 

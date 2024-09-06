@@ -85,10 +85,10 @@ public class TodoService : ITodoService
     public async Task<Result<IEnumerable<Todo>>> GetAsync()
     {
         var todos = await _dbContext.Todos.ToListAsync();
-
-        return todos.Count is 0
-            ? Result<IEnumerable<Todo>>.Error(ErrorCode.TodoTableIsEmpty)
-            : Result<IEnumerable<Todo>>.Success(todos);
+        
+        return todos.Count > 0
+            ? Result<IEnumerable<Todo>>.Success(todos)
+            : Result<IEnumerable<Todo>>.Error(ErrorCode.TodoTableIsEmpty);
     }
 
     public async Task<Result<Todo>> UpdateAsync(Guid todoId, string newTitle, string? newDescription = default)

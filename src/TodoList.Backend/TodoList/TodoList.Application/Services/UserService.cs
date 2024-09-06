@@ -88,8 +88,8 @@ public class UserService : IUserService
     {
         var users = await _dbContext.Users.ToListAsync();
 
-        return users.Count is 0
-            ? Result<IEnumerable<User>>.Error(ErrorCode.UsersTableIsEmpty)
-            : Result<IEnumerable<User>>.Success(users);
+        return users.Count > 0
+            ? Result<IEnumerable<User>>.Success(users)
+            : Result<IEnumerable<User>>.Error(ErrorCode.UsersTableIsEmpty);
     }
 }

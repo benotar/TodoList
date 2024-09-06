@@ -3,7 +3,7 @@ using TodoList.Domain.Enums;
 
 namespace TodoList.Application.Common;
 
-using Errors = Domain.Enums.ErrorCode;
+using Errors = ErrorCode;
 public class Result<TData>
 {
     public TData Data { get; set; }
@@ -21,8 +21,6 @@ public class Result<TData>
         var statusCode = errorCode switch
         {
             Errors.AuthenticationServiceUnavailable => HttpStatusCode.ServiceUnavailable,
-            Errors.TodoTableIsEmpty => HttpStatusCode.NoContent,
-            Errors.UsersTableIsEmpty => HttpStatusCode.NoContent,
             _ => HttpStatusCode.BadRequest
         };
 
