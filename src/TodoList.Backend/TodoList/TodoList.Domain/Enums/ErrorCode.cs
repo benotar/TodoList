@@ -4,24 +4,27 @@ public enum ErrorCode
 {
     UserNotFound,
     UsernameAlreadyExists,
-    UserNotSavedToDatabase,
-    UsersTableIsEmpty,
+   
+    UserIdNotValid,
     
     AuthenticationFailed,
     AuthenticationServiceUnavailable,
     
-    UserIdNotValid,
-    TitleMustNotBeEmpty,
-    TodoNotSavedToDatabase,
+   
+    TodoTitleMustNotBeEmpty,
     TodoAlreadyExists,
-    TodoTableIsEmpty,
-    DataIsTheSame,
     TodoNotFound,
+    TodoDataIsTheSame,
+    
     
     RefreshCookieNotFound,
     FingerprintCookieNotFound,
     InvalidRefreshToken,
     SessionNotFound,
+    
+    DataNotSavedToDatabase,
+    
+    AccessDenied,
     
     UnknownError
 }

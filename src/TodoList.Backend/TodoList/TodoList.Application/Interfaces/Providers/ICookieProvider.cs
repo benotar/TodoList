@@ -9,4 +9,5 @@ public interface ICookieProvider
     void AddFingerprintCookiesToResponse(HttpResponse response, string fingerprint);
     TokensDto GetTokensFromCookies(HttpRequest request);
     string? GetFingerprintFromCookies(HttpRequest request);
+    void DeleteCookiesFromResponse(HttpResponse response);
 }

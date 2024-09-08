@@ -16,7 +16,7 @@ public class CookieProvider : ICookieProvider
     private readonly CookiesConfiguration _cookiesConfiguration;
 
     public CookieProvider(RefreshTokenSessionConfiguration refreshTokenSessionConfiguration,
-        IDateTimeProvider dateTimeProvider, 
+        IDateTimeProvider dateTimeProvider,
         CookiesConfiguration cookiesConfiguration,
         JwtConfiguration jwtConfiguration)
     {
@@ -64,6 +64,15 @@ public class CookieProvider : ICookieProvider
         request.Cookies.TryGetValue(_cookiesConfiguration.FingerprintCookieKey, out var fingerprint);
 
         return fingerprint;
+    }
+
+    public void DeleteCookiesFromResponse(HttpResponse response)
+    {
+        response.Cookies.Delete(_cookiesConfiguration.FingerprintCookieKey);
+
+        response.Cookies.Delete(_cookiesConfiguration.RefreshTokenCookieKey);
+
+        response.Cookies.Delete(_cookiesConfiguration.AccessTokenCookieKey);
     }
 
     private CookieOptions CreateCookieOptionsWithDays(int expirationDays)

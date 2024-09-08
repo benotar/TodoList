@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using TodoList.Application.Common;
@@ -12,10 +13,15 @@ public class CustomExceptionHandlerMiddleware
 
     private readonly JsonSerializerOptions _jsonOptions;
 
+    private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
+
     public CustomExceptionHandlerMiddleware(RequestDelegate next,
-        IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions)
+        IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions, ILogger<CustomExceptionHandlerMiddleware> logger)
     {
         _next = next;
+        
+        _logger = logger;
+        
         _jsonOptions = jsonOptions.Value.JsonSerializerOptions;
     }
 
@@ -28,6 +34,8 @@ public class CustomExceptionHandlerMiddleware
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occured while processing the request.");
+            
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -40,12 +48,16 @@ public class CustomExceptionHandlerMiddleware
         {
             case InvalidOperationException:
             case RedisConnectionException:
-                context.Response.StatusCode = 503;
+                context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
                 await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.AuthenticationServiceUnavailable),
                     _jsonOptions);
                 break;
+            case DbUpdateException:
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.DataNotSavedToDatabase), _jsonOptions);
+                break;
             default:
-                context.Response.StatusCode = 500;
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.UnknownError), _jsonOptions);
                 break;
         }
