@@ -94,16 +94,7 @@ public class UserService : IUserService
     private async Task<User?> FindUserByConditionAsync(Expression<Func<User, bool>> condition,
         bool isUseTracking = false) => isUseTracking switch
     {
-<<<<<<< HEAD
-        var users = await _dbContext.Users.ToListAsync();
-
-        return users.Count > 0
-            ? Result<IEnumerable<User>>.Success(users)
-            : Result<IEnumerable<User>>.Error(ErrorCode.UsersTableIsEmpty);
-    }
-=======
         true => await _dbContext.Users.AsTracking().FirstOrDefaultAsync(condition),
         _ => await _dbContext.Users.FirstOrDefaultAsync(condition)
     };
->>>>>>> dev
 }

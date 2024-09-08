@@ -85,19 +85,7 @@ public class TodoService : ITodoService
 
         return Result<Todo>.Success(newTodo);
     }
-
-<<<<<<< HEAD
-    public async Task<Result<IEnumerable<Todo>>> GetAsync()
-    {
-        var todos = await _dbContext.Todos.ToListAsync();
-        
-        return todos.Count > 0
-            ? Result<IEnumerable<Todo>>.Success(todos)
-            : Result<IEnumerable<Todo>>.Error(ErrorCode.TodoTableIsEmpty);
-    }
-
-=======
->>>>>>> dev
+    
     public async Task<Result<Todo>> UpdateAsync(Guid todoId, string newTitle, string? newDescription = default)
     {
         var existingTodo = await FindTodoByConditionAsync(todo => todo.Id.Equals(todoId), true);
