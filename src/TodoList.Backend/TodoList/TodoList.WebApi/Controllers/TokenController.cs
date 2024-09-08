@@ -38,18 +38,18 @@ public class TokenController : BaseController
             return Result<None>.Error(ErrorCode.RefreshCookieNotFound);
         }
 
-        var fingerprint = _cookieProvider.GetFingerprintFromCookies(HttpContext.Request);
-
-        if (fingerprint is null)
-        {
-            return Result<None>.Error(ErrorCode.FingerprintCookieNotFound);
-        }
-
         if (!_jwtProvider.IsTokenValid(refreshToken, JwtTokenType.Refresh))
         {
             return Result<None>.Error(ErrorCode.InvalidRefreshToken);
         }
+        
+        var fingerprint = _cookieProvider.GetFingerprintFromCookies(HttpContext.Request);
 
+        if (string.IsNullOrEmpty(fingerprint))
+        {
+            return Result<None>.Error(ErrorCode.FingerprintCookieNotFound);
+        }
+        
         var userResult = await _userService
             .GetUserById(_jwtProvider
                 .GetUserIdFromRefreshToken(refreshToken));

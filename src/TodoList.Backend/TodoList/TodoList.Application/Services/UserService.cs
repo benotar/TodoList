@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using TodoList.Application.Common;
 using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Providers;
@@ -22,13 +23,20 @@ public class UserService : IUserService
         _hmacSha256Provider = hmacSha256Provider;
     }
 
+    // For development testing
+    public async Task<Result<IEnumerable<User>>> GetUsersAsync()
+    {
+        var users = await _dbContext.Users.ToListAsync();
+
+        return users.Count is 0
+            ? Result<IEnumerable<User>>.SuccessWithWarning(WarningCode.UsersTableIsEmpty)
+            : Result<IEnumerable<User>>.Success(users);
+    }
+
     public async Task<Result<User>> CreateAsync(string username, string password, string name)
     {
         // Check if the user with username already exists in database
-
-        var isUserWithUsernameExist = await _dbContext.Users.AnyAsync(us => us.Username.Equals(username));
-
-        if (isUserWithUsernameExist)
+        if (await _dbContext.Users.AnyAsync(us => us.Username.Equals(username)))
         {
             return Result<User>.Error(ErrorCode.UsernameAlreadyExists);
         }
@@ -48,27 +56,19 @@ public class UserService : IUserService
         // Add new user to database
         await _dbContext.Users.AddAsync(newUser);
 
-        try
-        {
-            // Try save changes
-            await _dbContext.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex)
-        {
-            // If the user is not stored in the database
-            return Result<User>.Error(ErrorCode.UserNotSavedToDatabase);
-        }
+        // Save changes
+        await _dbContext.SaveChangesAsync();
 
         // Return result
         return !newUser.Id.Equals(Guid.Empty)
             ? Result<User>.Success(newUser)
-            : Result<User>.Error(ErrorCode.UserNotSavedToDatabase);
+            : Result<User>.Error(ErrorCode.DataNotSavedToDatabase);
     }
 
     public async Task<Result<User>> GetExistingUser(string username, string password)
     {
         var existingUser =
-            await _dbContext.Users.FirstOrDefaultAsync(us => us.Username.Equals(username));
+            await FindUserByConditionAsync(us => us.Username.Equals(username));
 
         if (existingUser is null)
         {
@@ -84,20 +84,17 @@ public class UserService : IUserService
 
     public async Task<Result<User>> GetUserById(Guid userId)
     {
-        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(todo => todo.Id.Equals(userId));
+        var existingUser = await FindUserByConditionAsync(todo => todo.Id.Equals(userId));
 
         return existingUser is null
             ? Result<User>.Error(ErrorCode.UserNotFound)
             : Result<User>.Success(existingUser);
     }
 
-    // For development testing
-    public async Task<Result<IEnumerable<User>>> GetUsersAsync()
+    private async Task<User?> FindUserByConditionAsync(Expression<Func<User, bool>> condition,
+        bool isUseTracking = false) => isUseTracking switch
     {
-        var users = await _dbContext.Users.ToListAsync();
-
-        return users.Count is 0
-            ? Result<IEnumerable<User>>.SuccessWithWarning(WarningCode.UsersTableIsEmpty)
-            : Result<IEnumerable<User>>.Success(users);
-    }
+        true => await _dbContext.Users.AsTracking().FirstOrDefaultAsync(condition),
+        _ => await _dbContext.Users.FirstOrDefaultAsync(condition)
+    };
 }

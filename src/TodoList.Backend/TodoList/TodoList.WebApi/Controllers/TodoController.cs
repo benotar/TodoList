@@ -34,7 +34,7 @@ public class TodoController : BaseController
 
     [HttpPost("create")]
     public async Task<Result<Todo>> CreateTodo(CreateTodoModel createTodoModel)
-        => await _todoService.CreateAsync(GetUserId(), createTodoModel.Title);
+        => await _todoService.CreateAsync(GetUserId(), createTodoModel.Title, createTodoModel.Description);
 
 
     [HttpPut("update/{todoId:guid}")]

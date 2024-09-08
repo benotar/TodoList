@@ -2,6 +2,7 @@
 using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
+using TodoList.Domain.Entities.Database;
 using TodoList.Domain.Enums;
 using TodoList.WebApi.Models.Authentication;
 
@@ -28,20 +29,12 @@ public class AuthController : BaseController
     }
 
     [HttpPost("register")]
-    public async Task<Result<None>> Register(RegisterRequestModel registerRequestModel)
-    {
-        // ALGORITHM:
-        // Try to create user, check success, create user
-        var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
+    public async Task<Result<User>> Register(RegisterRequestModel registerRequestModel)
+        => await _userService.CreateAsync(registerRequestModel.Username,
             registerRequestModel.Password, registerRequestModel.Name);
 
-        return createUserResult.IsSucceed
-            ? Result<None>.Success()
-            : Result<None>.Error(createUserResult.ErrorCode);
-    }
-
     [HttpPost("login")]
-    public async Task<Result<None>> Login( LoginRequestModel registerRequestModel)
+    public async Task<Result<None>> Login(LoginRequestModel registerRequestModel)
     {
         // ALGORITHM:
         // Get user by login and password, check existing, generate tokens, create/update session, add tokens and fingerprint to response cookies
@@ -66,5 +59,4 @@ public class AuthController : BaseController
 
         return Result<None>.Success();
     }
-    
 }

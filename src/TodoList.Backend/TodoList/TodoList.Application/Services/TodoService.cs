@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Persistence;
 using TodoList.Application.Interfaces.Providers;
@@ -29,10 +31,10 @@ public class TodoService : ITodoService
             ? Result<IEnumerable<Todo>>.SuccessWithWarning(WarningCode.TodoTableIsEmpty)
             : Result<IEnumerable<Todo>>.Success(todos);
     }
-    
+
     public async Task<Result<Todo>> GetByTitleAsync(string title)
     {
-        var existingTodo = await _dbContext.Todos.FirstOrDefaultAsync(todo => todo.Title.Equals(title));
+        var existingTodo = await FindTodoByConditionAsync(todo => todo.Title.Equals(title));
 
         return existingTodo is null
             ? Result<Todo>.Error(ErrorCode.TodoNotFound)
@@ -78,22 +80,15 @@ public class TodoService : ITodoService
         };
 
         await _dbContext.Todos.AddAsync(newTodo);
+        await _dbContext.SaveChangesAsync();
 
-        try
-        {
-            await _dbContext.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            return Result<Todo>.Error(ErrorCode.TodoNotSavedToDatabase);
-        }
 
         return Result<Todo>.Success(newTodo);
     }
-    
+
     public async Task<Result<Todo>> UpdateAsync(Guid todoId, string newTitle, string? newDescription = default)
     {
-        var existingTodo = await _dbContext.Todos.FirstOrDefaultAsync(todo => todo.Id.Equals(todoId));
+        var existingTodo = await FindTodoByConditionAsync(todo => todo.Id.Equals(todoId), true);
 
         if (existingTodo is null)
         {
@@ -110,8 +105,6 @@ public class TodoService : ITodoService
         existingTodo.Description = newDescription;
         existingTodo.UpdatedAt = _dateTimeProvider.UtcNow;
 
-        _dbContext.Todos.Update(existingTodo);
-
         await _dbContext.SaveChangesAsync();
 
         return Result<Todo>.Success(existingTodo);
@@ -119,7 +112,7 @@ public class TodoService : ITodoService
 
     public async Task<Result<None>> DeleteAsync(Guid todoId)
     {
-        var existingTodo = await _dbContext.Todos.AsTracking().FirstOrDefaultAsync(todo => todo.Id.Equals(todoId));
+        var existingTodo = await FindTodoByConditionAsync(todo => todo.Id.Equals(todoId));
 
         if (existingTodo is null)
         {
@@ -132,4 +125,13 @@ public class TodoService : ITodoService
 
         return Result<None>.Success();
     }
+
+    // Testing
+    private async Task<Todo?> FindTodoByConditionAsync(Expression<Func<Todo, bool>> condition,
+        bool isUseTracking = false)
+        => isUseTracking switch
+        {
+            true => await _dbContext.Todos.AsTracking().FirstOrDefaultAsync(condition),
+            _ => await _dbContext.Todos.FirstOrDefaultAsync(condition)
+        };
 }

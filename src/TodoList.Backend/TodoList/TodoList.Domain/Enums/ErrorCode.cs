@@ -4,7 +4,7 @@ public enum ErrorCode
 {
     UserNotFound,
     UsernameAlreadyExists,
-    UserNotSavedToDatabase,
+   
     UserIdNotValid,
     
     AuthenticationFailed,
@@ -12,7 +12,6 @@ public enum ErrorCode
     
    
     TodoTitleMustNotBeEmpty,
-    TodoNotSavedToDatabase,
     TodoAlreadyExists,
     TodoNotFound,
     TodoDataIsTheSame,
@@ -22,6 +21,8 @@ public enum ErrorCode
     FingerprintCookieNotFound,
     InvalidRefreshToken,
     SessionNotFound,
+    
+    DataNotSavedToDatabase,
     
     UnknownError
 }
