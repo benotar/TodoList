@@ -24,5 +24,7 @@ public enum ErrorCode
     
     DataNotSavedToDatabase,
     
+    AccessDenied,
+    
     UnknownError
 }

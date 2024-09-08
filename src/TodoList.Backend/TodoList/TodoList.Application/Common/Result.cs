@@ -26,6 +26,7 @@ public class Result<TData>
             StatusCode = errorCode switch
             {
                 Errors.AuthenticationServiceUnavailable => HttpStatusCode.ServiceUnavailable,
+                Errors.AccessDenied => HttpStatusCode.Forbidden,
                 _ => HttpStatusCode.BadRequest
             }
         };

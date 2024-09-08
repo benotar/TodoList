@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Domain.Entities.Database;
+using TodoList.Domain.Enums;
 using TodoList.WebApi.Models.Todos;
 
 namespace TodoList.WebApi.Controllers;
@@ -14,23 +15,31 @@ public class TodoController : BaseController
 
     public TodoController(ITodoService todoService) => _todoService = todoService;
 
-    [HttpGet("get")]
-    [ProducesResponseType(typeof(Result<IEnumerable<Todo>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<IEnumerable<Todo>>), StatusCodes.Status400BadRequest)]
-    public async Task<Result<IEnumerable<Todo>>> Get()
-        => await _todoService.GetAsync();
-
     [HttpGet("get/{title}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status403Forbidden)]
     public async Task<Result<Todo>> Get(string title)
-        => await _todoService.GetByTitleAsync(title);
+    {
+        var getTodoByTitleResult = await _todoService.GetByTitleAsync(title);
+
+        return getTodoByTitleResult.Data.UserId.Equals(GetUserId())
+            ? getTodoByTitleResult
+            : Result<Todo>.Error(ErrorCode.AccessDenied);
+    }
 
     [HttpGet("get/{todoId:guid}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status403Forbidden)]
     public async Task<Result<Todo>> Get(Guid todoId)
-        => await _todoService.GetByIdAsync(todoId);
+    {
+        var getTodoByIdResult = await _todoService.GetByIdAsync(todoId);
+
+        return getTodoByIdResult.Data.UserId.Equals(GetUserId())
+            ? getTodoByIdResult
+            : Result<Todo>.Error(ErrorCode.AccessDenied);
+    }
 
     [HttpPost("create")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
@@ -38,15 +47,26 @@ public class TodoController : BaseController
     public async Task<Result<Todo>> CreateTodo(CreateTodoModel createTodoModel)
         => await _todoService.CreateAsync(GetUserId(), createTodoModel.Title, createTodoModel.Description);
 
+
     [HttpPut("update/{todoId:guid}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status403Forbidden)]
     public async Task<Result<Todo>> Update(Guid todoId, UpdateTodoModel updateTodoModel)
-        => await _todoService.UpdateAsync(todoId, updateTodoModel.Title, updateTodoModel.Description);
+    {
+        var updateTodoResult =
+            await _todoService.UpdateAsync(todoId, updateTodoModel.Title, updateTodoModel.Description);
 
-    [HttpDelete("delete/{todoId:guid}")]
-    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status400BadRequest)]
-    public async Task<Result<None>> Update(Guid todoId)
-        => await _todoService.DeleteAsync(todoId);
+        return updateTodoResult.Data.UserId.Equals(GetUserId())
+            ? updateTodoResult
+            : Result<Todo>.Error(ErrorCode.AccessDenied);
+    }
+
+    // [HttpDelete("delete/{todoId:guid}")]
+    // [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
+    // [ProducesResponseType(typeof(Result<None>), StatusCodes.Status400BadRequest)]
+    // public async Task<Result<None>> Update(Guid todoId)
+    // {
+    //     if(_todoService.)
+    // }
 }

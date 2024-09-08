@@ -35,7 +35,7 @@ public class TodoService : ITodoService
     public async Task<Result<Todo>> GetByTitleAsync(string title)
     {
         var existingTodo = await FindTodoByConditionAsync(todo => todo.Title.Equals(title));
-
+        
         return existingTodo is null
             ? Result<Todo>.Error(ErrorCode.TodoNotFound)
             : Result<Todo>.Success(existingTodo);
