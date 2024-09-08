@@ -20,65 +20,28 @@ public class TodoController : BaseController
     [HttpGet("get")]
     public async Task<Result<IEnumerable<Todo>>> Get()
     {
-        var todosResult = await _todoService.GetAsync();
-
-        return todosResult.IsSucceed
-            ? Result<IEnumerable<Todo>>.Success(todosResult.Data)
-            : Result<IEnumerable<Todo>>.Error(todosResult.ErrorCode);
+        return await _todoService.GetAsync();
     }
 
     [HttpGet("get/{title}")]
     public async Task<Result<Todo>> Get(string title)
-    {
-        var todoResult = await _todoService.GetByTitleAsync(title);
+        => await _todoService.GetByTitleAsync(title);
 
-        return todoResult.IsSucceed
-            ? Result<Todo>.Success(todoResult.Data)
-            : Result<Todo>.Error(todoResult.ErrorCode);
-    }
-    
+
     [HttpGet("get/{todoId:guid}")]
     public async Task<Result<Todo>> Get(Guid todoId)
-    {
-        var todoResult = await _todoService.GetByIdAsync(todoId);
+        => await _todoService.GetByIdAsync(todoId);
 
-        return todoResult.IsSucceed
-            ? Result<Todo>.Success(todoResult.Data)
-            : Result<Todo>.Error(todoResult.ErrorCode);
-    }
-    
     [HttpPost("create")]
-    public async Task<Result<None>> CreateTodo(CreateTodoModel createTodoModel)
-    {
-        var currentUserId = GetUserId();
+    public async Task<Result<Todo>> CreateTodo(CreateTodoModel createTodoModel)
+        => await _todoService.CreateAsync(GetUserId(), createTodoModel.Title);
 
-        var createTodoResult = await _todoService.CreateAsync(currentUserId, createTodoModel.Title);
-
-        return createTodoResult.IsSucceed
-            ? Result<None>.Success()
-            : Result<None>.Error(createTodoResult.ErrorCode);
-    }
 
     [HttpPut("update/{todoId:guid}")]
     public async Task<Result<Todo>> Update(Guid todoId, UpdateTodoModel updateTodoModel)
-    {
-        var todoResult = await _todoService.UpdateAsync(todoId, updateTodoModel.Title, updateTodoModel.Description);
+        => await _todoService.UpdateAsync(todoId, updateTodoModel.Title, updateTodoModel.Description);
 
-        return todoResult.IsSucceed
-            ? Result<Todo>.Success(todoResult.Data)
-            : Result<Todo>.Error(todoResult.ErrorCode);  
-    }
-    
     [HttpDelete("delete/{todoId:guid}")]
     public async Task<Result<None>> Update(Guid todoId)
-    {
-        var todoResult = await _todoService.DeleteAsync(todoId);
-
-        return todoResult.IsSucceed
-            ? Result<None>.Success()
-            : Result<None>.Error(todoResult.ErrorCode);  
-    }
-    
+        => await _todoService.DeleteAsync(todoId);
 }
-
-    

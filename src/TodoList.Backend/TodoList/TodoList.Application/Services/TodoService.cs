@@ -21,6 +21,15 @@ public class TodoService : ITodoService
         _dateTimeProvider = dateTimeProvider;
     }
 
+    public async Task<Result<IEnumerable<Todo>>> GetAsync()
+    {
+        var todos = await _dbContext.Todos.ToListAsync();
+
+        return todos.Count is 0
+            ? Result<IEnumerable<Todo>>.SuccessWithWarning(WarningCode.TodoTableIsEmpty)
+            : Result<IEnumerable<Todo>>.Success(todos);
+    }
+    
     public async Task<Result<Todo>> GetByTitleAsync(string title)
     {
         var existingTodo = await _dbContext.Todos.FirstOrDefaultAsync(todo => todo.Title.Equals(title));
@@ -53,7 +62,7 @@ public class TodoService : ITodoService
 
         if (string.IsNullOrEmpty(title))
         {
-            return Result<Todo>.Error(ErrorCode.TitleMustNotBeEmpty);
+            return Result<Todo>.Error(ErrorCode.TodoTitleMustNotBeEmpty);
         }
 
         if (await _dbContext.Todos.AnyAsync(todo => todo.Title.Equals(title)))
@@ -81,29 +90,20 @@ public class TodoService : ITodoService
 
         return Result<Todo>.Success(newTodo);
     }
-
-    public async Task<Result<IEnumerable<Todo>>> GetAsync()
-    {
-        var todos = await _dbContext.Todos.ToListAsync();
-
-        return todos.Count is 0
-            ? Result<IEnumerable<Todo>>.Error(ErrorCode.TodoTableIsEmpty)
-            : Result<IEnumerable<Todo>>.Success(todos);
-    }
-
+    
     public async Task<Result<Todo>> UpdateAsync(Guid todoId, string newTitle, string? newDescription = default)
     {
         var existingTodo = await _dbContext.Todos.FirstOrDefaultAsync(todo => todo.Id.Equals(todoId));
 
         if (existingTodo is null)
         {
-            return Result<Todo>.Error(ErrorCode.TodoAlreadyExists);
+            return Result<Todo>.Error(ErrorCode.TodoNotFound);
         }
 
         if (string.Equals(newTitle, existingTodo.Title, StringComparison.OrdinalIgnoreCase)
             && string.Equals(newDescription, existingTodo.Description, StringComparison.OrdinalIgnoreCase))
         {
-            return Result<Todo>.Error(ErrorCode.DataIsTheSame);
+            return Result<Todo>.Error(ErrorCode.TodoDataIsTheSame);
         }
 
         existingTodo.Title = newTitle;

@@ -5,18 +5,18 @@ public enum ErrorCode
     UserNotFound,
     UsernameAlreadyExists,
     UserNotSavedToDatabase,
-    UsersTableIsEmpty,
+    UserIdNotValid,
     
     AuthenticationFailed,
     AuthenticationServiceUnavailable,
     
-    UserIdNotValid,
-    TitleMustNotBeEmpty,
+   
+    TodoTitleMustNotBeEmpty,
     TodoNotSavedToDatabase,
     TodoAlreadyExists,
-    TodoTableIsEmpty,
-    DataIsTheSame,
     TodoNotFound,
+    TodoDataIsTheSame,
+    
     
     RefreshCookieNotFound,
     FingerprintCookieNotFound,

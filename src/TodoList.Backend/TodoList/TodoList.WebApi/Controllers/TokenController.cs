@@ -70,6 +70,7 @@ public class TokenController : BaseController
         }
 
         var accessToken = _jwtProvider.GenerateToken(user, JwtTokenType.Access);
+        
         refreshToken = _jwtProvider.GenerateToken(user, JwtTokenType.Refresh);
 
         await _refreshTokenSessionService.CreateOrUpdateAsync(user.Id, fingerprint, refreshToken);

@@ -15,7 +15,6 @@ public class UsersController : ControllerBase
     // for testing
     private readonly IUserService _userService;
 
-
     public UsersController(IUserService userService)
     {
         _userService = userService;
@@ -23,11 +22,5 @@ public class UsersController : ControllerBase
 
     [HttpGet("get")]
     public async Task<ActionResult<Result<IEnumerable<User>>>> Get()
-    {
-        var usersResult = await _userService.GetUsersAsync();
-
-        return usersResult.IsSucceed
-            ? Result<IEnumerable<User>>.Success(usersResult.Data)
-            : Result<IEnumerable<User>>.Error(usersResult.ErrorCode);
-    }
+        => await _userService.GetUsersAsync();
 }

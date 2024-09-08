@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
+    options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<WarningCode>());
 });
 
 builder.AddCustomConfiguration();

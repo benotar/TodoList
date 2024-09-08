@@ -12,10 +12,15 @@ public class CustomExceptionHandlerMiddleware
 
     private readonly JsonSerializerOptions _jsonOptions;
 
+    private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
+
     public CustomExceptionHandlerMiddleware(RequestDelegate next,
-        IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions)
+        IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions, ILogger<CustomExceptionHandlerMiddleware> logger)
     {
         _next = next;
+        
+        _logger = logger;
+        
         _jsonOptions = jsonOptions.Value.JsonSerializerOptions;
     }
 
@@ -28,6 +33,8 @@ public class CustomExceptionHandlerMiddleware
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occured while processing the request.");
+            
             await HandleExceptionAsync(context, ex);
         }
     }
