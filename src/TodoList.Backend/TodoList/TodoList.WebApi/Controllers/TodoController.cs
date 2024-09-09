@@ -15,14 +15,14 @@ public class TodoController : BaseController
 
     public TodoController(ITodoService todoService) => _todoService = todoService;
 
-    [HttpGet("get/{title}")]
+    [HttpGet("get/title/{title}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status404NotFound)]
     public async Task<Result<Todo>> Get(string title)
         => await _todoService.GetByTitleAsync(title, GetUserId());
 
-    [HttpGet("get/{todoId:guid}")]
+    [HttpGet("get/id/{todoId:guid}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status404NotFound)]

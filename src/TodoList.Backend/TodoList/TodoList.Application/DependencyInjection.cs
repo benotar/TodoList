@@ -23,6 +23,8 @@ public static class DependencyInjection
         services.AddSingleton<IEncryptionProvider, HmacSha256Provider>();
         services.AddSingleton<IJwtProvider, JwtProvider>();
         services.AddSingleton<ICookieProvider, CookieProvider>();
+
+        services.AddTransient<ITodoQueryProvider, TodoQueryProvider>();
         
         return services;
     }
