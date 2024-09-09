@@ -23,6 +23,11 @@ public class TodoController : BaseController
     {
         var getTodoByTitleResult = await _todoService.GetByTitleAsync(title);
 
+        if (!getTodoByTitleResult.IsSucceed)
+        {
+            return getTodoByTitleResult;
+        }
+        
         return getTodoByTitleResult.Data.UserId.Equals(GetUserId())
             ? getTodoByTitleResult
             : Result<Todo>.Error(ErrorCode.AccessDenied);
@@ -36,6 +41,11 @@ public class TodoController : BaseController
     {
         var getTodoByIdResult = await _todoService.GetByIdAsync(todoId);
 
+        if(!getTodoByIdResult.IsSucceed)
+        {
+            return getTodoByIdResult;
+        }
+        
         return getTodoByIdResult.Data.UserId.Equals(GetUserId())
             ? getTodoByIdResult
             : Result<Todo>.Error(ErrorCode.AccessDenied);

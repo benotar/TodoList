@@ -49,31 +49,37 @@ public class TokenController : BaseController
         {
             return Result<None>.Error(ErrorCode.FingerprintCookieNotFound);
         }
-        
-        var userResult = await _userService
-            .GetUserById(_jwtProvider
-                .GetUserIdFromRefreshToken(refreshToken));
 
-        if (!userResult.IsSucceed)
+        var userId = _jwtProvider.GetUserIdFromRefreshToken(refreshToken);
+
+        if (userId == Guid.Empty)
         {
-            return Result<None>.Error(userResult.ErrorCode);
+            return Result<None>.Error(ErrorCode.UserIdNotValid);
         }
-
-        var user = userResult.Data;
+        
+        // var userResult = await _userService
+        //     .GetUserById(userId);
+        //
+        // if (!userResult.IsSucceed)
+        // {
+        //     return Result<None>.Error(userResult.ErrorCode);
+        // }
+        //
+        // var user = userResult.Data;
 
         var sessionExistsResult = await _refreshTokenSessionService
-            .SessionKeyExistsAsync(user.Id, fingerprint);
+            .SessionKeyExistsAsync(userId, fingerprint);
 
         if (!sessionExistsResult.IsSucceed)
         {
             return Result<None>.Error(sessionExistsResult.ErrorCode);
         }
 
-        var accessToken = _jwtProvider.GenerateToken(user, JwtTokenType.Access);
+        var accessToken = _jwtProvider.GenerateToken(userId, JwtTokenType.Access);
         
-        refreshToken = _jwtProvider.GenerateToken(user, JwtTokenType.Refresh);
+        refreshToken = _jwtProvider.GenerateToken(userId, JwtTokenType.Refresh);
 
-        await _refreshTokenSessionService.CreateOrUpdateAsync(user.Id, fingerprint, refreshToken);
+        await _refreshTokenSessionService.CreateOrUpdateAsync(userId, fingerprint, refreshToken);
 
         _cookieProvider.AddTokensCookiesToResponse(HttpContext.Response, accessToken, refreshToken);
 

@@ -54,8 +54,8 @@ public class AuthController : BaseController
 
         var user = existingUserResult.Data;
 
-        var accessToken = _jwtProvider.GenerateToken(user, JwtTokenType.Access);
-        var refreshToken = _jwtProvider.GenerateToken(user, JwtTokenType.Refresh);
+        var accessToken = _jwtProvider.GenerateToken(user.Id, JwtTokenType.Access);
+        var refreshToken = _jwtProvider.GenerateToken(user.Id, JwtTokenType.Refresh);
 
         await _refreshTokenSessionService.CreateOrUpdateAsync(user.Id, registerRequestModel.Fingerprint, refreshToken);
 
