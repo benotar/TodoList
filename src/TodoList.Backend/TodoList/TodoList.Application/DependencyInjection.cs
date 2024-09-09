@@ -25,6 +25,8 @@ public static class DependencyInjection
         services.AddSingleton<ICookieProvider, CookieProvider>();
 
         services.AddTransient<ITodoQueryProvider, TodoQueryProvider>();
+        services.AddTransient<IUserQueryProvider, UserQueryProvider>();
+
         
         return services;
     }

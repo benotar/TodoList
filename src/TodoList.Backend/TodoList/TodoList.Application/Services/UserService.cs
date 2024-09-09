@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TodoList.Application.Common;
 using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Providers;
@@ -16,17 +15,21 @@ public class UserService : IUserService
 
     private readonly IEncryptionProvider _hmacSha256Provider;
 
-    public UserService(IDbContext dbContext, IEncryptionProvider hmacSha256Provider)
+    private readonly IUserQueryProvider _userQueryProvider;
+    
+    public UserService(IDbContext dbContext, IEncryptionProvider hmacSha256Provider, IUserQueryProvider userQueryProvider)
     {
         _dbContext = dbContext;
 
         _hmacSha256Provider = hmacSha256Provider;
+        
+        _userQueryProvider = userQueryProvider;
     }
 
     // For development testing
     public async Task<Result<IEnumerable<User>>> GetUsersAsync()
     {
-        var users = await _dbContext.Users.ToListAsync();
+        var users = await _dbContext.Users.AsTracking().ToListAsync();
 
         return users.Count is 0
             ? Result<IEnumerable<User>>.SuccessWithWarning(WarningCode.UsersTableIsEmpty)
@@ -36,7 +39,13 @@ public class UserService : IUserService
     public async Task<Result<User>> CreateAsync(string username, string password, string name)
     {
         // Check if the user with username already exists in database
-        if (await _dbContext.Users.AnyAsync(us => us.Username.Equals(username)))
+
+        var condition = _userQueryProvider.ByUsername(username);
+
+        var isUserExist = await _userQueryProvider.FindUserByConditionAsync(
+            condition, query => query.AnyAsync());
+        
+        if (isUserExist)
         {
             return Result<User>.Error(ErrorCode.UsernameAlreadyExists);
         }
@@ -67,9 +76,11 @@ public class UserService : IUserService
 
     public async Task<Result<User>> GetExistingUser(string username, string password)
     {
-        var existingUser =
-            await FindUserByConditionAsync(us => us.Username.Equals(username));
+        var condition = _userQueryProvider.ByUsername(username);
 
+        var existingUser = await _userQueryProvider.FindUserByConditionAsync(
+            condition, query => query.FirstOrDefaultAsync());
+        
         if (existingUser is null)
         {
             return Result<User>.Error(ErrorCode.UserNotFound);
@@ -84,17 +95,13 @@ public class UserService : IUserService
 
     public async Task<Result<User>> GetUserById(Guid userId)
     {
-        var existingUser = await FindUserByConditionAsync(todo => todo.Id.Equals(userId));
+        var condition = _userQueryProvider.ByUserId(userId);
+
+        var existingUser = await _userQueryProvider.FindUserByConditionAsync(
+            condition, query => query.FirstOrDefaultAsync());
 
         return existingUser is null
             ? Result<User>.Error(ErrorCode.UserNotFound)
             : Result<User>.Success(existingUser);
     }
-
-    private async Task<User?> FindUserByConditionAsync(Expression<Func<User, bool>> condition,
-        bool isUseTracking = false) => isUseTracking switch
-    {
-        true => await _dbContext.Users.AsTracking().FirstOrDefaultAsync(condition),
-        _ => await _dbContext.Users.FirstOrDefaultAsync(condition)
-    };
 }

@@ -28,7 +28,7 @@ public class TodoService : ITodoService
 
     public async Task<Result<IEnumerable<Todo>>> GetAsync()
     {
-        var todos = await _dbContext.Todos.ToListAsync();
+        var todos = await _dbContext.Todos.AsNoTracking().ToListAsync();
 
         return todos.Count is 0
             ? Result<IEnumerable<Todo>>.SuccessWithWarning(WarningCode.TodoTableIsEmpty)

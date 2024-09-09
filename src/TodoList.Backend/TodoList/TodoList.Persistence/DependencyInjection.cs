@@ -23,7 +23,7 @@ public static class DependencyInjection
 
             // If there is no EF cache, then it improves EF performance.
             // To work with queries that change the entity stat - use .AsTracking().
-            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
 
         services.AddScoped<IDbContext>(provider =>
