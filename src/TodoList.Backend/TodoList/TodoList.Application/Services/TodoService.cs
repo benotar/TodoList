@@ -32,18 +32,22 @@ public class TodoService : ITodoService
             : Result<IEnumerable<Todo>>.Success(todos);
     }
 
-    public async Task<Result<Todo>> GetByTitleAsync(string title)
+    public async Task<Result<Todo>> GetByTitleAsync(string title, Guid userId)
     {
-        var existingTodo = await FindTodoByConditionAsync(todo => todo.Title.Equals(title));
-        
+        var existingTodo = await FindTodoByConditionAsync(
+            todo => todo.UserId.Equals(userId) && todo.Title.Equals(title),
+            query => query.FirstOrDefaultAsync());
+
         return existingTodo is null
             ? Result<Todo>.Error(ErrorCode.TodoNotFound)
             : Result<Todo>.Success(existingTodo);
     }
 
-    public async Task<Result<Todo>> GetByIdAsync(Guid todoId)
+    public async Task<Result<Todo>> GetByIdAsync(Guid todoId, Guid userId)
     {
-        var existingTodo = await _dbContext.Todos.FirstOrDefaultAsync(todo => todo.Id.Equals(todoId));
+        var existingTodo = await FindTodoByConditionAsync(
+            todo => todo.UserId.Equals(userId) && todo.Id.Equals(todoId),
+            query => query.FirstOrDefaultAsync());
 
         return existingTodo is null
             ? Result<Todo>.Error(ErrorCode.TodoNotFound)
@@ -55,6 +59,15 @@ public class TodoService : ITodoService
         if (userId == Guid.Empty)
         {
             return Result<Todo>.Error(ErrorCode.UserIdNotValid);
+        }
+
+        var isTodoExists = await FindTodoByConditionAsync(
+            todo => todo.UserId.Equals(userId) && todo.Title.Equals(title),
+            query => query.AnyAsync());
+
+        if (isTodoExists)
+        {
+            return Result<Todo>.Error(ErrorCode.TodoAlreadyExists);
         }
 
         if (!await _dbContext.Users.AnyAsync(user => user.Id.Equals(userId)))
@@ -85,10 +98,13 @@ public class TodoService : ITodoService
 
         return Result<Todo>.Success(newTodo);
     }
-    
-    public async Task<Result<Todo>> UpdateAsync(Guid todoId, string newTitle, string? newDescription = default)
+
+    public async Task<Result<Todo>> UpdateAsync(Guid todoId, Guid userId, string newTitle,
+        string? newDescription = default)
     {
-        var existingTodo = await FindTodoByConditionAsync(todo => todo.Id.Equals(todoId), true);
+        var existingTodo = await FindTodoByConditionAsync(
+            todo => todo.UserId.Equals(userId) && todo.Id.Equals(todoId),
+            query => query.FirstOrDefaultAsync(), isUseTracking: true);
 
         if (existingTodo is null)
         {
@@ -110,16 +126,18 @@ public class TodoService : ITodoService
         return Result<Todo>.Success(existingTodo);
     }
 
-    public async Task<Result<None>> DeleteAsync(Guid todoId)
+    public async Task<Result<None>> DeleteAsync(Guid todoId, Guid userId)
     {
-        var existingTodo = await FindTodoByConditionAsync(todo => todo.Id.Equals(todoId));
+        var existingTodo = await FindTodoByConditionAsync(
+            todo => todo.UserId.Equals(userId) && todo.Id.Equals(todoId),
+            query => query.FirstOrDefaultAsync());
 
         if (existingTodo is null)
         {
             return Result<None>.Error(ErrorCode.TodoNotFound);
         }
 
-        _dbContext.Todos.Remove(existingTodo!);
+        _dbContext.Todos.Remove(existingTodo);
 
         await _dbContext.SaveChangesAsync();
 
@@ -127,11 +145,14 @@ public class TodoService : ITodoService
     }
 
     // Testing
-    private async Task<Todo?> FindTodoByConditionAsync(Expression<Func<Todo, bool>> condition,
+    private async Task<TResult> FindTodoByConditionAsync<TResult>
+    (Expression<Func<Todo, bool>> condition, Func<IQueryable<Todo>, Task<TResult>> queryFunction,
         bool isUseTracking = false)
-        => isUseTracking switch
-        {
-            true => await _dbContext.Todos.AsTracking().FirstOrDefaultAsync(condition),
-            _ => await _dbContext.Todos.FirstOrDefaultAsync(condition)
-        };
+    {
+        var query = isUseTracking
+            ? _dbContext.Todos.AsTracking()
+            : _dbContext.Todos.AsNoTracking();
+
+        return await queryFunction(query.Where(condition));
+    }
 }

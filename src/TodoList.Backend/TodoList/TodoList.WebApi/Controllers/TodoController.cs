@@ -18,38 +18,16 @@ public class TodoController : BaseController
     [HttpGet("get/{title}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status404NotFound)]
     public async Task<Result<Todo>> Get(string title)
-    {
-        var getTodoByTitleResult = await _todoService.GetByTitleAsync(title);
-
-        if (!getTodoByTitleResult.IsSucceed)
-        {
-            return getTodoByTitleResult;
-        }
-        
-        return getTodoByTitleResult.Data.UserId.Equals(GetUserId())
-            ? getTodoByTitleResult
-            : Result<Todo>.Error(ErrorCode.AccessDenied);
-    }
+        => await _todoService.GetByTitleAsync(title, GetUserId());
 
     [HttpGet("get/{todoId:guid}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status404NotFound)]
     public async Task<Result<Todo>> Get(Guid todoId)
-    {
-        var getTodoByIdResult = await _todoService.GetByIdAsync(todoId);
-
-        if(!getTodoByIdResult.IsSucceed)
-        {
-            return getTodoByIdResult;
-        }
-        
-        return getTodoByIdResult.Data.UserId.Equals(GetUserId())
-            ? getTodoByIdResult
-            : Result<Todo>.Error(ErrorCode.AccessDenied);
-    }
+        => await _todoService.GetByIdAsync(todoId, GetUserId());
 
     [HttpPost("create")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
@@ -61,22 +39,15 @@ public class TodoController : BaseController
     [HttpPut("update/{todoId:guid}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status404NotFound)]
     public async Task<Result<Todo>> Update(Guid todoId, UpdateTodoModel updateTodoModel)
-    {
-        var updateTodoResult =
-            await _todoService.UpdateAsync(todoId, updateTodoModel.Title, updateTodoModel.Description);
+        => await _todoService.UpdateAsync(todoId, GetUserId(),
+            updateTodoModel.Title, updateTodoModel.Description);
 
-        return updateTodoResult.Data.UserId.Equals(GetUserId())
-            ? updateTodoResult
-            : Result<Todo>.Error(ErrorCode.AccessDenied);
-    }
-
-    // [HttpDelete("delete/{todoId:guid}")]
-    // [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
-    // [ProducesResponseType(typeof(Result<None>), StatusCodes.Status400BadRequest)]
-    // public async Task<Result<None>> Update(Guid todoId)
-    // {
-    //     if(_todoService.)
-    // }
+    [HttpDelete("delete/{todoId:guid}")]
+    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status404NotFound)]
+    public async Task<Result<None>> Delete(Guid todoId)
+        => await _todoService.DeleteAsync(todoId, GetUserId());
 }

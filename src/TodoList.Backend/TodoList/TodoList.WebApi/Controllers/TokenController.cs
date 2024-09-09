@@ -57,16 +57,6 @@ public class TokenController : BaseController
             return Result<None>.Error(ErrorCode.UserIdNotValid);
         }
         
-        // var userResult = await _userService
-        //     .GetUserById(userId);
-        //
-        // if (!userResult.IsSucceed)
-        // {
-        //     return Result<None>.Error(userResult.ErrorCode);
-        // }
-        //
-        // var user = userResult.Data;
-
         var sessionExistsResult = await _refreshTokenSessionService
             .SessionKeyExistsAsync(userId, fingerprint);
 
