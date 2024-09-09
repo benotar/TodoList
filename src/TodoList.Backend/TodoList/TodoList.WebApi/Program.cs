@@ -20,7 +20,16 @@ builder.Services.AddApplication()
     .AddAuth(builder.Configuration)
     .AddRedis(builder.Configuration);
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.WithOrigins("http://localhost:5000", "http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -36,6 +45,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCustomExceptionHandler();
+
+app.UseCors("AllowAll");
+
 app.UseTransferAccessTokenInHeader();
 
 app.UseAuthentication();
