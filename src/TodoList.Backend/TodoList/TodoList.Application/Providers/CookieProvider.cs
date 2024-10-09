@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using TodoList.Application.Configurations;
-using TodoList.Application.DTOs;
 using TodoList.Application.Interfaces.Providers;
 
 namespace TodoList.Application.Providers;
@@ -16,8 +15,7 @@ public class CookieProvider : ICookieProvider
     private readonly CookiesConfiguration _cookiesConfiguration;
 
     public CookieProvider(RefreshTokenSessionConfiguration refreshTokenSessionConfiguration,
-        IDateTimeProvider dateTimeProvider,
-        CookiesConfiguration cookiesConfiguration,
+        IDateTimeProvider dateTimeProvider, CookiesConfiguration cookiesConfiguration,
         JwtConfiguration jwtConfiguration)
     {
         _dateTimeProvider = dateTimeProvider;
@@ -29,18 +27,8 @@ public class CookieProvider : ICookieProvider
         _cookiesConfiguration = cookiesConfiguration;
     }
 
-    public void AddTokensCookiesToResponse(HttpResponse response, string accessToken, string refreshToken)
+    public void AddRefreshTokenCookiesToResponse(HttpResponse response, string refreshToken)
     {
-        response.Cookies.Append(_cookiesConfiguration.AccessTokenCookieKey, accessToken,
-            new CookieOptions
-            {
-                Secure = false,
-                HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
-                Expires = new DateTimeOffset(
-                    _dateTimeProvider.UtcNow.AddMinutes(_jwtConfiguration.AccessExpirationMinutes))
-            });
-
         response.Cookies.Append(_cookiesConfiguration.RefreshTokenCookieKey, refreshToken,
             CreateCookieOptionsWithDays(_jwtConfiguration.RefreshExpirationDays));
     }
@@ -51,12 +39,11 @@ public class CookieProvider : ICookieProvider
             CreateCookieOptionsWithDays(_refreshTokenSessionConfiguration.ExpirationDays));
     }
 
-    public TokensDto GetTokensFromCookies(HttpRequest request)
+    public string? GetRefreshTokenFromCookies(HttpRequest request)
     {
-        request.Cookies.TryGetValue(_cookiesConfiguration.AccessTokenCookieKey, out var accessToken);
         request.Cookies.TryGetValue(_cookiesConfiguration.RefreshTokenCookieKey, out var refreshToken);
 
-        return new TokensDto { AccessToken = accessToken, RefreshToken = refreshToken };
+        return refreshToken;
     }
 
     public string? GetFingerprintFromCookies(HttpRequest request)
@@ -71,12 +58,10 @@ public class CookieProvider : ICookieProvider
         response.Cookies.Delete(_cookiesConfiguration.FingerprintCookieKey);
 
         response.Cookies.Delete(_cookiesConfiguration.RefreshTokenCookieKey);
-
-        response.Cookies.Delete(_cookiesConfiguration.AccessTokenCookieKey);
     }
 
     private CookieOptions CreateCookieOptionsWithDays(int expirationDays)
-        => new CookieOptions
+        => new()
         {
             Secure = false,
             HttpOnly = true,

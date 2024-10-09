@@ -20,6 +20,7 @@ public class CustomExceptionHandlerMiddleware
         IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions, ILogger<CustomExceptionHandlerMiddleware> logger)
     {
         _next = next;
+        
         _logger = logger;
 
         _jsonOptions = jsonOptions.Value.JsonSerializerOptions;
@@ -59,7 +60,7 @@ public class CustomExceptionHandlerMiddleware
                 break;
             default:
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                result = Result<None>.Error(ErrorCode.DataNotSavedToDatabase);
+                result = Result<None>.Error(ErrorCode.UnknownError);
                 break;
         }
 

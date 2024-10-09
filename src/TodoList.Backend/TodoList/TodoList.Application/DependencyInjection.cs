@@ -48,7 +48,7 @@ public static class DependencyInjection
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecretKey))
         };
 
-        // TEST
+        // For validation tokens
         services.AddSingleton(tokenValidationParameters);
         
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

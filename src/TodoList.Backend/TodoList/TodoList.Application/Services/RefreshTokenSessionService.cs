@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using TodoList.Application.Common;
 using TodoList.Application.Configurations;
@@ -26,8 +25,7 @@ public class RefreshTokenSessionService : IRefreshTokenSessionService
         
         _dateTimeProvider = dateTimeProvider;
     }
-
-
+    
     public async Task<Result<None>> CreateOrUpdateAsync(Guid userId, string fingerprint, string refreshToken)
     {
         var redisKey = RefreshSession.GetCacheKey(userId, fingerprint);
@@ -67,10 +65,6 @@ public class RefreshTokenSessionService : IRefreshTokenSessionService
 
         var data = await _redis.GetStringAsync(redisKey);
         
-        return data is not null
-            ? Result<bool>.Success()
-            : Result<bool>.Error(ErrorCode.SessionNotFound);
-
-        //return Result<bool>.Success(data is not null);
+        return data is not null ? Result<bool>.Success() : ErrorCode.SessionNotFound;
     }
 }

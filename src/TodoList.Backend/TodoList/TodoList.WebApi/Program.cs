@@ -33,7 +33,6 @@ Log.Information($"Starting server with '{builder.Environment.EnvironmentName}' e
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
-    options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<WarningCode>());
 });
 
 builder.AddCustomConfiguration();
@@ -71,13 +70,9 @@ app.UseCors(corsConfig.PolicyName);
 
 app.UseCustomExceptionHandler();
 
-app.UseTransferAccessTokenInHeader();
-
 app.UseAuthentication();
 
 app.UseAuthorization();
-
-app.UseStatusCodeModifier();
 
 app.MapControllers();
 
@@ -86,5 +81,3 @@ app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateT
 Log.Information($"Server started with '{builder.Environment.EnvironmentName}' environment!");
 
 await app.RunAsync();
-
-Log.Information("Stopped cleanly");

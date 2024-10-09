@@ -30,22 +30,18 @@ public class TodoService : ITodoService
     {
         var todos = await _dbContext.Todos.AsNoTracking().ToListAsync();
 
-        return todos.Count is 0
-            ? Result<IEnumerable<Todo>>.SuccessWithWarning(WarningCode.TodoTableIsEmpty)
-            : Result<IEnumerable<Todo>>.Success(todos);
+        return todos;
     }
 
     public async Task<Result<Todo>> GetByTitleAsync(string title, Guid userId)
     {
         var condition = _todoQueryProvider.ByUserId(userId)
             .And(_todoQueryProvider.ByTitle(title));
-        
+
         var existingTodo = await _todoQueryProvider.FindTodoByConditionAsync(condition,
             query => query.FirstOrDefaultAsync());
 
-        return existingTodo is null
-            ? Result<Todo>.Error(ErrorCode.TodoNotFound)
-            : Result<Todo>.Success(existingTodo);
+        return existingTodo is null ? ErrorCode.TodoNotFound : existingTodo;
     }
 
     public async Task<Result<Todo>> GetByIdAsync(Guid todoId, Guid userId)
@@ -56,9 +52,7 @@ public class TodoService : ITodoService
         var existingTodo = await _todoQueryProvider.FindTodoByConditionAsync(condition,
             query => query.FirstOrDefaultAsync());
 
-        return existingTodo is null
-            ? Result<Todo>.Error(ErrorCode.TodoNotFound)
-            : Result<Todo>.Success(existingTodo);
+        return existingTodo is null ? ErrorCode.TodoNotFound : existingTodo;
     }
 
     public async Task<Result<Todo>> CreateAsync(Guid userId, string title, string? description = default)
@@ -76,22 +70,22 @@ public class TodoService : ITodoService
 
         if (isTodoExists)
         {
-            return Result<Todo>.Error(ErrorCode.TodoAlreadyExists);
+            return ErrorCode.TodoAlreadyExists;
         }
 
         if (!await _dbContext.Users.AnyAsync(user => user.Id.Equals(userId)))
         {
-            return Result<Todo>.Error(ErrorCode.UserNotFound);
+            return ErrorCode.UserNotFound;
         }
 
         if (string.IsNullOrEmpty(title))
         {
-            return Result<Todo>.Error(ErrorCode.TodoTitleMustNotBeEmpty);
+            return ErrorCode.TodoTitleMustNotBeEmpty;
         }
 
         if (await _dbContext.Todos.AnyAsync(todo => todo.Title.Equals(title)))
         {
-            return Result<Todo>.Error(ErrorCode.TodoAlreadyExists);
+            return ErrorCode.TodoAlreadyExists;
         }
 
         var newTodo = new Todo
@@ -105,7 +99,7 @@ public class TodoService : ITodoService
         await _dbContext.SaveChangesAsync();
 
 
-        return Result<Todo>.Success(newTodo);
+        return newTodo;
     }
 
     public async Task<Result<Todo>> UpdateAsync(Guid todoId, Guid userId, string newTitle,
@@ -116,25 +110,25 @@ public class TodoService : ITodoService
 
         var existingTodo = await _todoQueryProvider.FindTodoByConditionAsync(
             condition, query => query.FirstOrDefaultAsync(), isUseTracking: true);
-        
-         if (existingTodo is null)
-         {
-             return Result<Todo>.Error(ErrorCode.TodoNotFound);
-         }
-        
-         if (string.Equals(newTitle, existingTodo.Title, StringComparison.OrdinalIgnoreCase)
-             && string.Equals(newDescription, existingTodo.Description, StringComparison.OrdinalIgnoreCase))
-         {
-             return Result<Todo>.Error(ErrorCode.TodoDataIsTheSame);
-         }
-        
-         existingTodo.Title = newTitle;
-         existingTodo.Description = newDescription;
-         existingTodo.UpdatedAt = _dateTimeProvider.UtcNow;
-        
-         await _dbContext.SaveChangesAsync();
 
-        return Result<Todo>.Success(existingTodo);
+        if (existingTodo is null)
+        {
+            return ErrorCode.TodoNotFound;
+        }
+
+        if (string.Equals(newTitle, existingTodo.Title, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(newDescription, existingTodo.Description, StringComparison.OrdinalIgnoreCase))
+        {
+            return ErrorCode.TodoDataIsTheSame;
+        }
+
+        existingTodo.Title = newTitle;
+        existingTodo.Description = newDescription;
+        existingTodo.UpdatedAt = _dateTimeProvider.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
+
+        return existingTodo;
     }
 
     public async Task<Result<None>> DeleteAsync(Guid todoId, Guid userId)
@@ -143,14 +137,14 @@ public class TodoService : ITodoService
 
         var existingTodo = await _todoQueryProvider.FindTodoByConditionAsync(
             condition, query => query.FirstOrDefaultAsync());
-        
+
         if (existingTodo is null)
         {
-            return Result<None>.Error(ErrorCode.TodoNotFound);
+            return ErrorCode.TodoNotFound;
         }
-        
+
         _dbContext.Todos.Remove(existingTodo);
-        
+
         await _dbContext.SaveChangesAsync();
 
         return Result<None>.Success();

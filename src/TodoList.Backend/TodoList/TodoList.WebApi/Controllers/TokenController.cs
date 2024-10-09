@@ -12,67 +12,64 @@ public class TokenController : BaseController
 
     private readonly ICookieProvider _cookieProvider;
 
-    private readonly IUserService _userService;
-
     private readonly IRefreshTokenSessionService _refreshTokenSessionService;
 
-    public TokenController(IJwtProvider jwtProvider, ICookieProvider cookieProvider, IUserService userService,
+    public TokenController(IJwtProvider jwtProvider, ICookieProvider cookieProvider,
         IRefreshTokenSessionService refreshTokenSessionService)
     {
         _jwtProvider = jwtProvider;
 
         _cookieProvider = cookieProvider;
 
-        _userService = userService;
-
         _refreshTokenSessionService = refreshTokenSessionService;
     }
 
     [HttpPost("refresh")]
-    public async Task<Result<None>> Refresh()
+    [ProducesResponseType(typeof(Result<string>), StatusCodes.Status200OK)]
+    public async Task<Result<string>> Refresh()
     {
-        var refreshToken = _cookieProvider.GetTokensFromCookies(HttpContext.Request).RefreshToken;
+        var refreshToken = _cookieProvider.GetRefreshTokenFromCookies(HttpContext.Request);
 
         if (refreshToken is null)
         {
-            return Result<None>.Error(ErrorCode.RefreshCookieNotFound);
+            return ErrorCode.RefreshCookieNotFound;
         }
 
         if (!_jwtProvider.IsTokenValid(refreshToken, JwtTokenType.Refresh))
         {
-            return Result<None>.Error(ErrorCode.InvalidRefreshToken);
+            return ErrorCode.InvalidRefreshToken;
         }
-        
+
         var fingerprint = _cookieProvider.GetFingerprintFromCookies(HttpContext.Request);
 
         if (string.IsNullOrEmpty(fingerprint))
         {
-            return Result<None>.Error(ErrorCode.FingerprintCookieNotFound);
+            return ErrorCode.FingerprintCookieNotFound;
         }
 
         var userId = _jwtProvider.GetUserIdFromRefreshToken(refreshToken);
 
         if (userId == Guid.Empty)
         {
-            return Result<None>.Error(ErrorCode.UserIdNotValid);
+            return ErrorCode.UserIdNotValid;
         }
-        
+
         var sessionExistsResult = await _refreshTokenSessionService
             .SessionKeyExistsAsync(userId, fingerprint);
 
         if (!sessionExistsResult.IsSucceed)
         {
-            return Result<None>.Error(sessionExistsResult.ErrorCode);
+            return sessionExistsResult.ErrorCode;
         }
 
         var accessToken = _jwtProvider.GenerateToken(userId, JwtTokenType.Access);
-        
+
         refreshToken = _jwtProvider.GenerateToken(userId, JwtTokenType.Refresh);
 
         await _refreshTokenSessionService.CreateOrUpdateAsync(userId, fingerprint, refreshToken);
 
-        _cookieProvider.AddTokensCookiesToResponse(HttpContext.Response, accessToken, refreshToken);
+        _cookieProvider.AddRefreshTokenCookiesToResponse(HttpContext.Response, refreshToken);
 
-        return Result<None>.Success();
+        return accessToken;
     }
 }

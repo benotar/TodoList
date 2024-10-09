@@ -16,13 +16,14 @@ public class UserService : IUserService
     private readonly IEncryptionProvider _hmacSha256Provider;
 
     private readonly IUserQueryProvider _userQueryProvider;
-    
-    public UserService(IDbContext dbContext, IEncryptionProvider hmacSha256Provider, IUserQueryProvider userQueryProvider)
+
+    public UserService(IDbContext dbContext, IEncryptionProvider hmacSha256Provider,
+        IUserQueryProvider userQueryProvider)
     {
         _dbContext = dbContext;
 
         _hmacSha256Provider = hmacSha256Provider;
-        
+
         _userQueryProvider = userQueryProvider;
     }
 
@@ -31,9 +32,7 @@ public class UserService : IUserService
     {
         var users = await _dbContext.Users.AsTracking().ToListAsync();
 
-        return users.Count is 0
-            ? Result<IEnumerable<User>>.SuccessWithWarning(WarningCode.UsersTableIsEmpty)
-            : Result<IEnumerable<User>>.Success(users);
+        return users;
     }
 
     public async Task<Result<User>> CreateAsync(string username, string password, string name)
@@ -44,10 +43,10 @@ public class UserService : IUserService
 
         var isUserExist = await _userQueryProvider.FindUserByConditionAsync(
             condition, query => query.AnyAsync());
-        
+
         if (isUserExist)
         {
-            return Result<User>.Error(ErrorCode.UsernameAlreadyExists);
+            return ErrorCode.UsernameAlreadyExists;
         }
 
         // Convert request password to salt and hash
@@ -69,9 +68,7 @@ public class UserService : IUserService
         await _dbContext.SaveChangesAsync();
 
         // Return result
-        return !newUser.Id.Equals(Guid.Empty)
-            ? Result<User>.Success(newUser)
-            : Result<User>.Error(ErrorCode.DataNotSavedToDatabase);
+        return !newUser.Id.Equals(Guid.Empty) ? newUser : ErrorCode.DataNotSavedToDatabase;
     }
 
     public async Task<Result<User>> GetExistingUser(string username, string password)
@@ -80,7 +77,7 @@ public class UserService : IUserService
 
         var existingUser = await _userQueryProvider.FindUserByConditionAsync(
             condition, query => query.FirstOrDefaultAsync());
-        
+
         if (existingUser is null)
         {
             return Result<User>.Error(ErrorCode.UserNotFound);
@@ -89,8 +86,8 @@ public class UserService : IUserService
         var existingUserPasswordSaltAndHash = new SaltAndHash(existingUser.PasswordSalt, existingUser.PasswordHash);
 
         return await _hmacSha256Provider.VerifyPasswordHash(password, existingUserPasswordSaltAndHash)
-            ? Result<User>.Success(existingUser)
-            : Result<User>.Error(ErrorCode.AuthenticationFailed);
+            ? existingUser
+            : ErrorCode.AuthenticationFailed;
     }
 
     public async Task<Result<User>> GetUserById(Guid userId)
@@ -100,8 +97,6 @@ public class UserService : IUserService
         var existingUser = await _userQueryProvider.FindUserByConditionAsync(
             condition, query => query.FirstOrDefaultAsync());
 
-        return existingUser is null
-            ? Result<User>.Error(ErrorCode.UserNotFound)
-            : Result<User>.Success(existingUser);
+        return existingUser is null ? ErrorCode.UserNotFound : existingUser;
     }
 }
