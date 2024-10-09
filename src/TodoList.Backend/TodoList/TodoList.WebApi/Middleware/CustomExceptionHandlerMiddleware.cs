@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Serilog;
 using StackExchange.Redis;
 using TodoList.Application.Common;
 using TodoList.Domain.Enums;
@@ -19,9 +20,8 @@ public class CustomExceptionHandlerMiddleware
         IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions, ILogger<CustomExceptionHandlerMiddleware> logger)
     {
         _next = next;
-        
         _logger = logger;
-        
+
         _jsonOptions = jsonOptions.Value.JsonSerializerOptions;
     }
 
@@ -34,8 +34,8 @@ public class CustomExceptionHandlerMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occured while processing the request.");
-            
+            _logger.LogCritical(ex, "An error occured while processing the request.");
+
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -44,23 +44,26 @@ public class CustomExceptionHandlerMiddleware
     {
         context.Response.ContentType = "application/json";
 
+        Result<None> result;
+
         switch (ex)
         {
             case InvalidOperationException:
             case RedisConnectionException:
                 context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
-                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.AuthenticationServiceUnavailable),
-                    _jsonOptions);
+                result = Result<None>.Error(ErrorCode.AuthenticationServiceUnavailable);
                 break;
             case DbUpdateException:
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.DataNotSavedToDatabase), _jsonOptions);
+                result = Result<None>.Error(ErrorCode.DataNotSavedToDatabase);
                 break;
             default:
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await context.Response.WriteAsJsonAsync(Result<None>.Error(ErrorCode.UnknownError), _jsonOptions);
+                result = Result<None>.Error(ErrorCode.DataNotSavedToDatabase);
                 break;
         }
+
+        await context.Response.WriteAsJsonAsync(result, _jsonOptions);
     }
 }
 

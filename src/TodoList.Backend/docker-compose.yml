@@ -4,14 +4,13 @@ services:
   postgres:
     container_name: postgres
     build:
-      context: ./Postgres
+      context: Postgres
       dockerfile: Dockerfile
       args:
         - POSTGRES_DB_USERNAME=arg_value
         - POSTGRES_DB_PASSWORD=arg_value
     ports:
       - '5432:5432'
-    image: postgres
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -19,7 +18,7 @@ services:
   redis:
     container_name: redis
     build:
-      context: ./Redis
+      context: Redis
       dockerfile: Dockerfile
     restart: always
     ports:
@@ -28,7 +27,7 @@ services:
   backend:
     container_name: todoList
     build:
-      context: ./TodoList
+      context: TodoList
       dockerfile: Dockerfile
       args:
         - POSTGRES_DB_USERNAME=arg_value

@@ -59,7 +59,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+await using var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
@@ -85,4 +85,6 @@ app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateT
 
 Log.Information($"Server started with '{builder.Environment.EnvironmentName}' environment!");
 
-app.Run();
+await app.RunAsync();
+
+Log.Information("Stopped cleanly");

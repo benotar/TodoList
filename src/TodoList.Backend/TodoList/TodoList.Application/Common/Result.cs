@@ -30,6 +30,9 @@ public class Result<TData>
                 _ => HttpStatusCode.BadRequest
             }
         };
+
+    public static implicit operator Result<TData>(ErrorCode errorCode)
+        => Error(errorCode);
 }
 
 public record struct None;
