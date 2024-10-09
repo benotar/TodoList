@@ -1,11 +1,34 @@
+using Serilog;
 using TodoList.Application;
 using TodoList.Domain.Enums;
 using TodoList.Application.Common.Converters;
+using TodoList.Application.Configurations;
 using TodoList.Persistence;
 using TodoList.WebApi;
 using TodoList.WebApi.Middleware;
 
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+Log.Information("Starting web application");
+
+var corsConfig = new CorsConfiguration();
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.Bind(CorsConfiguration.ConfigurationKey, corsConfig);
+
+// Remove another logging providers
+builder.Logging.ClearProviders();
+
+builder.Services.AddSerilog();
+
+Log.Information($"Starting server with '{builder.Environment.EnvironmentName}' environment...");
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -22,11 +45,12 @@ builder.Services.AddApplication()
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy(corsConfig.PolicyName, policy =>
     {
-        policy.WithOrigins("http://localhost:5000", "http://localhost:3000")
-            .AllowAnyMethod()
+        policy
+            .WithOrigins(corsConfig.AllowedOrigins.ToArray())
             .AllowAnyHeader()
+            .AllowAnyMethod()
             .AllowCredentials();
     });
 });
@@ -37,20 +61,20 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseCustomExceptionHandler();
+app.UseCors(corsConfig.PolicyName);
 
-app.UseCors("AllowAll");
+app.UseCustomExceptionHandler();
 
 app.UseTransferAccessTokenInHeader();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.UseStatusCodeModifier();
@@ -58,5 +82,7 @@ app.UseStatusCodeModifier();
 app.MapControllers();
 
 app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateTime.UtcNow}");
+
+Log.Information($"Server started with '{builder.Environment.EnvironmentName}' environment!");
 
 app.Run();

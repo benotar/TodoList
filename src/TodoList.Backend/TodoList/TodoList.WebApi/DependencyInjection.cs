@@ -31,5 +31,10 @@ public static class DependencyInjection
             builder.Configuration.GetSection(CookiesConfiguration.ConfigurationKey));
         builder.Services.AddSingleton(resolver => 
             resolver.GetRequiredService<IOptions<CookiesConfiguration>>().Value);
+
+        builder.Services.Configure<CorsConfiguration>(
+            builder.Configuration.GetSection(CorsConfiguration.ConfigurationKey));
+        builder.Services.AddSingleton(resolver =>
+            resolver.GetRequiredService<IOptions<CorsConfiguration>>().Value);
     }
 }
