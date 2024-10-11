@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Jwt keys temp file
+Jwt-Secret-Keys.txt
