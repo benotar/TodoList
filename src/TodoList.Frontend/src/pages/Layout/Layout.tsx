@@ -1,7 +1,7 @@
 import {FC} from "react";
 import {Outlet} from "react-router-dom";
 
-const RootPage: FC = () => {
+const Layout: FC = () => {
     return(
         <>
             <header>I'm header</header>
@@ -13,4 +13,4 @@ const RootPage: FC = () => {
     );
 };
 
-export default RootPage;
+export default Layout;
