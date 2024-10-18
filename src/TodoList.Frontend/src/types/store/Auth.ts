@@ -1,16 +1,16 @@
-import {Result} from "@/types/models/response/Result.ts";
-import {User} from "@/types/entities/User.tsx";
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
 
 export type State = {
     isAuth: boolean;
-    errorCode?: string;
+    errorCode: string | null;
     token: string | null;
 };
 
-export type Action = {
-    register: (params: Register) => Promise<Result<User>>;
-    login: (params: Login) => Promise<Result<string>>;
-    logout: () => Promise<Result<void>>;
-    refresh: () => Promise<Result<string>>;
+export type Actions = {
+    register: (by: Register) => Promise<void>;
+    login: (by: Login) => Promise<void>;
+    logout: () => Promise<void>;
+    refresh: () => Promise<void>;
 };
+
+export type AuthSlice = State & Actions;
