@@ -2,8 +2,8 @@ import {Login, Register} from "@/types/models/request/UserRequest.ts";
 
 export type State = {
     isAuth: boolean;
-    errorCode: string | null;
     token: string | null;
+    errorCode: string | null;
 };
 
 export type Actions = {
