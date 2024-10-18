@@ -39,9 +39,9 @@ export const ENDPOINTS = {
     },
     REFRESH: buildUrl(BASE_URL, SUB_PATHS.TOKEN, ACTIONS.REFRESH),
     TODO: {
-        GET: buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.GET),
         CREATE: buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.CREATE),
+        GET: (todoId: string): string => buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.GET, todoId),
         UPDATE: (todoId: string): string => buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.UPDATE, todoId),
         DELETE: (todoId: string): string => buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.DELETE, todoId)
     }
-}
+};
