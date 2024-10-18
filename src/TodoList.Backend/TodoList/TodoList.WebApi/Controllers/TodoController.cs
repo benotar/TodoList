@@ -21,7 +21,7 @@ public class TodoController : BaseController
     public async Task<Result<Todo>> Get(string title)
         => await _todoService.GetByTitleAsync(title, GetUserId());
 
-    [HttpGet("get/id/{todoId:guid}")]
+    [HttpGet("get/{todoId:guid}")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status404NotFound)]
