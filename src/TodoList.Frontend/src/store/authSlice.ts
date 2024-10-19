@@ -1,6 +1,6 @@
 import {AuthSlice, State} from "@/types/store/Auth.ts";
 import {create} from "zustand";
-import {createJSONStorage, persist} from "zustand/middleware/persist";
+import {persist, createJSONStorage} from 'zustand/middleware';
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
 import authService from "@/services/authService.ts";
 
