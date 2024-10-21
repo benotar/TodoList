@@ -1,10 +1,10 @@
-import {AuthSlice, State} from "@/types/store/Auth.ts";
+import {AuthSlice, AuthState} from "@/types/store/Auth.ts";
 import {create} from "zustand";
 import {persist, createJSONStorage} from 'zustand/middleware';
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
 import authService from "@/services/authService.ts";
 
-const initialState: State = {
+const initialAuthState: AuthState = {
     isAuth: false,
     token: null,
     errorMessage: null,
@@ -16,7 +16,7 @@ const setCatchErrorMessage = (error: unknown, endpointType: string): string => {
 }
 
 export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
-    ...initialState,
+    ...initialAuthState,
 
     register: async (by: Register): Promise<void> => {
 
@@ -170,6 +170,6 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
         }
     }
 }), {
-    name: 'todo-list-storage',
+    name: 'auth-storage',
     storage: createJSONStorage(() => sessionStorage)
 }));

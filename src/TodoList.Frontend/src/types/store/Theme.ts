@@ -2,11 +2,11 @@ import {ReactNode} from "react";
 
 export type Theme = 'dark' | 'light' | 'system';
 
-export type State = {
+export type ThemeState = {
     theme: Theme;
 };
 
-export type Actions = {
+export type ThemeActions = {
     setTheme: (theme: Theme) => void;
 };
 
@@ -15,4 +15,4 @@ export type ThemeProviderProps = {
     defaultTheme?: Theme;
 };
 
-export type ThemeSlice = State & Actions;
+export type ThemeSlice = ThemeState & ThemeActions;
