@@ -1,41 +1,18 @@
 import {FC} from "react";
-import {useThemeSlice} from "@/store/themeSlice.ts";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu.tsx";
-import {Moon, Sun} from "lucide-react"
-import {Button} from "@/components/ui/button.tsx";
 import {Link} from "react-router-dom";
+import ThemeSwitch from "@/components/ThemeSwitch/ThemeSwitch.tsx";
 
 const MyHeader: FC = () => {
-
-    const {setTheme} = useThemeSlice();
-
-
     return (
-        <header className="flex justify-between items-center p-4">
+
+        <header
+            className="col-span-12 md:col-span-12 h-[3.75rem] bg-primary text-primary-foreground px-4 flex items-center justify-between sticky top-0 z-10">
             <Link to='/'><span>Todo List</span></Link>
             <Link to='/login'><span>Log in</span></Link>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon">
-                        <Sun
-                            className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"/>
-                        <Moon
-                            className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"/>
-                        <span className="sr-only">Toggle theme</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+            <ThemeSwitch/>
         </header>
     );
+
 };
 
 export default MyHeader;

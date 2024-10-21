@@ -1,16 +1,15 @@
-import {FC} from "react";
-import {Outlet} from "react-router-dom";
+import React, {FC} from "react";
 import MyHeader from "@/components/MyHeader/MyHeader.tsx";
+import Content from "@/components/Content/Content.tsx";
+import MyFooter from "@/components/MyFooter/MyFooter.tsx";
 
 const Layout: FC = () => {
 
-    return(
-        <div >
+    return (
+        <div className="grid grid-rows-[auto_1fr_auto] grid-cols-12 gap-4 w-full h-screen">
             <MyHeader/>
-            <main>
-                <Outlet/>
-            </main>
-            <footer>I'm footer</footer>
+            <Content/>
+            <MyFooter/>
         </div>
     );
 };

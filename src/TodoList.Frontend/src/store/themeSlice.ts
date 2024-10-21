@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import {persist, createJSONStorage} from 'zustand/middleware';
-import {State, ThemeSlice} from "@/types/store/Theme.ts";
+import {State, Theme, ThemeSlice} from "@/types/store/Theme.ts";
 
 const initialState: State = {
     theme: 'system',
@@ -8,7 +8,7 @@ const initialState: State = {
 
 export const useThemeSlice = create<ThemeSlice>()(persist((set) => ({
     ...initialState,
-    setTheme: (theme) => {
+    setTheme: (theme: Theme) => {
         set({theme});
     }
 }),{
