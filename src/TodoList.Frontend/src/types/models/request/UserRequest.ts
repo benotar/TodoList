@@ -1,9 +1,12 @@
-export type Login = {
+type BaseType = {
     username: string;
     password: string;
+}
+
+export type Login = BaseType & {
+    fingerprint: string
 };
 
-export type Register = Login & {
+export type Register = BaseType & {
     name: string;
 };
-

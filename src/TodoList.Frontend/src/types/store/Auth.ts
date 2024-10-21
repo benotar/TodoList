@@ -15,3 +15,9 @@ export type Actions = {
 };
 
 export type AuthSlice = State & Actions;
+
+export type LoginValues = {
+    username: string;
+    password: string;
+    fingerprint: string;
+};

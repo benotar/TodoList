@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useState} from "react";
 import {z} from 'zod';
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
@@ -13,36 +13,63 @@ import {
     FormMessage
 } from "@/components/ui/form.tsx";
 import {Input} from '@/components/ui/input.tsx';
-
-
-const passwordSchema = {
-    regex: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-    message: 'Password must contain at least one uppercase letter, one lowercase letter, one number and a minimum of 8 characters.'
-};
-
-const formSchema = z.object({
-    username: z.string().min(2).max(50),
-    password: z.string().regex(passwordSchema.regex, passwordSchema.message)
-});
+import {loginFormSchema} from '@/components/LoginForm/loginFormSchema.ts';
+import {v4 as uuidv4} from 'uuid';
+import {useAuthSlice} from "@/store/authSlice.ts";
+import { toast } from 'sonner'
+import {LoginValues} from "@/types/store/Auth.ts";
 
 const LoginForm: FC = () => {
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const {login, errorMessage} = useAuthSlice();
+
+    const form = useForm<z.infer<typeof loginFormSchema>>({
+        resolver: zodResolver(loginFormSchema),
         defaultValues: {
             username: '',
             password: ''
-        }
+        },
+        mode: 'onChange'
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
 
-        console.log(values);
-    }
+        const loginValues: LoginValues = {
+            username: values.username,
+            password: values.password,
+            fingerprint: uuidv4()
+        };
+
+        console.log('Login handling');
+        console.table(loginValues);
+
+        try {
+
+            await login(loginValues);
+
+            if (errorMessage) {
+
+                toast.error('The login or password is incorrect.');
+
+                return;
+            }
+
+            toast.success('You are successfully logged in.');
+        } catch (error: unknown) {
+
+            console.log('Error catch:');
+            console.log(error);
+
+            toast.error('An error occurred on the server.');
+        } finally {
+
+            form.reset();
+        }
+    };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 max-w-md mx-auto p-6 border rounded-lg shadow-md'>
                 <FormField
                     control={form.control}
                     name='username'
@@ -50,10 +77,16 @@ const LoginForm: FC = () => {
                         <FormItem>
                             <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input placeholder='Enter username' {...field}/>
+                                <Input
+                                    placeholder='Enter username'
+                                    {...field}
+
+                                    autoFocus
+                                />
                             </FormControl>
                             <FormDescription>
-                                This is your public display name.
+                                Username must be 2 to 50 characters long and can only contain letters, numbers,
+                                underscores, and dashes.
                             </FormDescription>
                             <FormMessage/>
                         </FormItem>
@@ -73,13 +106,16 @@ const LoginForm: FC = () => {
                                 />
                             </FormControl>
                             <FormDescription>
-                                This is your public display name.
+                                Password must contain at least one uppercase letter, one lowercase letter, one number,
+                                and be at least 8 characters long.
                             </FormDescription>
                             <FormMessage/>
                         </FormItem>
                     )}
                 />
-                <Button type='submit'>Submit</Button>
+                <div className='flex justify-center'>
+                    <Button type='submit'>Submit</Button>
+                </div>
             </form>
         </Form>
     );

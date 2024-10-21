@@ -1,5 +1,5 @@
 const PORT: number = 5000;
-export const BASE_URL: string = `http://localhost:${PORT}`;
+export const BASE_URL: string = `http://localhost:${PORT}/api`;
 
 const SUB_PATHS: { AUTH: string; TODO: string; TOKEN: string } = {
     AUTH: 'auth',

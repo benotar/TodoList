@@ -1,5 +1,5 @@
 export type Result<TData> = {
-    data?: TData;
-    errorCode?: string;
+    data: TData | null;
+    errorCode: string | null;
     isSucceed: boolean;
 };

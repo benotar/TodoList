@@ -30,11 +30,11 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
 
             if (!response.data.isSucceed) {
 
-                const serverError = response.data.errorCode ?? 'unknown server error.';
+                const notSucceedServerResponse = response.data.errorCode ?? 'unknown server error.';
 
-                set({errorMessage: serverError});
+                set({errorMessage: notSucceedServerResponse});
 
-                console.log('server error:', serverError);
+                console.log('not succeed server response:', notSucceedServerResponse);
 
                 return;
             }
@@ -65,11 +65,11 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
 
             if (!response.data.isSucceed) {
 
-                const serverError = response.data.errorCode ?? 'unknown server error.';
+                const notSucceedServerResponse = response.data.errorCode ?? 'unknown server error.';
 
-                set({errorMessage: serverError});
+                set({errorMessage: notSucceedServerResponse});
 
-                console.log('server error:', serverError);
+                console.log('not succeed server response:', notSucceedServerResponse);
 
                 return;
             }
@@ -104,11 +104,11 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
 
             if (!response.data.isSucceed) {
 
-                const serverError = response.data.errorCode ?? 'unknown server error.';
+                const notSucceedServerResponse = response.data.errorCode ?? 'unknown server error.';
 
-                set({errorMessage: serverError});
+                set({errorMessage: notSucceedServerResponse});
 
-                console.log('server error:', serverError);
+                console.log('not succeed server response:', notSucceedServerResponse);
 
                 return;
             }
@@ -143,11 +143,11 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
 
             if (!response.data.isSucceed) {
 
-                const serverError = response.data.errorCode ?? 'unknown server error.';
+                const notSucceedServerResponse = response.data.errorCode ?? 'unknown server error.';
 
-                set({errorMessage: serverError});
+                set({errorMessage: notSucceedServerResponse});
 
-                console.log('server error:', serverError);
+                console.log('not succeed server response:', notSucceedServerResponse);
 
                 return;
             }
