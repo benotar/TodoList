@@ -1,15 +1,14 @@
 import {FC} from "react";
 import {useThemeSlice} from "@/store/themeSlice.ts";
-import classes from '@/components/MyHeader/MyHeader.module.css';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
-import { Moon, Sun } from "lucide-react"
+import {Moon, Sun} from "lucide-react"
 import {Button} from "@/components/ui/button.tsx";
-// import {Link} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 const MyHeader: FC = () => {
 
@@ -17,13 +16,16 @@ const MyHeader: FC = () => {
 
 
     return (
-        <header className={`flex justify-between items-center p-4 ${classes.myHeader}`}>
-            <h1 className="text-xl font-bold">Todo List</h1>
+        <header className="flex justify-between items-center p-4">
+            <Link to='/'><span>Todo List</span></Link>
+            <Link to='/login'><span>Log in</span></Link>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="icon">
-                        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                        <Sun
+                            className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"/>
+                        <Moon
+                            className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"/>
                         <span className="sr-only">Toggle theme</span>
                     </Button>
                 </DropdownMenuTrigger>
