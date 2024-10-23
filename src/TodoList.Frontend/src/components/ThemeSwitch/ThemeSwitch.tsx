@@ -2,6 +2,7 @@ import {FC, useEffect, useState} from "react";
 import {Switch} from "@/components/ui/switch.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {useThemeSlice} from "@/store/themeSlice.ts";
+import {Theme} from "@/types/store/Theme.ts";
 
 const ThemeSwitch: FC = () => {
 
@@ -9,13 +10,19 @@ const ThemeSwitch: FC = () => {
 
     const [isDarkTheme, setIsDarkTheme] = useState<boolean>(theme === 'dark');
 
+
+
     useEffect(() => {
         setIsDarkTheme(theme === 'dark');
     }, [theme]);
 
     const switchTheme = (checked: boolean): void => {
 
-        setTheme(checked ? 'light' : 'dark');
+        const theme: Theme = checked ? 'light' : 'dark';
+
+        setTheme(theme);
+
+        // setTheme(checked ? 'light' : 'dark');
     }
 
     return (

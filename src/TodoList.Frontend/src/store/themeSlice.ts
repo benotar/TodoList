@@ -1,9 +1,10 @@
-import {create} from "zustand";
-import {persist, createJSONStorage} from 'zustand/middleware';
-import {ThemeState, Theme, ThemeSlice} from "@/types/store/Theme.ts";
+import {create } from "zustand";
+import {persist} from 'zustand/middleware';
+import {Theme, ThemeSlice} from "@/types/store/Theme.ts";
 
-const initialThemeState: ThemeState = {
+const initialThemeState: ThemeSlice = {
     theme: 'system',
+    setTheme: () => {}
 };
 
 export const useThemeSlice = create<ThemeSlice>()(
@@ -15,5 +16,7 @@ export const useThemeSlice = create<ThemeSlice>()(
             }
         }), {
             name: 'theme-storage',
-            storage: createJSONStorage(() => sessionStorage)
-        }));
+            partialize: (state) => ({theme: state.theme}),
+        }
+    ),
+);

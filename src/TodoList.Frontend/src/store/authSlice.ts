@@ -171,5 +171,6 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
     }
 }), {
     name: 'auth-storage',
-    storage: createJSONStorage(() => sessionStorage)
+    storage: createJSONStorage(() => sessionStorage),
+    partialize: state => ({isAuth: state.isAuth, token: state.token })
 }));
