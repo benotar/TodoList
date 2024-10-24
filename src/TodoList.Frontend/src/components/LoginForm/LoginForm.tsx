@@ -21,7 +21,7 @@ import {LoginValues} from "@/types/store/Auth.ts";
 
 const LoginForm: FC = () => {
 
-    const {login, errorMessage} = useAuthSlice();
+    const {login} = useAuthSlice();
 
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
@@ -31,6 +31,7 @@ const LoginForm: FC = () => {
         },
         mode: 'onChange'
     });
+
 
     const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
 
@@ -43,18 +44,29 @@ const LoginForm: FC = () => {
         console.log('Login handling');
         console.table(loginValues);
 
+
+
         try {
 
             await login(loginValues);
 
-            if (errorMessage) {
+            const errorMessage = useAuthSlice.getState().errorMessage;
+
+            if (errorMessage === 'user_not_found') {
 
                 toast.error('The login or password is incorrect.');
 
                 return;
             }
+            if(errorMessage) {
+
+                toast.error('Unexpected error.');
+
+                return;
+            }
 
             toast.success('You are successfully logged in.');
+
         } catch (error: unknown) {
 
             console.log('Error catch:');

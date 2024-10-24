@@ -1,4 +1,6 @@
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
+import {StoreApi} from "zustand";
+
 
 export type AuthState = {
     isAuth: boolean;
@@ -21,3 +23,5 @@ export type LoginValues = {
     password: string;
     fingerprint: string;
 };
+
+export type SetAuthState = StoreApi<AuthSlice>['setState'];
