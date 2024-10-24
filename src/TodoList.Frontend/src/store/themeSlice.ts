@@ -1,4 +1,4 @@
-import {create } from "zustand";
+import {create} from "zustand";
 import {persist} from 'zustand/middleware';
 import {Theme, ThemeSlice} from "@/types/store/Theme.ts";
 
@@ -11,7 +11,7 @@ export const useThemeSlice = create<ThemeSlice>()(
     persist(
         (set) => ({
             ...initialThemeState,
-            setTheme: (theme: Theme) => {
+            setTheme: (theme: Theme): void => {
                 set({theme});
             }
         }), {

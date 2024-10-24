@@ -10,10 +10,10 @@ export type AuthState = {
 };
 
 export type AuthActions = {
-    register: (by: Register) => Promise<void>;
-    login: (by: Login) => Promise<void>;
-    logout: () => Promise<void>;
-    refresh: () => Promise<void>;
+    register(by: Register) : Promise<void>;
+    login(by: Login) : Promise<void>;
+    logout() : Promise<void>;
+    refresh() : Promise<void>;
 };
 
 export type AuthSlice = AuthState & AuthActions;

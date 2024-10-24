@@ -1,6 +1,6 @@
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
 import {Result} from "@/types/models/response/Result.ts";
-import {User} from "@/types/entities/User.tsx";
+import {User} from "@/types/entities/User.ts";
 import {AxiosResponse} from "axios";
 import api from "@/common/axios.ts";
 import {ENDPOINTS} from "@/common/endpoints.ts";

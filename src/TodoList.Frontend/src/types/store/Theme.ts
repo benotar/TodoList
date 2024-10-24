@@ -7,10 +7,10 @@ export type ThemeState = {
 };
 
 export type ThemeActions = {
-    setTheme: (theme: Theme) => void;
+    setTheme(theme: Theme): void;
 }
 
-export type ThemeSlice = ThemeState & ThemeActions;
+export type ThemeSlice = ThemeActions & ThemeState;
 
 export type ThemeProviderProps = {
     children: ReactNode;

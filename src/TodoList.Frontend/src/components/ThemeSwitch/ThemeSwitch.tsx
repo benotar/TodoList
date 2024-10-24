@@ -10,8 +10,6 @@ const ThemeSwitch: FC = () => {
 
     const [isDarkTheme, setIsDarkTheme] = useState<boolean>(theme === 'dark');
 
-
-
     useEffect(() => {
         setIsDarkTheme(theme === 'dark');
     }, [theme]);
