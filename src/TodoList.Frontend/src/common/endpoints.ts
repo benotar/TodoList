@@ -1,3 +1,5 @@
+import {string} from "zod";
+
 const PORT: number = 5000;
 export const BASE_URL: string = `http://localhost:${PORT}/api`;
 
@@ -40,7 +42,7 @@ export const ENDPOINTS = {
     REFRESH: buildUrl(BASE_URL, SUB_PATHS.TOKEN, ACTIONS.REFRESH),
     TODO: {
         CREATE: buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.CREATE),
-        GET: (todoId: string): string => buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.GET, todoId),
+        GET: buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.GET),
         UPDATE: (todoId: string): string => buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.UPDATE, todoId),
         DELETE: (todoId: string): string => buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.DELETE, todoId)
     }
