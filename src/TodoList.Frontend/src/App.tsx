@@ -1,9 +1,10 @@
 import {FC} from "react";
-import Layout from "./pages/Layout/Layout.tsx";
-import NotFound from "./pages/NotFound/NotFound.tsx";
-import Home from "./pages/Home/Home.tsx";
+import Layout from "@/pages/layout/layout.tsx";
+import Home from "@/pages/layout//home.tsx";
+import NotFound from "@/pages/layout/not-found.tsx";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Login from "@/pages/Login/Login.tsx";
+import Login from "@/pages/auth/login/page.tsx";
+import Register from "@/pages/auth/register/page.tsx";
 
 const App: FC = () => {
     return(
@@ -12,8 +13,9 @@ const App: FC = () => {
                 <Route path='/' element={<Layout/>}>
                     <Route index element={<Home/>}/>
                     <Route path='login' element={<Login/>}/>
+                    <Route path='register' element={<Register/>}/>
+                    <Route path='*' element={<NotFound/>}/>
                 </Route>
-                <Route path='*' element={<NotFound/>}/>
             </Routes>
         </BrowserRouter>
     );

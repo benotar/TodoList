@@ -1,5 +1,3 @@
-import {string} from "zod";
-
 const PORT: number = 5000;
 export const BASE_URL: string = `http://localhost:${PORT}/api`;
 
