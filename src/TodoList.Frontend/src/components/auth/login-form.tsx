@@ -109,7 +109,7 @@ const LoginForm: FC = () => {
                             )}
                         />
                         <div>
-                            <Button type="submit" className="w-full">Log in</Button>
+                            <Button type="submit" className="w-full text-base">Log in</Button>
                         </div>
                     </div>
                 </form>

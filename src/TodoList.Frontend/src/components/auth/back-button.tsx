@@ -9,7 +9,7 @@ type BackButtonProps = {
 
 const BackButton: FC<BackButtonProps> = ({label, link}: BackButtonProps) => {
     return (
-        <Button variant="link" className="font-normal w-full" size="sm" asChild>
+        <Button variant="link" className="font-normal w-full" size="default" asChild>
             <Link to={link}>
                 {label}
             </Link>

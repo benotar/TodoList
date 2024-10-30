@@ -6,16 +6,10 @@ import MyFooter from "@/components/layout/my-footer.tsx";
 const Layout: FC = () => {
 
     return (
-        <div className="grid grid-rows-[auto_1fr_auto] grid-cols-12 gap-4 w-full h-screen">
-            <div className="col-span-12">
-                <MyHeader/>
-            </div>
-            <div className="col-span-12">
-                <Content/>
-            </div>
-            <div className="col-span-12">
-                <MyFooter/>
-            </div>
+        <div className="flex flex-col h-screen">
+            <MyHeader/>
+            <Content/>
+            <MyFooter/>
         </div>
     );
 };
