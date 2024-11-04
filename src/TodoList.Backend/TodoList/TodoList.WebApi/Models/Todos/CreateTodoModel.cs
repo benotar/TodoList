@@ -4,7 +4,8 @@ namespace TodoList.WebApi.Models.Todos;
 
 public class CreateTodoModel
 {
-    [Required][StringLength(35, MinimumLength = 3)]
+    [Required]
+    [MinLength(3, ErrorMessage = "Title is too short")]
     public string Title { get; set; }
-    public string? Description { get; set; }
+    public string Description { get; set; }
 }

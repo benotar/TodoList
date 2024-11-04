@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using TodoList.Application;
 using TodoList.Domain.Enums;
@@ -5,7 +6,7 @@ using TodoList.Application.Common.Converters;
 using TodoList.Application.Configurations;
 using TodoList.Persistence;
 using TodoList.WebApi;
-using TodoList.WebApi.Middleware;
+using TodoList.WebApi.Infrastructure;
 
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -21,6 +22,11 @@ var corsConfig = new CorsConfiguration();
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 builder.Configuration.Bind(CorsConfiguration.ConfigurationKey, corsConfig);
 
 // Remove another logging providers
@@ -32,7 +38,7 @@ Log.Information($"Starting server with '{builder.Environment.EnvironmentName}' e
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.Converters.Add(new SnakeCaseStringEnumConverter<ErrorCode>());
+    options.JsonSerializerOptions.Converters.Add(new ServerResponseStringEnumConverter<ErrorCode>());
 });
 
 builder.AddCustomConfiguration();
@@ -41,6 +47,9 @@ builder.Services.AddApplication()
     .AddPersistence(builder.Configuration)
     .AddAuth(builder.Configuration)
     .AddRedis(builder.Configuration);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddCors(options =>
 {
@@ -56,16 +65,11 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
-
-await using var app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
+var app = builder.Build();
 
 app.UseCors(corsConfig.PolicyName);
 
-app.UseCustomExceptionHandler();
+app.UseExceptionHandler();
 
 app.UseAuthentication();
 
@@ -77,4 +81,4 @@ app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateT
 
 Log.Information($"Server started with '{builder.Environment.EnvironmentName}' environment!");
 
-await app.RunAsync();
+app.Run();
