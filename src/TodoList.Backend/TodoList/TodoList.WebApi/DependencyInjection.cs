@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using TodoList.Application;
 using TodoList.Application.Common;
 using TodoList.Application.Common.Converters;
 using TodoList.Application.Configurations;
+using TodoList.Application.Extensions;
 using TodoList.Domain.Enums;
-using TodoList.Persistence;
 using TodoList.WebApi.Infrastructure;
 
 namespace TodoList.WebApi;
@@ -45,7 +44,8 @@ public static class DependencyInjection
             resolver.GetRequiredService<IOptions<CorsConfiguration>>().Value);
     }
 
-    public static IServiceCollection AddControllersWithConfiguredApiBehavior(this IServiceCollection services)
+    public static IServiceCollection AddControllersWithConfiguredApiBehavior(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services
             .AddControllers()
@@ -57,21 +57,23 @@ public static class DependencyInjection
             {
                 options.InvalidModelStateResponseFactory = context =>
                 {
-                    var errors = context.ModelState
-                        .Where(kvp => kvp.Value.Errors.Any())
-                        .ToDictionary(
-                            kvp => kvp.Key,
-                            kvp => kvp.Value.Errors.Select(error => error.ErrorMessage).ToArray()
-                        );
+                    var errors = context.GetErrors();
 
-                    var result = new UnprocessableEntityObjectResult
-                    (
-                        new Result<Dictionary<string, string[]>>
+                    var details = new CustomValidationProblemDetails
+                    {
+                        Type = "https://httpstatuses.com/422",
+                        Title = "Validation Error",
+                        Detail = "One or more validation errors occurred",
+                        Instance = context.HttpContext.Request.Path,
+                        Errors = errors
+                    };
+
+                    var result = new UnprocessableEntityObjectResult(
+                        new Result<CustomValidationProblemDetails>
                         {
-                            ErrorCode = ErrorCode.InvalidModel,
-                            Data = errors
-                        }
-                    );
+                            ErrorCode = ErrorCode.InvalidModel, 
+                            Data = details
+                        });
 
                     result.ContentTypes.Add("application/json");
 
@@ -82,7 +84,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddCustomCors(this IServiceCollection services, CorsConfiguration corsConfig)
+    public static IServiceCollection AddConfiguredCors(this IServiceCollection services, CorsConfiguration corsConfig)
     {
         services.AddCors(options =>
         {
@@ -98,10 +100,11 @@ public static class DependencyInjection
 
         return services;
     }
-    
+
     public static IServiceCollection AddExceptionHandlerWithProblemDetails(this IServiceCollection services)
     {
         services.AddExceptionHandler<GlobalExceptionHandler>();
+
         services.AddProblemDetails();
 
         return services;

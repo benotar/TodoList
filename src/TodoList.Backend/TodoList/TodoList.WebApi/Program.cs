@@ -26,7 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     Log.Information($"Starting server with '{builder.Environment.EnvironmentName}' environment...");
 
-    builder.Services.AddControllersWithConfiguredApiBehavior();
+    builder.Services.AddControllersWithConfiguredApiBehavior(builder.Configuration);
 
     builder.AddCustomConfiguration();
 
@@ -37,7 +37,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddExceptionHandlerWithProblemDetails();
 
-    builder.Services.AddCustomCors(corsConfig);
+    builder.Services.AddConfiguredCors(corsConfig);
 }
 
 var app = builder.Build();

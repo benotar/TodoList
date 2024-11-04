@@ -7,5 +7,8 @@ public class CreateTodoModel
     [Required]
     [MinLength(3, ErrorMessage = "Title is too short")]
     public string Title { get; set; }
+    
+    [Required]
+    [MinLength(3, ErrorMessage = "Description is too short")]
     public string Description { get; set; }
 }

@@ -1,13 +1,16 @@
 ﻿using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using TodoList.Application.Common.Converters;
 using TodoList.Application.Configurations;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Application.Providers;
 using TodoList.Application.Services;
+using TodoList.Domain.Enums;
 
 namespace TodoList.Application;
 
@@ -18,7 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRefreshTokenSessionService, RefreshTokenSessionService>();
         services.AddScoped<ITodoService, TodoService>();
-        
+
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IEncryptionProvider, HmacSha256Provider>();
         services.AddSingleton<IJwtProvider, JwtProvider>();
@@ -27,16 +30,28 @@ public static class DependencyInjection
         services.AddTransient<ITodoQueryProvider, TodoQueryProvider>();
         services.AddTransient<IUserQueryProvider, UserQueryProvider>();
 
-        
+        var jsonOptions = new JsonSerializerOptions
+        {
+            Converters =
+            {
+                new ServerResponseStringEnumConverter<ErrorCode>()
+            },
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        services.AddSingleton(jsonOptions);
+
         return services;
     }
 
     public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtConfig = new JwtConfiguration();
-        
+
         configuration.Bind(JwtConfiguration.ConfigurationKey, jwtConfig);
-        
+
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -50,7 +65,7 @@ public static class DependencyInjection
 
         // For validation tokens
         services.AddSingleton(tokenValidationParameters);
-        
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -67,10 +82,7 @@ public static class DependencyInjection
 
         configuration.Bind(RedisConfiguration.ConfigurationKey, redisConfig);
 
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.Configuration = redisConfig.ConnectionString;
-        });
+        services.AddStackExchangeRedisCache(options => { options.Configuration = redisConfig.ConnectionString; });
 
         return services;
     }
