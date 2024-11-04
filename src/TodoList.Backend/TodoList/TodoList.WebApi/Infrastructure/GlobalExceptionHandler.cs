@@ -16,10 +16,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         _logger = logger;
     }
 
-    public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext,
-        Exception exception,
-        CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         _logger.LogError(exception, exception.Message);
 

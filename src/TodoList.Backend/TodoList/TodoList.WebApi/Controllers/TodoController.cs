@@ -29,16 +29,11 @@ public class TodoController : BaseController
         => await _todoService.GetByIdAsync(todoId, GetUserId());
 
     [HttpPost("create")]
-    // [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
-    // [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> CreateTodo([FromBody] CreateTodoModel createTodoModel)
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status401Unauthorized)]
+    public async Task<Result<Todo>> CreateTodo([FromBody] CreateTodoModel createTodoModel)
     {
-        if (!ModelState.IsValid)
-        {
-            return UnprocessableEntity(ModelState);
-        }
-
-        return Ok(await _todoService.CreateAsync(GetUserId(), createTodoModel.Title, createTodoModel.Description));
+        return await _todoService.CreateAsync(GetUserId(), createTodoModel.Title, createTodoModel.Description);
     }
 
 

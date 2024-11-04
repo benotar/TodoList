@@ -16,5 +16,6 @@ public enum ErrorCode
     InvalidRefreshToken,
     SessionNotFound,
     DataNotSavedToDatabase,
+    InvalidModel,
     UnknownError
 }
