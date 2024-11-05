@@ -13,4 +13,6 @@ public interface IUserService
     Task<Result<IEnumerable<User>>> GetUsersAsync();
 
     Task<Result<User>> GetUserById(Guid userId);
+
+    Task<bool> IsUserExist(Guid userId);
 }

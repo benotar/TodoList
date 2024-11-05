@@ -2,7 +2,7 @@
 
 namespace TodoList.WebApi.Models.Todos;
 
-public class UpdateTodoModel
+public class UpdateTodoRequestModel
 {
     [Required][StringLength(35, MinimumLength = 3)]
     public string Title { get; set; }

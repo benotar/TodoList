@@ -22,8 +22,8 @@ public static class DependencyInjection
             options.UseNpgsql(filledConnectionString);
 
             // If there is no EF cache, then it improves EF performance.
-            // To work with queries that change the entity stat - use .AsTracking().
-            //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            // To work with queries that change the state of an entity - use .AsTracking().
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
 
         services.AddScoped<IDbContext>(provider =>

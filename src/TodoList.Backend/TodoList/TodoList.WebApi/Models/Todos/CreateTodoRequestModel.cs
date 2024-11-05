@@ -2,7 +2,7 @@
 
 namespace TodoList.WebApi.Models.Todos;
 
-public class CreateTodoModel
+public class CreateTodoRequestModel
 {
     [Required]
     [MinLength(3, ErrorMessage = "Title is too short")]

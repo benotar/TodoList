@@ -99,4 +99,9 @@ public class UserService : IUserService
 
         return existingUser is null ? ErrorCode.UserNotFound : existingUser;
     }
+
+    public async Task<bool> IsUserExist(Guid userId)
+    {
+        return await _dbContext.Users.AnyAsync(user => user.Id == userId);
+    }
 }

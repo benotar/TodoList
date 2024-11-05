@@ -14,9 +14,7 @@ public class Result<TData>
 
     // Allow converting a TData directly into Result<TData>
     public static implicit operator Result<TData>(ErrorCode errorCode) => Error(errorCode);
-    
     public static implicit operator Result<TData>(TData data) => Success(data);
-
 }
 
 public record struct None;

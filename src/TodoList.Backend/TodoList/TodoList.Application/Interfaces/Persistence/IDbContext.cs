@@ -7,8 +7,8 @@ namespace TodoList.Application.Interfaces.Persistence;
 public interface IDbContext : IDisposable, IInfrastructure<IServiceProvider>
 {
     DbSet<User> Users { get; set; }
-    
     DbSet<Todo> Todos { get; set; }
     
+    DbSet<TEntity> Set<TEntity>() where TEntity : class;
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -31,9 +31,9 @@ public class TodoController : BaseController
     [HttpPost("create")]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status401Unauthorized)]
-    public async Task<Result<Todo>> CreateTodo([FromBody] CreateTodoModel createTodoModel)
+    public async Task<Result<Todo>> CreateTodo([FromBody] CreateTodoRequestModel createTodoRequestModel)
     {
-        return await _todoService.CreateAsync(GetUserId(), createTodoModel.Title, createTodoModel.Description);
+        return await _todoService.CreateAsync(GetUserId(), createTodoRequestModel.Title, createTodoRequestModel.Description);
     }
 
 
@@ -41,9 +41,9 @@ public class TodoController : BaseController
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result<Todo>), StatusCodes.Status404NotFound)]
-    public async Task<Result<Todo>> Update(Guid todoId, UpdateTodoModel updateTodoModel)
+    public async Task<Result<Todo>> Update(Guid todoId, UpdateTodoRequestModel updateTodoRequestModel)
         => await _todoService.UpdateAsync(todoId, GetUserId(),
-            updateTodoModel.Title, updateTodoModel.Description);
+            updateTodoRequestModel.Title, updateTodoRequestModel.Description);
 
     [HttpDelete("delete/{todoId:guid}")]
     [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
