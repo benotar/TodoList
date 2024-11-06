@@ -9,5 +9,6 @@ public class Todo : DatabaseEntity
     public bool? IsCompleted { get; set; }
     
     // EF
-    [JsonIgnore] public User User { get; set; }
+    [JsonIgnore] 
+    public User User { get; set; }
 }

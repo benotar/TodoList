@@ -21,10 +21,23 @@ public class HmacSha256Provider : IEncryptionProvider
         return new SaltAndHash(salt, hash);
     }
 
+    public SaltAndHash HashPassword(string password)
+    {
+        using var hmac = new HMACSHA256();
+
+        var salt = hmac.Key;
+
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+
+        var hash = hmac.ComputeHash(passwordBytes);
+
+        return new SaltAndHash(salt, hash);
+    }
+
     public async Task<bool> VerifyPasswordHash(string password, SaltAndHash saltAndHash)
     {
         using var hmac = new HMACSHA256(saltAndHash.Salt);
-        
+
         var passwordBytes = Encoding.UTF8.GetBytes(password);
 
         var compute = await hmac.ComputeHashAsync(new MemoryStream(passwordBytes));

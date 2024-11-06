@@ -1,17 +1,20 @@
-﻿namespace TodoList.Application.DTOs;
+﻿using TodoList.Domain.Enums;
+
+namespace TodoList.Application.DTOs;
 
 public record UserDto(
     Guid UserId,
-    string Username,
+    string UserName,
     string Name
 );
 
 public record UserFullDto(
     Guid UserId,
-    string Username,
+    string UserName,
     byte[] PasswordSalt,
     byte[] PasswordHash,
     string Name,
+    Permission Permission,
     DateTime CreatedAt,
     DateTime UpdatedAt
 );

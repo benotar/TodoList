@@ -19,7 +19,7 @@ public static class EntityExtensions
     {
         return new UserDto(
             user.Id,
-            user.Username,
+            user.UserName,
             user.Name
         );
     }
@@ -28,10 +28,11 @@ public static class EntityExtensions
     {
         return new UserFullDto(
             user.Id,
-            user.Username,
+            user.UserName,
             user.PasswordSalt,
             user.PasswordHash,
             user.Name,
+            user.Permission,
             user.CreatedAt,
             user.UpdatedAt
         );

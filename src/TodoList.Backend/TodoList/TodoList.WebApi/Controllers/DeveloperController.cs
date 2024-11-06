@@ -6,10 +6,7 @@ using TodoList.WebApi.Models.Users;
 namespace TodoList.WebApi.Controllers;
 
 // Testing controller
-
-[ApiController]
-[Route("[controller]")]
-public class DeveloperController : ControllerBase
+public class DeveloperController : BaseController
 {
     // for testing
     private readonly IUserService _userService;
@@ -31,7 +28,7 @@ public class DeveloperController : ControllerBase
 
         var users = requestResult.Data.Select(user => new GetPresentationUsersResponseModel(
             user.UserId,
-            user.Username,
+            user.UserName,
             user.Name
         )).ToList();
 
@@ -46,10 +43,11 @@ public class DeveloperController : ControllerBase
 
         var users = requestResult.Data.Select(user => new GetUsersFullInfoResponseModel(
             user.UserId,
-            user.Username,
+            user.UserName,
             user.PasswordSalt,
             user.PasswordHash,
             user.Name,
+            user.Permission,
             user.CreatedAt,
             user.UpdatedAt
         )).ToList();

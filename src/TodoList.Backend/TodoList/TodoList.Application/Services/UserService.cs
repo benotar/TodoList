@@ -42,10 +42,10 @@ public class UserService : IUserService
         return users;
     }
 
-    public async Task<Result<None>> CreateAsync(string username, string password, string name)
+    public async Task<Result<None>> CreateAsync(string userName, string password, string name)
     {
-        // Check if username is null or empty
-        if (string.IsNullOrEmpty(username))
+        // Check if userName is null or empty
+        if (string.IsNullOrEmpty(userName))
         {
             return ErrorCode.UsernameIsRequired;
         }
@@ -56,8 +56,8 @@ public class UserService : IUserService
             return ErrorCode.PasswordIsRequired;
         }
 
-        // Check if username already exists
-        if (await IsUserExistsByUsernameAsync(username))
+        // Check if userName already exists
+        if (await IsUserExistsByUserNameAsync(userName))
         {
             return ErrorCode.UsernameAlreadyExists;
         }
@@ -68,7 +68,7 @@ public class UserService : IUserService
         // Create new user
         var newUser = new User
         {
-            Username = username,
+            UserName = userName,
             PasswordSalt = passwordSaltAndHash.Salt,
             PasswordHash = passwordSaltAndHash.Hash,
             Name = name
@@ -84,10 +84,10 @@ public class UserService : IUserService
         return Result<None>.Success();
     }
 
-    public async Task<Result<UserDto>> GetByUserNameAndCheckPasswordAsync(string username, string password)
+    public async Task<Result<UserDto>> GetByUserNameAndCheckPasswordAsync(string userName, string password)
     {
         // Ger user
-        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(user => user.Username == username);
+        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(user => user.UserName == userName);
 
         // Check if user exists
         if (existingUser is null)
@@ -125,8 +125,8 @@ public class UserService : IUserService
         return await _dbContext.Users.AnyAsync(user => user.Id == userId);
     }
 
-    private async Task<bool> IsUserExistsByUsernameAsync(string username)
+    private async Task<bool> IsUserExistsByUserNameAsync(string userName)
     {
-        return await _dbContext.Users.AnyAsync(user => user.Username == username);
+        return await _dbContext.Users.AnyAsync(user => user.UserName == userName);
     }
 }

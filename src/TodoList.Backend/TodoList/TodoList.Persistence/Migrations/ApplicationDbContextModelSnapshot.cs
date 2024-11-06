@@ -31,7 +31,7 @@ namespace TodoList.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<bool>("IsCompleted")
+                    b.Property<bool?>("IsCompleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Title")
@@ -72,16 +72,32 @@ namespace TodoList.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
+                    b.Property<int>("Permission")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a4832f99-82d0-4931-9db6-d3e54280f17f"),
+                            CreatedAt = new DateTime(2024, 11, 6, 16, 28, 25, 462, DateTimeKind.Utc).AddTicks(6699),
+                            Name = "Admin",
+                            PasswordHash = new byte[] { 4, 142, 70, 124, 152, 204, 46, 221, 243, 246, 181, 27, 255, 57, 224, 70, 5, 0, 255, 109, 127, 166, 137, 55, 166, 21, 111, 119, 206, 171, 155, 105 },
+                            PasswordSalt = new byte[] { 130, 196, 232, 229, 205, 252, 181, 3, 159, 53, 100, 167, 20, 236, 32, 237, 23, 214, 223, 54, 162, 1, 251, 219, 200, 231, 90, 222, 104, 81, 128, 28, 120, 157, 240, 129, 240, 152, 210, 186, 30, 26, 109, 181, 49, 61, 108, 230, 189, 227, 139, 137, 120, 234, 65, 213, 102, 188, 16, 250, 11, 229, 59, 57 },
+                            Permission = 0,
+                            UpdatedAt = new DateTime(2024, 11, 6, 16, 28, 25, 462, DateTimeKind.Utc).AddTicks(6704),
+                            UserName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("TodoList.Domain.Entities.Database.Todo", b =>
