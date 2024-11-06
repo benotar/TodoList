@@ -6,13 +6,10 @@ namespace TodoList.Application.Interfaces.Services;
 
 public interface IUserService
 {
-    Task<Result<User>> CreateAsync(string username, string password, string name);
-
-    Task<Result<User>> GetExistingUser(string username, string password);
-
-    Task<Result<IEnumerable<User>>> GetUsersAsync();
-
-    Task<Result<User>> GetUserById(Guid userId);
-
-    Task<bool> IsUserExist(Guid userId);
+    Task<Result<None>> CreateAsync(string username, string password, string name);
+    Task<Result<UserDto>> GetByUserNameAndCheckPasswordAsync(string username, string password);
+    Task<Result<UserDto>> GetByIdAsync(Guid userId);
+    Task<Result<IEnumerable<UserDto>>> GetPresentationAsync();
+    Task<Result<IEnumerable<UserFullDto>>> GetUsersFullInfoAsync();
+    Task<bool> IsUserExistByIdAsync(Guid userId);
 }

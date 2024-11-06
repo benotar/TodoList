@@ -3,6 +3,7 @@ using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
 using TodoList.Domain.Enums;
+using TodoList.WebApi.Models.Authentication;
 
 namespace TodoList.WebApi.Controllers;
 
@@ -25,8 +26,8 @@ public class TokenController : BaseController
     }
 
     [HttpPost("refresh")]
-    [ProducesResponseType(typeof(Result<string>), StatusCodes.Status200OK)]
-    public async Task<Result<string>> Refresh()
+    [ProducesResponseType(typeof(Result<RefreshTokenResponseModel>), StatusCodes.Status200OK)]
+    public async Task<Result<RefreshTokenResponseModel>> Refresh()
     {
         var refreshToken = _cookieProvider.GetRefreshTokenFromCookies(HttpContext.Request);
 
@@ -54,12 +55,12 @@ public class TokenController : BaseController
             return ErrorCode.UserIdNotValid;
         }
 
-        var sessionExistsResult = await _refreshTokenSessionService
+        var isSessionExistsResult = await _refreshTokenSessionService
             .SessionKeyExistsAsync(userId, fingerprint);
 
-        if (!sessionExistsResult.IsSucceed)
+        if (!isSessionExistsResult.IsSucceed)
         {
-            return sessionExistsResult.ErrorCode;
+            return isSessionExistsResult.ErrorCode;
         }
 
         var accessToken = _jwtProvider.GenerateToken(userId, JwtTokenType.Access);
@@ -70,6 +71,6 @@ public class TokenController : BaseController
 
         _cookieProvider.AddRefreshTokenCookiesToResponse(HttpContext.Response, refreshToken);
 
-        return accessToken;
+        return new RefreshTokenResponseModel(accessToken);
     }
 }

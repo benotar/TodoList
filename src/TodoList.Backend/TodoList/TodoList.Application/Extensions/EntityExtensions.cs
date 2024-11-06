@@ -14,4 +14,26 @@ public static class EntityExtensions
             todo.IsCompleted
         );
     }
+
+    public static UserDto ToDto(this User user)
+    {
+        return new UserDto(
+            user.Id,
+            user.Username,
+            user.Name
+        );
+    }
+    
+    public static UserFullDto ToFullDto(this User user)
+    {
+        return new UserFullDto(
+            user.Id,
+            user.Username,
+            user.PasswordSalt,
+            user.PasswordHash,
+            user.Name,
+            user.CreatedAt,
+            user.UpdatedAt
+        );
+    }
 }

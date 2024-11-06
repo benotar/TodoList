@@ -4,6 +4,8 @@ public enum ErrorCode
 {
     UserNotFound,
     UsernameAlreadyExists,
+    UsernameIsRequired,
+    PasswordIsRequired,
     UserIdNotValid,
     AuthenticationFailed,
     AuthenticationServiceUnavailable,

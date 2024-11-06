@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TodoList.Application.Common;
 using TodoList.Application.DTOs;
+using TodoList.Application.Extensions;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Persistence;
 using TodoList.Application.Interfaces.Services;
@@ -15,36 +16,48 @@ public class UserService : IUserService
 
     private readonly IEncryptionProvider _hmacSha256Provider;
 
-    private readonly IUserQueryProvider _userQueryProvider;
-
-    public UserService(IDbContext dbContext, IEncryptionProvider hmacSha256Provider,
-        IUserQueryProvider userQueryProvider)
+    public UserService(IDbContext dbContext, IEncryptionProvider hmacSha256Provider)
     {
         _dbContext = dbContext;
 
         _hmacSha256Provider = hmacSha256Provider;
-
-        _userQueryProvider = userQueryProvider;
     }
 
     // For development testing
-    public async Task<Result<IEnumerable<User>>> GetUsersAsync()
+    public async Task<Result<IEnumerable<UserDto>>> GetPresentationAsync()
     {
-        var users = await _dbContext.Users.AsTracking().ToListAsync();
+        var users = await _dbContext.Users
+            .Select(user => user.ToDto())
+            .ToListAsync();
 
         return users;
     }
 
-    public async Task<Result<User>> CreateAsync(string username, string password, string name)
+    public async Task<Result<IEnumerable<UserFullDto>>> GetUsersFullInfoAsync()
     {
-        // Check if the user with username already exists in database
+        var users = await _dbContext.Users
+            .Select(user => user.ToFullDto())
+            .ToListAsync();
 
-        var condition = _userQueryProvider.ByUsername(username);
+        return users;
+    }
 
-        var isUserExist = await _userQueryProvider.FindUserByConditionAsync(
-            condition, query => query.AnyAsync());
+    public async Task<Result<None>> CreateAsync(string username, string password, string name)
+    {
+        // Check if username is null or empty
+        if (string.IsNullOrEmpty(username))
+        {
+            return ErrorCode.UsernameIsRequired;
+        }
 
-        if (isUserExist)
+        // Check if password is null or empty
+        if (string.IsNullOrEmpty(password))
+        {
+            return ErrorCode.PasswordIsRequired;
+        }
+
+        // Check if username already exists
+        if (await IsUserExistsByUsernameAsync(username))
         {
             return ErrorCode.UsernameAlreadyExists;
         }
@@ -68,40 +81,52 @@ public class UserService : IUserService
         await _dbContext.SaveChangesAsync();
 
         // Return result
-        return !newUser.Id.Equals(Guid.Empty) ? newUser : ErrorCode.DataNotSavedToDatabase;
+        return Result<None>.Success();
     }
 
-    public async Task<Result<User>> GetExistingUser(string username, string password)
+    public async Task<Result<UserDto>> GetByUserNameAndCheckPasswordAsync(string username, string password)
     {
-        var condition = _userQueryProvider.ByUsername(username);
+        // Ger user
+        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(user => user.Username == username);
 
-        var existingUser = await _userQueryProvider.FindUserByConditionAsync(
-            condition, query => query.FirstOrDefaultAsync());
-
+        // Check if user exists
         if (existingUser is null)
         {
-            return Result<User>.Error(ErrorCode.UserNotFound);
+            return ErrorCode.UserNotFound;
         }
 
+        // Verify password and return result
         var existingUserPasswordSaltAndHash = new SaltAndHash(existingUser.PasswordSalt, existingUser.PasswordHash);
 
         return await _hmacSha256Provider.VerifyPasswordHash(password, existingUserPasswordSaltAndHash)
-            ? existingUser
+            ? existingUser.ToDto()
             : ErrorCode.AuthenticationFailed;
     }
 
-    public async Task<Result<User>> GetUserById(Guid userId)
+    public async Task<Result<UserDto>> GetByIdAsync(Guid userId)
     {
-        var condition = _userQueryProvider.ByUserId(userId);
+        // Ger user
+        var existingUser = await _dbContext.Users.Where(user => user.Id == userId)
+            .Select(user => user.ToDto())
+            .FirstOrDefaultAsync();
 
-        var existingUser = await _userQueryProvider.FindUserByConditionAsync(
-            condition, query => query.FirstOrDefaultAsync());
+        // Check if user exists
+        if (existingUser is null)
+        {
+            return ErrorCode.UserNotFound;
+        }
 
-        return existingUser is null ? ErrorCode.UserNotFound : existingUser;
+        // Return result
+        return existingUser;
     }
 
-    public async Task<bool> IsUserExist(Guid userId)
+    public async Task<bool> IsUserExistByIdAsync(Guid userId)
     {
         return await _dbContext.Users.AnyAsync(user => user.Id == userId);
+    }
+
+    private async Task<bool> IsUserExistsByUsernameAsync(string username)
+    {
+        return await _dbContext.Users.AnyAsync(user => user.Username == username);
     }
 }

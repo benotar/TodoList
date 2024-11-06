@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Services;
-using TodoList.Domain.Entities.Database;
+using TodoList.WebApi.Models.Users;
 
 namespace TodoList.WebApi.Controllers;
 
@@ -19,15 +19,45 @@ public class DeveloperController : ControllerBase
     public DeveloperController(IUserService userService, ITodoService todoService)
     {
         _userService = userService;
-        
+
         _todoService = todoService;
     }
 
     [HttpGet("get-users")]
-    [ProducesResponseType(typeof(Result<IEnumerable<User>>), StatusCodes.Status200OK)]
-    public async Task<Result<IEnumerable<User>>> GetUsers() => await _userService.GetUsersAsync();
-    
-    [HttpGet("get-todos")]
-    [ProducesResponseType(typeof(Result<IEnumerable<Todo>>), StatusCodes.Status200OK)]
-    public async Task<Result<IEnumerable<Todo>>> GetTodos() => await _todoService.GetAsync();
+    [ProducesResponseType(typeof(Result<IEnumerable<GetPresentationUsersResponseModel>>), StatusCodes.Status200OK)]
+    public async Task<Result<IEnumerable<GetPresentationUsersResponseModel>>> GetUsers()
+    {
+        var requestResult = await _userService.GetPresentationAsync();
+
+        var users = requestResult.Data.Select(user => new GetPresentationUsersResponseModel(
+            user.UserId,
+            user.Username,
+            user.Name
+        )).ToList();
+
+        return users;
+    }
+
+    [HttpGet("get-full-users")]
+    [ProducesResponseType(typeof(Result<IEnumerable<GetUsersFullInfoResponseModel>>), StatusCodes.Status200OK)]
+    public async Task<Result<IEnumerable<GetUsersFullInfoResponseModel>>> GetFullUsers()
+    {
+        var requestResult = await _userService.GetUsersFullInfoAsync();
+
+        var users = requestResult.Data.Select(user => new GetUsersFullInfoResponseModel(
+            user.UserId,
+            user.Username,
+            user.PasswordSalt,
+            user.PasswordHash,
+            user.Name,
+            user.CreatedAt,
+            user.UpdatedAt
+        )).ToList();
+
+        return users;
+    }
+
+    // [HttpGet("get-todos")]
+    // [ProducesResponseType(typeof(Result<IEnumerable<Todo>>), StatusCodes.Status200OK)]
+    // public async Task<Result<IEnumerable<Todo>>> GetTodos() => await _todoService.GetAsync();
 }

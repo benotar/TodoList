@@ -4,7 +4,12 @@ namespace TodoList.WebApi.Models.Todos;
 
 public class UpdateTodoRequestModel
 {
-    [Required][StringLength(35, MinimumLength = 3)]
+    [Required]
+    public Guid TodoId { get; set; }
+    
+    [Required] [MinLength(3, ErrorMessage = "Title is too short")]
     public string Title { get; set; }
-    public string? Description { get; set; }
+    
+    [Required]
+    public bool IsCompleted { get; set; }
 }

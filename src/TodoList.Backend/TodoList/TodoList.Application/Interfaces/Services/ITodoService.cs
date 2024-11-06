@@ -9,7 +9,8 @@ public interface ITodoService
 {
     Task<Result<IEnumerable<TodoDto>>> GetAsync(Guid userId);
     Task<Result<TodoDto>> GetByIdAsync(Guid todoId, Guid userId);
-    Task<Result<None>> CreateAsync(Guid userId, string title, bool isCompleted);
+    Task<Result<None>> CreateAsync(Guid userId, string title, bool? isCompleted);
     Task<Result<None>> UpdateAsync(Guid todoId, Guid userId, string newTitle, bool newIsCompleted);
     Task<Result<None>> DeleteAsync(Guid todoId, Guid userId);
+    Task<Result<None>> ToggleIsCompleted(Guid todoId, Guid userId);
 }

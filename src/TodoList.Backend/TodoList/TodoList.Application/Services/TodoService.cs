@@ -30,7 +30,7 @@ public class TodoService : ITodoService
     public async Task<Result<IEnumerable<TodoDto>>> GetAsync(Guid userId)
     {
         // Check if the user exists
-        if (!await _userService.IsUserExist(userId))
+        if (!await _userService.IsUserExistByIdAsync(userId))
         {
             return ErrorCode.UserNotFound;
         }
@@ -48,7 +48,7 @@ public class TodoService : ITodoService
     public async Task<Result<TodoDto>> GetByIdAsync(Guid todoId, Guid userId)
     {
         // Check if the user exists
-        if (!await _userService.IsUserExist(userId))
+        if (!await _userService.IsUserExistByIdAsync(userId))
         {
             return ErrorCode.UserNotFound;
         }
@@ -69,10 +69,10 @@ public class TodoService : ITodoService
         return todo;
     }
 
-    public async Task<Result<None>> CreateAsync(Guid userId, string title, bool isCompleted)
+    public async Task<Result<None>> CreateAsync(Guid userId, string title, bool? isCompleted)
     {
         // Check if the user exists
-        if (!await _userService.IsUserExist(userId))
+        if (!await _userService.IsUserExistByIdAsync(userId))
         {
             return ErrorCode.UserNotFound;
         }
@@ -110,7 +110,7 @@ public class TodoService : ITodoService
     public async Task<Result<None>> UpdateAsync(Guid todoId, Guid userId, string newTitle, bool newIsCompleted)
     {
         // Check if the user exists
-        if (!await _userService.IsUserExist(userId))
+        if (!await _userService.IsUserExistByIdAsync(userId))
         {
             return ErrorCode.UserNotFound;
         }
@@ -148,7 +148,7 @@ public class TodoService : ITodoService
     public async Task<Result<None>> DeleteAsync(Guid todoId, Guid userId)
     {
         // Check if the user exists
-        if (!await _userService.IsUserExist(userId))
+        if (!await _userService.IsUserExistByIdAsync(userId))
         {
             return ErrorCode.UserNotFound;
         }
@@ -165,6 +165,36 @@ public class TodoService : ITodoService
 
         // Remove todo
         _dbContext.Todos.Remove(existingTodo);
+
+        // Save changes
+        await _dbContext.SaveChangesAsync();
+
+        // Return success result
+        return Result<None>.Success();
+    }
+
+    public async Task<Result<None>> ToggleIsCompleted(Guid todoId, Guid userId)
+    {
+        // Check if the user exists
+        if (!await _userService.IsUserExistByIdAsync(userId))
+        {
+            return ErrorCode.UserNotFound;
+        }
+        
+        // Get todo to update, as tracking
+        var existingTodo = await _dbContext.Todos
+            .AsTracking()
+            .FirstOrDefaultAsync(todo => todo.Id == todoId && todo.UserId == userId);
+        
+        // Check if todo exists
+        if (existingTodo is null)
+        {
+            return ErrorCode.TodoNotFound;
+        }
+
+        // Toggle is completed
+        existingTodo.IsCompleted = !existingTodo.IsCompleted;
+        existingTodo.UpdatedAt = _dateTimeProvider.UtcNow;
 
         // Save changes
         await _dbContext.SaveChangesAsync();

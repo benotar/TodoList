@@ -36,10 +36,6 @@ public class GlobalExceptionHandler : IExceptionHandler
                 statusCode = StatusCodes.Status503ServiceUnavailable;
                 errorCode = ErrorCode.AuthenticationServiceUnavailable;
                 break;
-            case DbUpdateException:
-                statusCode = StatusCodes.Status500InternalServerError;
-                errorCode = ErrorCode.DataNotSavedToDatabase;
-                break;
             default:
                 statusCode = StatusCodes.Status500InternalServerError;
                 errorCode = ErrorCode.UnknownError;
