@@ -42,7 +42,7 @@ public class UserService : IUserService
         return users;
     }
 
-    public async Task<Result<None>> CreateAsync(string userName, string password, string name)
+    public async Task<Result<None>> CreateAsync(string userName, string password, string name, Permission permission)
     {
         // Check if userName is null or empty
         if (string.IsNullOrEmpty(userName))
@@ -71,7 +71,8 @@ public class UserService : IUserService
             UserName = userName,
             PasswordSalt = passwordSaltAndHash.Salt,
             PasswordHash = passwordSaltAndHash.Hash,
-            Name = name
+            Name = name,
+            Permission = permission
         };
 
         // Add new user to database

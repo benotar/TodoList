@@ -48,26 +48,26 @@ public class TokenController : BaseController
             return ErrorCode.FingerprintCookieNotFound;
         }
 
-        var userId = _jwtProvider.GetUserIdFromRefreshToken(refreshToken);
+        var userData = _jwtProvider.GetUserDataFromRefreshToken(refreshToken);
 
-        if (userId == Guid.Empty)
+        if (userData.UserId == Guid.Empty)
         {
             return ErrorCode.UserIdNotValid;
         }
-
+        
         var isSessionExistsResult = await _refreshTokenSessionService
-            .SessionKeyExistsAsync(userId, fingerprint);
+            .SessionKeyExistsAsync(userData.UserId, fingerprint);
 
         if (!isSessionExistsResult.IsSucceed)
         {
             return isSessionExistsResult.ErrorCode;
         }
 
-        var accessToken = _jwtProvider.GenerateToken(userId, JwtTokenType.Access);
+        var accessToken = _jwtProvider.GenerateToken(userData.UserId, JwtTokenType.Access, userData.Permission);
 
-        refreshToken = _jwtProvider.GenerateToken(userId, JwtTokenType.Refresh);
+        refreshToken = _jwtProvider.GenerateToken(userData.UserId, JwtTokenType.Refresh, userData.Permission);
 
-        await _refreshTokenSessionService.CreateOrUpdateAsync(userId, fingerprint, refreshToken);
+        await _refreshTokenSessionService.CreateOrUpdateAsync(userData.UserId, fingerprint, refreshToken);
 
         _cookieProvider.AddRefreshTokenCookiesToResponse(HttpContext.Response, refreshToken);
 

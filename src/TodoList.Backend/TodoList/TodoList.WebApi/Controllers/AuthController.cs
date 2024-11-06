@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Application.Interfaces.Services;
@@ -27,13 +28,30 @@ public class AuthController : BaseController
         _encryptionProvider = encryptionProvider;
     }
 
+    [Authorize]
+    [PermissionAuthorize]
+    [HttpPost("register-admin")]
+    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
+    public async Task<Result<None>> RegisterAdmin([FromBody] RegisterRequestModel registerRequestModel)
+    {
+        const Permission permission = Permission.Advanced;
+
+        var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
+            registerRequestModel.Password, registerRequestModel.Name, permission);
+
+        return createUserResult.IsSucceed ? createUserResult : createUserResult.ErrorCode;
+    }
+
     [HttpPost("register")]
     [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
     public async Task<Result<None>> Register([FromBody] RegisterRequestModel registerRequestModel)
     {
+        const Permission permission = Permission.Basic;
+
         var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
-            registerRequestModel.Password, registerRequestModel.Name);
+            registerRequestModel.Password, registerRequestModel.Name, permission);
 
         return createUserResult.IsSucceed ? createUserResult : createUserResult.ErrorCode;
     }
@@ -57,8 +75,8 @@ public class AuthController : BaseController
         var user = existingUserResult.Data;
 
         // Generate jwt tokens
-        var accessToken = _jwtProvider.GenerateToken(user.UserId, JwtTokenType.Access);
-        var refreshToken = _jwtProvider.GenerateToken(user.UserId, JwtTokenType.Refresh);
+        var accessToken = _jwtProvider.GenerateToken(user.UserId, JwtTokenType.Access, user.Permission);
+        var refreshToken = _jwtProvider.GenerateToken(user.UserId, JwtTokenType.Refresh, user.Permission);
 
         // Create session
         await _refreshTokenSessionService.CreateOrUpdateAsync(user.UserId, registerRequestModel.Fingerprint,
@@ -101,7 +119,7 @@ public class AuthController : BaseController
         }
 
         // Get user id from refresh token
-        var userId = _jwtProvider.GetUserIdFromRefreshToken(refreshToken);
+        var userId = _jwtProvider.GetUserDataFromRefreshToken(refreshToken).UserId;
 
         // Delete session
         await _refreshTokenSessionService.DeleteAsync(userId, fingerprint);

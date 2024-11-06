@@ -4,6 +4,8 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using TodoList.Application.Configurations;
+using TodoList.Application.DTOs;
+using TodoList.Application.Extensions;
 using TodoList.Application.Interfaces.Providers;
 using TodoList.Domain.Enums;
 
@@ -26,7 +28,7 @@ public class JwtProvider : IJwtProvider
         _validationParameters = validationParameters;
     }
     
-    public string GenerateToken(Guid userId, JwtTokenType jwtTokenType)
+    public string GenerateToken(Guid userId, JwtTokenType jwtTokenType, Permission permission)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.SecretKey));
 
@@ -34,9 +36,10 @@ public class JwtProvider : IJwtProvider
 
         var claims = new List<Claim>
         {
-            new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new (ClaimTypes.NameIdentifier, userId.ToString()),
-            new (JwtRegisteredClaimNames.Typ, jwtTokenType.ToString())
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(ClaimTypes.NameIdentifier, userId.ToString()),
+            new(JwtRegisteredClaimNames.Typ, jwtTokenType.ToString()),
+            new("Permission", permission.ToString())
         };
 
         var expires = jwtTokenType switch
@@ -57,15 +60,20 @@ public class JwtProvider : IJwtProvider
         return new JwtSecurityTokenHandler().WriteToken(securityToken);
     }
 
-    public Guid GetUserIdFromRefreshToken(string refreshToken)
+    public UserDataFromRefreshTokenDto GetUserDataFromRefreshToken(string refreshToken)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var claims = tokenHandler.ReadJwtToken(refreshToken).Claims;
 
         var userIdString = claims.FirstOrDefault(claim => claim.Type.Equals(ClaimTypes.NameIdentifier)).Value;
+        var permissionString = claims.FirstOrDefault(claim => claim.Type.Equals("Permission")).Value;
 
-        return Guid.TryParse(userIdString, out var userId) ? userId : Guid.Empty;
+        var userIdResult = Guid.TryParse(userIdString, out var userId) ? userId : Guid.Empty;
+        
+        var permission = permissionString.ToPermission();
+
+        return new UserDataFromRefreshTokenDto(userIdResult, permission);
     }
     
     public bool IsTokenValid(string refreshToken, JwtTokenType tokenType)
