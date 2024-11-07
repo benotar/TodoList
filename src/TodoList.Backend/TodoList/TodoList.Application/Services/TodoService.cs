@@ -27,7 +27,20 @@ public class TodoService : ITodoService
         _userService = userService;
     }
 
-    public async Task<Result<IEnumerable<TodoDto>>> GetAsync(Guid userId)
+    public async Task<Result<IEnumerable<TodoWithUserDto>>> GetTodosAsync()
+    {
+        // Get todos
+        var todos = await _dbContext.Todos
+            .Include(todo => todo.User)
+            .ToListAsync();
+
+        var todosDto = todos.Select(todo => todo.ToTodoWithoutUser()).ToList();
+        
+        // Return success result
+        return todosDto;
+    }
+
+    public async Task<Result<IEnumerable<TodoDto>>> GetTodosByUserIdAsync(Guid userId)
     {
         // Check if the user exists
         if (!await _userService.IsUserExistByIdAsync(userId))

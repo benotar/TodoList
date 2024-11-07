@@ -52,6 +52,7 @@ public static class DependencyInjection
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new ServerResponseStringEnumConverter<ErrorCode>());
+                options.JsonSerializerOptions.Converters.Add(new ServerResponseStringEnumConverter<Permission>());
             })
             .ConfigureApiBehaviorOptions(options =>
             {

@@ -22,24 +22,15 @@ public class UserService : IUserService
 
         _hmacSha256Provider = hmacSha256Provider;
     }
-
-    // For development testing
-    public async Task<Result<IEnumerable<UserDto>>> GetPresentationAsync()
+    public async Task<Result<IEnumerable<UserWithTodoDto>>> GetUsersFullInfoAsync()
     {
         var users = await _dbContext.Users
-            .Select(user => user.ToDto())
+            .Include(user => user.Todos)
             .ToListAsync();
 
-        return users;
-    }
-
-    public async Task<Result<IEnumerable<UserFullDto>>> GetUsersFullInfoAsync()
-    {
-        var users = await _dbContext.Users
-            .Select(user => user.ToFullDto())
-            .ToListAsync();
-
-        return users;
+        var usersDto = users.Select(user => user.ToUserWithTodoDto()).ToList();
+        
+        return usersDto;
     }
 
     public async Task<Result<None>> CreateAsync(string userName, string password, string name, Permission permission)
@@ -104,22 +95,22 @@ public class UserService : IUserService
             : ErrorCode.AuthenticationFailed;
     }
 
-    public async Task<Result<UserDto>> GetByIdAsync(Guid userId)
-    {
-        // Ger user
-        var existingUser = await _dbContext.Users.Where(user => user.Id == userId)
-            .Select(user => user.ToDto())
-            .FirstOrDefaultAsync();
-
-        // Check if user exists
-        if (existingUser is null)
-        {
-            return ErrorCode.UserNotFound;
-        }
-
-        // Return result
-        return existingUser;
-    }
+    // public async Task<Result<UserDto>> GetByIdAsync(Guid userId)
+    // {
+    //     // Ger user
+    //     var existingUser = await _dbContext.Users.Where(user => user.Id == userId)
+    //         .Select(user => user.ToDto())
+    //         .FirstOrDefaultAsync();
+    //
+    //     // Check if user exists
+    //     if (existingUser is null)
+    //     {
+    //         return ErrorCode.UserNotFound;
+    //     }
+    //
+    //     // Return result
+    //     return existingUser;
+    // }
 
     public async Task<bool> IsUserExistByIdAsync(Guid userId)
     {

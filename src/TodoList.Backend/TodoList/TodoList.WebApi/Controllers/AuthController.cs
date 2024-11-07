@@ -27,22 +27,7 @@ public class AuthController : BaseController
         _cookieProvider = cookieProvider;
         _encryptionProvider = encryptionProvider;
     }
-
-    [Authorize]
-    [PermissionAuthorize]
-    [HttpPost("register-admin")]
-    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<Result<None>> RegisterAdmin([FromBody] RegisterRequestModel registerRequestModel)
-    {
-        const Permission permission = Permission.Advanced;
-
-        var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
-            registerRequestModel.Password, registerRequestModel.Name, permission);
-
-        return createUserResult.IsSucceed ? createUserResult : createUserResult.ErrorCode;
-    }
-
+    
     [HttpPost("register")]
     [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
