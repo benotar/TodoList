@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using TodoList.Application.Common;
 using TodoList.Application.Extensions;
 using TodoList.Domain.Enums;
 
@@ -8,36 +10,39 @@ namespace TodoList.WebApi.Models.Authentication;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class PermissionAuthorizeAttribute: Attribute, IAsyncAuthorizationFilter
 {
-    private const Permission AdvancedPermission = Permission.Advanced;
-    
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var user = context.HttpContext.User;
-        
-        if (!user.Identity.IsAuthenticated)
+        if (context.Filters.Any(filter => filter is IAllowAnonymousFilter))
         {
-            context.Result = new UnauthorizedResult();
             return;
         }
+        
+        var user = context.HttpContext.User;
+        
+        var permissionClaim = user.Claims.FirstOrDefault(claim => 
+            claim.Type == nameof(Permission).ToLowerFistLetter())?.Value;
 
-        var permissionClaim = user.Claims.FirstOrDefault(claim => claim.Type == "Permission")?.Value;
-
-        if (string.IsNullOrEmpty(permissionClaim) || permissionClaim.ToPermission() != AdvancedPermission)
+        if (string.IsNullOrEmpty(permissionClaim) || permissionClaim.ToPermission() != Permission.Advanced)
         {
             var problemDetails = new ProblemDetails
             {
                 Type = "https://httpstatuses.com/403",
-                Status = 403,
-                Title = "Forbidden",
-                Detail = "You do not have permission to access this resource."
+                Title = "Access Denied",
+                Detail = "You do not have permission to access this resource.",
+                Status = StatusCodes.Status403Forbidden,
+                Instance = context.HttpContext.Request.Path
             };
 
-            context.Result = new ObjectResult(problemDetails)
+            var result = new Result<ProblemDetails>
             {
-                StatusCode = 403
+                Data = problemDetails,
+                ErrorCode = ErrorCode.AccessDenied
             };
 
-            return;
+            context.Result = new ObjectResult(result)
+            {
+                StatusCode = StatusCodes.Status403Forbidden
+            };
         }
 
         await Task.CompletedTask;

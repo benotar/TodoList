@@ -39,7 +39,7 @@ public class JwtProvider : IJwtProvider
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(ClaimTypes.NameIdentifier, userId.ToString()),
             new(JwtRegisteredClaimNames.Typ, jwtTokenType.ToString()),
-            new("Permission", permission.ToString())
+            new(nameof(Permission).ToLowerFistLetter(), permission.ToString())
         };
 
         var expires = jwtTokenType switch
@@ -66,14 +66,15 @@ public class JwtProvider : IJwtProvider
 
         var claims = tokenHandler.ReadJwtToken(refreshToken).Claims;
 
-        var userIdString = claims.FirstOrDefault(claim => claim.Type.Equals(ClaimTypes.NameIdentifier)).Value;
-        var permissionString = claims.FirstOrDefault(claim => claim.Type.Equals("Permission")).Value;
-
+        var userIdString = claims.FirstOrDefault(claim => 
+            claim.Type.Equals(ClaimTypes.NameIdentifier)).Value;
+        
+        var permissionString = claims.FirstOrDefault(claim => 
+            claim.Type.Equals(nameof(Permission).ToLowerFistLetter())).Value;
+        
         var userIdResult = Guid.TryParse(userIdString, out var userId) ? userId : Guid.Empty;
         
-        var permission = permissionString.ToPermission();
-
-        return new UserDataFromRefreshTokenDto(userIdResult, permission);
+        return new UserDataFromRefreshTokenDto(userIdResult, permissionString.ToPermission());
     }
     
     public bool IsTokenValid(string refreshToken, JwtTokenType tokenType)

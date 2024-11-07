@@ -17,7 +17,7 @@ public enum ErrorCode
     FingerprintCookieNotFound,
     InvalidRefreshToken,
     SessionNotFound,
-    DataNotSavedToDatabase,
+    AccessDenied,
     InvalidModel,
     UnknownError
 }
