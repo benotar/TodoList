@@ -12,7 +12,7 @@ public enum ErrorCode
     TodoTitleMustNotBeEmpty,
     TodoAlreadyExists,
     TodoNotFound,
-    TodoDataIsTheSame,
+    DataIsTheSame,
     RefreshCookieNotFound,
     FingerprintCookieNotFound,
     InvalidRefreshToken,

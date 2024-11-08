@@ -34,9 +34,10 @@ public class TodoService : ITodoService
             .Include(todo => todo.User)
             .ToListAsync();
 
+        // Get todos and their users without displaying todos information for those users
         var todosDto = todos.Select(todo => todo.ToTodoWithoutUser()).ToList();
-        
-        // Return success result
+
+        // Return result
         return todosDto;
     }
 
@@ -89,7 +90,7 @@ public class TodoService : ITodoService
         {
             return ErrorCode.UserNotFound;
         }
-        
+
         // Check if the todo already exists
         if (await _dbContext.Todos.AnyAsync(todo => todo.Title == title && todo.UserId == userId))
         {
@@ -101,7 +102,7 @@ public class TodoService : ITodoService
         {
             return ErrorCode.TodoTitleMustNotBeEmpty;
         }
-        
+
         // Create new todo
         var newTodo = new Todo
         {
@@ -127,12 +128,12 @@ public class TodoService : ITodoService
         {
             return ErrorCode.UserNotFound;
         }
-        
+
         // Get todo to update, as tracking
         var existingTodo = await _dbContext.Todos
             .AsTracking()
             .FirstOrDefaultAsync(todo => todo.Id == todoId && todo.UserId == userId);
-        
+
         // Check if todo exists
         if (existingTodo is null)
         {
@@ -143,7 +144,7 @@ public class TodoService : ITodoService
         if (string.Equals(newTitle, existingTodo.Title, StringComparison.OrdinalIgnoreCase)
             && newIsCompleted == existingTodo.IsCompleted)
         {
-            return ErrorCode.TodoDataIsTheSame;
+            return ErrorCode.DataIsTheSame;
         }
 
         // Update todo
@@ -165,11 +166,11 @@ public class TodoService : ITodoService
         {
             return ErrorCode.UserNotFound;
         }
-        
+
         // Get todo to update, as tracking
         var existingTodo = await _dbContext.Todos
             .FirstOrDefaultAsync(todo => todo.Id == todoId && todo.UserId == userId);
-        
+
         // Check if todo exists
         if (existingTodo is null)
         {
@@ -193,12 +194,12 @@ public class TodoService : ITodoService
         {
             return ErrorCode.UserNotFound;
         }
-        
+
         // Get todo to update, as tracking
         var existingTodo = await _dbContext.Todos
             .AsTracking()
             .FirstOrDefaultAsync(todo => todo.Id == todoId && todo.UserId == userId);
-        
+
         // Check if todo exists
         if (existingTodo is null)
         {
@@ -208,6 +209,24 @@ public class TodoService : ITodoService
         // Toggle is completed
         existingTodo.IsCompleted = !existingTodo.IsCompleted;
         existingTodo.UpdatedAt = _dateTimeProvider.UtcNow;
+
+        // Save changes
+        await _dbContext.SaveChangesAsync();
+
+        // Return success result
+        return Result<None>.Success();
+    }
+
+    public async Task<Result<None>> DeleteAll()
+    {
+        // Check if todos exists
+        if (!await _dbContext.Todos.AnyAsync())
+        {
+            return Result<None>.Success();
+        }
+
+        // Remove all todos
+        _dbContext.Todos.RemoveRange(_dbContext.Todos);
 
         // Save changes
         await _dbContext.SaveChangesAsync();

@@ -12,4 +12,7 @@ public interface ITodoService
     Task<Result<None>> UpdateAsync(Guid todoId, Guid userId, string newTitle, bool newIsCompleted);
     Task<Result<None>> DeleteAsync(Guid todoId, Guid userId);
     Task<Result<None>> ToggleIsCompleted(Guid todoId, Guid userId);
+    
+    // For advanced permission
+    Task<Result<None>> DeleteAll();
 }
