@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace TodoList.WebApi.Models.Authentication.Validation;
+namespace TodoList.WebApi.Infrastructure.Validation;
 
 public partial class PasswordValidationAttribute() : ValidationAttribute(DefaultErrorMessage)
 {

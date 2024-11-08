@@ -103,7 +103,7 @@ public class UserService : IUserService
             : ErrorCode.AuthenticationFailed;
     }
 
-    public async Task<Result<None>> Update(Guid userId, string userName, string name)
+    public async Task<Result<None>> UpdateAsync(Guid userId, string userName, string name)
     {
         // Get user
         var existingUser = await _dbContext.Users
@@ -135,7 +135,7 @@ public class UserService : IUserService
         return Result<None>.Success();
     }
 
-    public async Task<Result<None>> UpdatePermission(Guid userId, Permission permission)
+    public async Task<Result<None>> UpdatePermissionAsync(Guid userId, Permission permission)
     {
         // Get user
         var existingUser = await _dbContext.Users
@@ -165,7 +165,7 @@ public class UserService : IUserService
         return Result<None>.Success();
     }
 
-    public async Task<Result<None>> DeleteById(Guid userId)
+    public async Task<Result<None>> DeleteByIdAsync(Guid userId)
     {
         // Get user
         var existingUser = await _dbContext.Users
@@ -187,7 +187,7 @@ public class UserService : IUserService
         return Result<None>.Success();
     }
 
-    public async Task<Result<None>> DeleteBasicUsers()
+    public async Task<Result<None>> DeleteBasicUsersAsync()
     {
         // Target permission
         const Permission targetPermission = Permission.Basic;

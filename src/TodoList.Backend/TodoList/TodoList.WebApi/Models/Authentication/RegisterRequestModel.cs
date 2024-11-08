@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TodoList.WebApi.Models.Authentication.Validation;
+using TodoList.WebApi.Infrastructure.Validation;
 
 namespace TodoList.WebApi.Models.Authentication;
 

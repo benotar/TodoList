@@ -34,7 +34,17 @@ public static class ModelsExtensions
             dto.UpdatedAt
         );
     }
-    
+
+    public static GetTodoByIdResponseModel ToModel(this TodoDto dto)
+    {
+        return new GetTodoByIdResponseModel(
+            dto.TodoId,
+            dto.UserId,
+            dto.Title,
+            dto.IsCompleted
+        );
+    }
+
     private static TodoWithoutUserModel ToModel(this TodoWithoutUserDto dto)
     {
         return new TodoWithoutUserModel

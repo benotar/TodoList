@@ -28,6 +28,7 @@ public class AdminController : BaseController
         _todoService = todoService;
     }
 
+    #region Users
 
     [HttpPost("create-admin")]
     [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
@@ -35,10 +36,8 @@ public class AdminController : BaseController
     [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
     public async Task<Result<None>> RegisterAdmin([FromBody] RegisterRequestModel registerRequestModel)
     {
-        var createUserResult = await _userService.CreateAsync(registerRequestModel.Username,
+        return await _userService.CreateAsync(registerRequestModel.Username,
             registerRequestModel.Password, registerRequestModel.Name, AdminPermission);
-
-        return createUserResult.IsSucceed ? createUserResult : createUserResult.ErrorCode;
     }
 
 
@@ -62,6 +61,45 @@ public class AdminController : BaseController
         return users;
     }
 
+    [HttpPost]
+    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
+    public async Task<Result<None>> UpdateUser([FromBody] UpdateUserRequestModel requestModel)
+    {
+        return await _userService.UpdateAsync(requestModel.UserId, requestModel.UserName, requestModel.Name);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
+    public async Task<Result<None>> UpdatePermission([FromBody] UpdatePermissionRequestModel requestModel)
+    {
+        return await _userService.UpdatePermissionAsync(requestModel.UserId, requestModel.Permission);
+    }
+
+    [HttpDelete]
+    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
+    public async Task<Result<None>> DeleteUserById([FromBody] DeleteUserByIdRequestModel requestModel)
+    {
+        return await _userService.DeleteByIdAsync(requestModel.UserId);
+    }
+
+    [HttpDelete("delete-users")]
+    [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
+    public async Task<Result<None>> RemoveUsers()
+    {
+        return await _userService.DeleteBasicUsersAsync();
+    }
+
+    #endregion
+
+    #region Todos
+
     [HttpGet("get-todos")]
     [ProducesResponseType(typeof(Result<IEnumerable<GetFullInfoTodosResponseModel>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
@@ -81,4 +119,13 @@ public class AdminController : BaseController
 
         return todos;
     }
+
+    [HttpDelete("delete-todos")]
+    [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
+    public async Task<Result<None>> RemoveTodos()
+    {
+        return await _todoService.DeleteAll();
+    }
+
+    #endregion
 }
