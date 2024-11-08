@@ -1,10 +1,9 @@
-﻿using System.Collections.Immutable;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoList.Application.Common;
 using TodoList.Application.Interfaces.Services;
-using TodoList.Domain.Entities.Database;
 using TodoList.Domain.Enums;
+using TodoList.WebApi.Infrastructure.Extensions;
 using TodoList.WebApi.Models.Authentication;
 using TodoList.WebApi.Models.Todos;
 using TodoList.WebApi.Models.Users;
@@ -55,25 +54,10 @@ public class AdminController : BaseController
             return new List<GetUsersFullInfoResponseModel>();
         }
 
-        var users = requestResult.Data.Select(user => new GetUsersFullInfoResponseModel
-        {
-            UserId = user.UserId,
-            UserName = user.UserName,
-            PasswordSalt = user.PasswordSalt,
-            PasswordHash = user.PasswordHash,
-            Name = user.Name,
-            Permission = user.Permission,
-            CreatedAt = user.CreatedAt,
-            UpdatedAt = user.UpdatedAt,
-            Todos = user.Todos.Select(todo => new TodoWithoutUserModel
-            (
-                todo.TodoId,
-                todo.Title,
-                todo.IsCompleted,
-                todo.CreatedAt,
-                todo.UpdatedAt
-            ))
-        }).ToList();
+        var users = requestResult.Data
+            .Select(user =>
+                user.ToModel())
+            .ToList();
 
         return users;
     }
@@ -90,25 +74,10 @@ public class AdminController : BaseController
             return new List<GetFullInfoTodosResponseModel>();
         }
 
-        var todos = requestResult.Data.Select(todo => new GetFullInfoTodosResponseModel
-        {
-            TodoId = todo.TodoId,
-            User = new UserWithoutTodoModel
-            (
-                todo.UserWithoutTodoDto.UserId,
-                todo.UserWithoutTodoDto.UserName,
-                todo.UserWithoutTodoDto.PasswordSalt,
-                todo.UserWithoutTodoDto.PasswordHash,
-                todo.UserWithoutTodoDto.Name,
-                todo.UserWithoutTodoDto.Permission,
-                todo.UserWithoutTodoDto.CreatedAt,
-                todo.UserWithoutTodoDto.UpdatedAt
-            ),
-            Title = todo.Title,
-            IsCompleted = todo.IsCompleted,
-            CreatedAt = todo.CreatedAt,
-            UpdatedAt = todo.UpdatedAt
-        }).ToList();
+        var todos = requestResult.Data
+            .Select(todo =>
+                todo.ToModel())
+            .ToList();
 
         return todos;
     }

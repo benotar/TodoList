@@ -2,7 +2,7 @@
 
 namespace TodoList.WebApi.Models.Users;
 
-public record UserWithoutTodoModel(
+public record UserWithoutTodoResponseModel(
     Guid UserId,
     string UserName,
     byte[] PasswordSalt,

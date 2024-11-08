@@ -94,24 +94,7 @@ public class UserService : IUserService
             ? existingUser.ToDto()
             : ErrorCode.AuthenticationFailed;
     }
-
-    // public async Task<Result<UserDto>> GetByIdAsync(Guid userId)
-    // {
-    //     // Ger user
-    //     var existingUser = await _dbContext.Users.Where(user => user.Id == userId)
-    //         .Select(user => user.ToDto())
-    //         .FirstOrDefaultAsync();
-    //
-    //     // Check if user exists
-    //     if (existingUser is null)
-    //     {
-    //         return ErrorCode.UserNotFound;
-    //     }
-    //
-    //     // Return result
-    //     return existingUser;
-    // }
-
+    
     public async Task<bool> IsUserExistByIdAsync(Guid userId)
     {
         return await _dbContext.Users.AnyAsync(user => user.Id == userId);

@@ -3,7 +3,7 @@ using TodoList.Domain.Entities.Database;
 
 namespace TodoList.Application.Extensions;
 
-public static class EntityExtensions
+public static class DtoExtensions
 {
     public static TodoDto ToDto(this Todo todo)
     {
@@ -31,8 +31,8 @@ public static class EntityExtensions
     {
         return new UserDto(
             user.Id,
-            // user.UserName,
-            // user.Name,
+            user.UserName,
+            user.Name,
             user.Permission
         );
     }
