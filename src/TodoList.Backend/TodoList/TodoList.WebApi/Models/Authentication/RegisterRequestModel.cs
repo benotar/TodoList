@@ -7,7 +7,7 @@ public class RegisterRequestModel
 {
     [Required] 
     [MinLength(3, ErrorMessage = "Username is too short.")]
-    public string Username { get; set; }
+    public string UserName { get; set; }
 
     [Required] 
     [PasswordValidation]

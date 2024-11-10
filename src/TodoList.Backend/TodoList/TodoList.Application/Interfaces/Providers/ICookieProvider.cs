@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using TodoList.Application.DTOs;
 
 namespace TodoList.Application.Interfaces.Providers;
 
