@@ -10,7 +10,7 @@ using TodoList.WebApi.Models.Users;
 
 namespace TodoList.WebApi.Controllers;
 
-// Admin controller
+
 [Authorize]
 [PermissionAuthorize]
 public class AdminController : BaseController
@@ -61,7 +61,7 @@ public class AdminController : BaseController
         return users;
     }
 
-    [HttpPost]
+    [HttpPost("update-user")]
     [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
@@ -70,7 +70,7 @@ public class AdminController : BaseController
         return await _userService.UpdateAsync(requestModel.UserId, requestModel.UserName, requestModel.Name);
     }
 
-    [HttpPost]
+    [HttpPost("update-permission")]
     [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]
@@ -79,7 +79,7 @@ public class AdminController : BaseController
         return await _userService.UpdatePermissionAsync(requestModel.UserId, requestModel.Permission);
     }
 
-    [HttpDelete]
+    [HttpDelete("delete-user")]
     [ProducesResponseType(typeof(Result<None>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(typeof(Result<ProblemDetails>), StatusCodes.Status403Forbidden)]

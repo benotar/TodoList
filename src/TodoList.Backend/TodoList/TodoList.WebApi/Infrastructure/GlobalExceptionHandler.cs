@@ -1,10 +1,8 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using TodoList.Application.Common;
-using TodoList.Application.Common.Converters;
 using TodoList.Domain.Enums;
 
 namespace TodoList.WebApi.Infrastructure;

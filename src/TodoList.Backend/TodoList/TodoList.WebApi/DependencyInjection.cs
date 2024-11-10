@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Serilog;
 using TodoList.Application.Common;
 using TodoList.Application.Common.Converters;
 using TodoList.Application.Configurations;
@@ -44,6 +47,14 @@ public static class DependencyInjection
             resolver.GetRequiredService<IOptions<CorsConfiguration>>().Value);
     }
 
+    public static void ConfigureSerilog(this IHostBuilder host)
+    {
+        host.UseSerilog((ctx, lc) =>
+        {
+            lc.WriteTo.Console();
+        });
+    }
+    
     public static IServiceCollection AddControllersWithConfiguredApiBehavior(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -108,6 +119,47 @@ public static class DependencyInjection
 
         services.AddProblemDetails();
 
+        return services;
+    }
+
+    public static IServiceCollection AddSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(config =>
+        {
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            config.IncludeXmlComments(xmlPath);
+
+            var jwtSecurityScheme = new OpenApiSecurityScheme
+            {
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Description =
+                    "Enter your JWT token for authorization in the Bearer scheme. \r\n\r\n" +
+                    "Use the following format: 'Bearer' [space] and then paste your JWT. \r\n\r\n" +
+                    "Example: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\" \r\n\r\n" +
+                    "Note: Ensure the token includes the 'Bearer' prefix as shown above.",
+
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
+            config.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+            var securityRequirement = new OpenApiSecurityRequirement
+            {
+                { jwtSecurityScheme, Array.Empty<string>() }
+            };
+
+            config.AddSecurityRequirement(securityRequirement);
+        });
+        
         return services;
     }
 }
