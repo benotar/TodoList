@@ -1,47 +1,71 @@
 const PORT: number = 5000;
+
 export const BASE_URL: string = `http://localhost:${PORT}/api`;
 
-const SUB_PATHS: { AUTH: string; TODO: string; TOKEN: string } = {
-    AUTH: 'auth',
-    TODO: 'todo',
-    TOKEN: 'token'
+// Helper method to create a full URL for each API endpoint
+const buildUrl = (subPath: string, action: string) => {
+    return `${BASE_URL}/${subPath}/${action}`;
 };
 
-const ACTIONS: {
-    GET: string;
-    CREATE: string;
-    UPDATE: string;
-    DELETE: string;
-    LOGIN: string;
-    LOGOUT: string;
-    REGISTER: string;
-    REFRESH: string;
-} = {
-    GET: 'get',
-    CREATE: 'create',
-    UPDATE: 'update',
-    DELETE: 'delete',
-    LOGIN: 'login',
-    LOGOUT: 'logout',
-    REGISTER: 'register',
-    REFRESH: 'refresh'
-};
+enum SubPaths {
+    Admin = 'admin',
+    Auth = 'auth',
+    Todo = 'todo',
+    Token = 'token'
+}
 
-const buildUrl = (base: string, subPath: string, action: string, id: string = '') => {
-    return `${base}/${subPath}/${action}${id ? `/${id}` : ''}`;
-};
+enum AdminActions {
+    CreateAdmin ='create-admin',
+    GetUsers = 'get-users',
+    UpdateUser = 'update-users',
+    UpdatePermission = 'update-permission',
+    DeleteUser = 'delete-user',
+    DeleteUsers = 'delete-users',
+    GetTodos = 'get-todos',
+    DeleteTodos = 'delete-todos'
+}
+
+enum AuthActions {
+    Register ='register',
+    Login = 'login',
+    Logout = 'logout'
+}
+enum TodoActions  {
+    GetById = 'get-by-id',
+    GetTodos = 'get-todos',
+    Create = 'create',
+    Update = 'update',
+    Delete = 'delete',
+    Toggle = 'toggle'
+}
+
+enum TokenActions  {
+    Refresh = 'refresh'
+}
 
 export const ENDPOINTS = {
-    AUTH: {
-        REGISTER: buildUrl(BASE_URL, SUB_PATHS.AUTH, ACTIONS.REGISTER),
-        LOGIN: buildUrl(BASE_URL, SUB_PATHS.AUTH, ACTIONS.LOGIN),
-        LOGOUT: buildUrl(BASE_URL, SUB_PATHS.AUTH, ACTIONS.LOGOUT)
+    ADMIN: {
+        CREATE_ADMIN: buildUrl(SubPaths.Admin, AdminActions.CreateAdmin),
+        GET_USERS: buildUrl(SubPaths.Admin, AdminActions.GetUsers),
+        UPDATE_USER: buildUrl(SubPaths.Admin, AdminActions.UpdateUser),
+        UPDATE_PERMISSION: buildUrl(SubPaths.Admin, AdminActions.UpdatePermission),
+        DELETE_USER: buildUrl(SubPaths.Admin, AdminActions.DeleteUser),
+        DELETE_USERS: buildUrl(SubPaths.Admin, AdminActions.DeleteUsers),
+        GET_TODOS: buildUrl(SubPaths.Admin, AdminActions.GetTodos),
+        DELETE_TODOS: buildUrl(SubPaths.Admin, AdminActions.DeleteTodos),
     },
-    REFRESH: buildUrl(BASE_URL, SUB_PATHS.TOKEN, ACTIONS.REFRESH),
+    AUTH: {
+        REGISTER: buildUrl(SubPaths.Auth, AuthActions.Register),
+        LOGIN: buildUrl(SubPaths.Auth, AuthActions.Login),
+        LOGOUT: buildUrl(SubPaths.Auth, AuthActions.Logout)
+    },
     TODO: {
-        CREATE: buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.CREATE),
-        GET: buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.GET),
-        UPDATE: (todoId: string): string => buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.UPDATE, todoId),
-        DELETE: (todoId: string): string => buildUrl(BASE_URL, SUB_PATHS.TODO, ACTIONS.DELETE, todoId)
-    }
+        GET_BY_ID: buildUrl(SubPaths.Todo, TodoActions.GetById),
+        GET_TODOS: buildUrl(SubPaths.Todo, TodoActions.GetTodos),
+        CREATE: buildUrl(SubPaths.Todo, TodoActions.Create),
+        UPDATE: buildUrl(SubPaths.Todo, TodoActions.Update),
+        DELETE: buildUrl(SubPaths.Todo, TodoActions.Delete),
+        TOGGLE: buildUrl(SubPaths.Todo, TodoActions.Toggle),
+    },
+    TOKEN: buildUrl(SubPaths.Token, TokenActions.Refresh)
 };
