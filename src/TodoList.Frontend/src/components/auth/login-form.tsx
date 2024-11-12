@@ -18,10 +18,13 @@ import {useAuthSlice} from "@/store/authSlice.ts";
 import {toast} from 'sonner'
 import {LoginValues} from "@/types/store/Auth.ts";
 import CardWrapper from "@/components/auth/card-wrapper.tsx";
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "@/common/hooks/useAuth.ts";
 
 const LoginForm: FC = () => {
 
-    const {login} = useAuthSlice();
+    const {login} = useAuth();
+    const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
@@ -32,31 +35,34 @@ const LoginForm: FC = () => {
         }
     });
 
-
     const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
+
         const loginValues: LoginValues = {
             userName: values.userName,
             password: values.password,
             fingerprint: uuidv4()
         };
+
         console.log('Login handling');
         console.table(loginValues);
+
         try {
 
             await login(loginValues);
+
             const errorMessage = useAuthSlice.getState().errorMessage;
-            if (errorMessage === 'user_not_found') {
-                toast.error('The login or password is incorrect.');
-                return;
-            }
+
             if (errorMessage) {
-                toast.error('Unexpected error.');
+                toast.error(errorMessage || 'Unexpected error.');
                 return;
             }
-            toast.success('You are successfully logged in.');
+
+            toast.success("You are successfully logged in.");
+
+            navigate('/');
         } catch (error: unknown) {
-            console.log('Error catch:');
-            console.log(error);
+            console.log('Error catch: ', error);
+
             toast.error('An error occurred on the server.');
         } finally {
             form.reset();
