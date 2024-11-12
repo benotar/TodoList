@@ -1,10 +1,10 @@
 import {create} from "zustand";
 import {persist} from 'zustand/middleware';
-import {Theme, ThemeSlice} from "@/types/store/Theme.ts";
+import {Theme, EnumTheme, ThemeSlice} from "@/types/store/Theme.ts";
 
 const initialThemeState: ThemeSlice = {
-    theme: 'system',
-    setTheme: () => {}
+    theme: EnumTheme.system,
+    setTheme: () => null
 };
 
 export const useThemeSlice = create<ThemeSlice>()(
@@ -15,8 +15,8 @@ export const useThemeSlice = create<ThemeSlice>()(
                 set({theme});
             }
         }), {
-            name: 'theme-storage',
-            partialize: (state) => ({theme: state.theme}),
+            name: "ui-theme",
+            partialize: (state) => ({theme: state.theme})
         }
-    ),
+    )
 );

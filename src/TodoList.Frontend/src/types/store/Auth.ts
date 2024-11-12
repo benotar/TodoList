@@ -1,9 +1,14 @@
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
 import {StoreApi} from "zustand";
 
+export enum Permission {
+    Advanced = "Advanced",
+    Basic = "Basic"
+}
 
 export type AuthState = {
     isAuth: boolean;
+    permission: Permission | null;
     token: string | null;
     errorMessage: string | null;
     isLoading: boolean;
@@ -19,7 +24,7 @@ export type AuthActions = {
 export type AuthSlice = AuthState & AuthActions;
 
 export type LoginValues = {
-    username: string;
+    userName: string;
     password: string;
     fingerprint: string;
 };

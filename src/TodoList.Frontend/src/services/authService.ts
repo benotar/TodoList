@@ -16,7 +16,7 @@ const authService = {
         return await api.post<Result<void>>(ENDPOINTS.AUTH.LOGOUT);
     },
     refresh: async (): Promise<AxiosResponse<Result<string>>> => {
-        return await api.post<Result<string>>(ENDPOINTS.REFRESH);
+        return await api.post<Result<string>>(ENDPOINTS.TOKEN);
     }
 };
 

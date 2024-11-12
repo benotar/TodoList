@@ -1,26 +1,19 @@
-import {FC, useEffect, useState} from "react";
+import {FC, useState} from "react";
 import {Switch} from "@/components/ui/switch.tsx";
 import {Label} from "@/components/ui/label.tsx";
-import {useThemeSlice} from "@/store/themeSlice.ts";
-import {Theme} from "@/types/store/Theme.ts";
+import {useTheme} from "@/common/hooks/useTheme.ts";
+import {EnumTheme, Theme} from "@/types/store/Theme.ts";
 
 const ThemeSwitch: FC = () => {
 
-    const {theme, setTheme} = useThemeSlice();
-
-    const [isDarkTheme, setIsDarkTheme] = useState<boolean>(theme === 'dark');
-
-    useEffect(() => {
-        setIsDarkTheme(theme === 'dark');
-    }, [theme]);
+    const {setTheme, theme} = useTheme();
+    const [isDarkTheme, setIsDarkTheme] = useState<boolean>(theme === EnumTheme.dark);
 
     const switchTheme = (checked: boolean): void => {
 
-        const theme: Theme = checked ? 'light' : 'dark';
-
-        setTheme(theme);
-
-        // setTheme(checked ? 'light' : 'dark');
+        const newTheme: Theme = checked ? EnumTheme.light : EnumTheme.dark;
+        setTheme(newTheme);
+        setIsDarkTheme(newTheme === EnumTheme.dark);
     }
 
     return (

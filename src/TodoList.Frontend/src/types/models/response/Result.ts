@@ -3,3 +3,7 @@ export type Result<TData> = {
     errorCode: string | null;
     isSucceed: boolean;
 };
+
+export type LoginResponse = {
+    accessToken: string | null;
+}

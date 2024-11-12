@@ -1,5 +1,5 @@
 type BaseType = {
-    username: string;
+    userName: string;
     password: string;
 }
 

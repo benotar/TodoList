@@ -1,6 +1,6 @@
 const PORT: number = 5000;
 
-export const BASE_URL: string = `http://localhost:${PORT}/api`;
+export const BASE_URL: string = `http://localhost:${PORT}`;
 
 // Helper method to create a full URL for each API endpoint
 const buildUrl = (subPath: string, action: string) => {

@@ -8,7 +8,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form.tsx";
-import {loginFormSchema, registerFormSchema} from "@/schema";
+import {registerFormSchema} from "@/schema";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Input} from "@/components/ui/input.tsx";
@@ -27,7 +27,7 @@ const RegisterForm: FC = () => {
         }
     });
 
-    const onSubmit = (values: z.infer<typeof loginFormSchema>) => {
+    const onSubmit = (values: z.infer<typeof registerFormSchema>) => {
         console.log(values);
     }
 
@@ -49,7 +49,7 @@ const RegisterForm: FC = () => {
                                     <FormLabel>Username</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Enter username"
+                                            placeholder="Enter username..."
                                             autoFocus
                                             {...field}
                                             type="text"/>
@@ -66,7 +66,7 @@ const RegisterForm: FC = () => {
                                     <FormControl>
                                         <Input
                                             type='password'
-                                            placeholder='Enter password'
+                                            placeholder='Enter password...'
                                             {...field}
                                         />
                                     </FormControl>
@@ -79,11 +79,11 @@ const RegisterForm: FC = () => {
                             name='name'
                             render={({field}) => (
                                 <FormItem>
-                                    <FormLabel >Password</FormLabel>
+                                    <FormLabel >Name</FormLabel>
                                     <FormControl>
                                         <Input
                                             type='text'
-                                            placeholder='Enter password'
+                                            placeholder='Enter name...'
                                             {...field}
                                         />
                                     </FormControl>

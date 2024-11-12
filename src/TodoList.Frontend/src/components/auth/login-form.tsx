@@ -26,15 +26,16 @@ const LoginForm: FC = () => {
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
-            username: '',
-            password: ''
+            userName: '',
+            password: '',
+            confirm: ''
         }
     });
 
 
     const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
         const loginValues: LoginValues = {
-            username: values.username,
+            userName: values.userName,
             password: values.password,
             fingerprint: uuidv4()
         };
@@ -70,19 +71,18 @@ const LoginForm: FC = () => {
             backButtonLink="/register"
             backButtonLabel="Dont't have an account? Register here."
         >
-
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
-                            name='username'
+                            name='userName'
                             render={({field}) => (
                                 <FormItem>
                                     <FormLabel>Username</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder='Enter username'
+                                            placeholder='Enter username...'
                                             {...field}
                                             autoFocus
                                         />
@@ -96,11 +96,28 @@ const LoginForm: FC = () => {
                             name='password'
                             render={({field}) => (
                                 <FormItem>
-                                    <FormLabel >Password</FormLabel>
+                                    <FormLabel>Password</FormLabel>
                                     <FormControl>
                                         <Input
                                             type='password'
-                                            placeholder='Enter password'
+                                            placeholder='Enter password...'
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='confirm'
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>Confirm Password</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='password'
+                                            placeholder='Confirm password...'
                                             {...field}
                                         />
                                     </FormControl>
