@@ -14,7 +14,6 @@ import {
 import {Input} from '@/components/ui/input.tsx';
 import {loginFormSchema} from '@/schema/index.ts';
 import {v4 as uuidv4} from 'uuid';
-import {useAuthSlice} from "@/store/authSlice.ts";
 import {toast} from 'sonner'
 import {LoginValues} from "@/types/store/Auth.ts";
 import CardWrapper from "@/components/auth/card-wrapper.tsx";
@@ -23,7 +22,7 @@ import {useAuth} from "@/common/hooks/useAuth.ts";
 
 const LoginForm: FC = () => {
 
-    const {login} = useAuth();
+    const {login, errorMessage, isLoading} = useAuth();
     const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -50,10 +49,10 @@ const LoginForm: FC = () => {
 
             await login(loginValues);
 
-            const errorMessage = useAuthSlice.getState().errorMessage;
+            const currentErrorMessage = errorMessage;
 
-            if (errorMessage) {
-                toast.error(errorMessage || 'Unexpected error.');
+            if (currentErrorMessage) {
+                toast.error(currentErrorMessage || 'Unexpected error.');
                 return;
             }
 
@@ -132,7 +131,7 @@ const LoginForm: FC = () => {
                             )}
                         />
                         <div>
-                            <Button type="submit" className="w-full text-base">Log in</Button>
+                            <Button type="submit" className="w-full text-base" disabled={isLoading}>Log in</Button>
                         </div>
                     </div>
                 </form>
