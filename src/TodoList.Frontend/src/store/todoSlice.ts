@@ -3,7 +3,7 @@ import {create} from "zustand";
 import {CreateTodo, UpdateTodo} from "@/types/models/request/TodoRequest.ts";
 import todoService from "@/services/todoService.ts";
 import {AxiosResponse} from "axios";
-import {Result} from "@/types/models/response/Result.ts";
+import {AuthResponse} from "@/types/models/response/AuthResponse.ts";
 import {Todo} from "@/types/entities/Todo.ts";
 
 const initialState: TodoState = {todos: [], errorMessage: null, isLoading: false};
@@ -19,7 +19,7 @@ export const useTodoSlice = create<TodoSlice>((set) => ({
 
             set({isLoading: true});
 
-            const response: AxiosResponse<Result<Todo[]>> = await todoService.get();
+            const response: AxiosResponse<AuthResponse<Todo[]>> = await todoService.get();
 
             if (!response.data.isSucceed) {
 
@@ -49,7 +49,7 @@ export const useTodoSlice = create<TodoSlice>((set) => ({
 
         try {
 
-            const response: AxiosResponse<Result<void>> = await todoService.create(by);
+            const response: AxiosResponse<AuthResponse<void>> = await todoService.create(by);
 
             if (!response.data.isSucceed) {
 
@@ -78,7 +78,7 @@ export const useTodoSlice = create<TodoSlice>((set) => ({
 
         try {
 
-            const response: AxiosResponse<Result<void>> = await todoService.update(by);
+            const response: AxiosResponse<AuthResponse<void>> = await todoService.update(by);
 
             if (!response.data.isSucceed) {
 
@@ -107,7 +107,7 @@ export const useTodoSlice = create<TodoSlice>((set) => ({
 
         try {
 
-            const response: AxiosResponse<Result<void>> = await todoService.delete(todoId);
+            const response: AxiosResponse<AuthResponse<void>> = await todoService.delete(todoId);
 
             if (!response.data.isSucceed) {
 

@@ -4,7 +4,7 @@ import {Theme, EnumTheme, ThemeSlice} from "@/types/store/Theme.ts";
 
 const initialThemeState: ThemeSlice = {
     theme: EnumTheme.system,
-    setTheme: () => null
+    setTheme: () => {}
 };
 
 export const useThemeSlice = create<ThemeSlice>()(

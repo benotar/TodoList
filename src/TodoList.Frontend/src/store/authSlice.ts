@@ -1,84 +1,105 @@
-import {AuthSlice, AuthState, SetAuthState} from "@/types/store/Auth.ts";
+import {AuthSlice} from "@/types/store/Auth.ts";
 import {create} from "zustand";
 import {persist, createJSONStorage} from 'zustand/middleware';
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
-import authService from "@/services/authService.ts";
-import {AxiosResponse} from "axios";
-import {LoginResponse, Result} from "@/types/models/response/Result.ts";
-import {jwtDecode} from "jwt-decode";
-import {Permission} from '@/types/store/Auth';
+import {LoginResponse, Result} from "@/types/models/response/AuthResponse.ts";
+import api from "@/common/axios.ts";
+import {ENDPOINTS} from "@/common/endpoints.ts";
+import {decodeJwt} from "@/common/jwt/decode.ts";
 
-const initialAuthState: AuthState = {
+const initialAuthState: AuthSlice = {
     isAuth: false,
     permission: null,
     token: null,
     errorMessage: null,
-    isLoading: false
-};
-
-const handleRequest = async <T>(
-    set: SetAuthState,
-    action: () => Promise<AxiosResponse<Result<T>>>,
-    errorMessagePrefix: string,
-): Promise<T | null> => {
-    set({isLoading: true});
-    try {
-        const response = await action();
-
-        if (!response.data.isSucceed) {
-            const serverError = response.data.errorCode ?? 'Unknown server error.';
-            set({errorMessage: serverError});
-            console.log(`${errorMessagePrefix} failed: `, serverError);
-            return null;
-        }
-
-        console.log(`${errorMessagePrefix} successful.`);
-
-        return response.data.data;
-    } catch (error: unknown) {
-        const catchError = error instanceof Error ? error.message : `Unexpected error.`;
-        console.error(`${errorMessagePrefix} catch error :`, catchError);
-        set({errorMessage: catchError});
-        return null;
-    } finally {
-        set({isLoading: false});
-    }
+    isLoading: false,
+    register: async () => {},
+    login: async () => {},
+    logout: async () => {},
+    refresh: async () => {},
 };
 
 export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
     ...initialAuthState,
+
     register: async (by: Register): Promise<void> => {
+
         console.log('Register');
-        await handleRequest(set, () => authService.register(by), 'Register');
+
+        set({isLoading: true});
+
+        const requestResult = await api.post<Result<void>>(ENDPOINTS.AUTH.REGISTER, by);
+
+        if (!requestResult?.data?.isSucceed) {
+            set({errorMessage: requestResult?.data?.errorCode || "Register error."});
+            return;
+        }
+
+        set({isLoading: false});
     },
+
     login: async (by: Login): Promise<void> => {
 
         console.log('Login');
 
-        const loginResult: LoginResponse = await handleRequest(set, () => authService.login(by), 'Login');
+        set({isLoading: true});
 
-        if (loginResult) {
+        const requestResult = await api.post<Result<LoginResponse>>(ENDPOINTS.AUTH.LOGIN, by);
 
-            set({isAuth: true, token: loginResult.accessToken, errorMessage: null});
-
-            const decodedToken: {permission: Permission} = jwtDecode(token);
-            set({permission: decodedToken.permission});
+        if (!requestResult?.data?.isSucceed) {
+            set({errorMessage: requestResult?.data?.errorCode || "Login error."});
+            return;
         }
+
+        const requestToken = requestResult.data?.data?.accessToken;
+
+        if (requestToken) {
+            const decodedJwt = decodeJwt(requestToken);
+            set({permission: decodedJwt?.permission, token: requestToken, isAuth: true, errorMessage: null});
+        }
+
+        set({isLoading: false});
     },
+
     logout: async (): Promise<void> => {
         console.log('Logout');
-        await handleRequest(set, () => authService.logout(), 'Logout');
-        set({isAuth: false, token: null, errorMessage: null});
-    },
-    refresh: async (): Promise<void> => {
-        console.log('Refresh');
-        const token = await handleRequest(set, () => authService.refresh(), 'Refresh');
-        if (token as string) {
-            set({isAuth: true, token: token, errorMessage: null});
+
+        set({isLoading: true});
+
+        const requestResult = await api.post<Result<void>>(ENDPOINTS.AUTH.LOGOUT);
+
+        if (!requestResult?.data?.isSucceed) {
+            set({errorMessage: requestResult?.data?.errorCode || "Logout error."});
+            return;
         }
+
+        set({isAuth: false, token: null, errorMessage: null, permission: null});
+    },
+
+    refresh: async (): Promise<void> => {
+
+        console.log('Refresh');
+
+        set({isLoading: true});
+
+        const requestResult = await api.post<Result<LoginResponse>>(ENDPOINTS.TOKEN);
+
+        if (!requestResult?.data?.isSucceed) {
+            set({errorMessage: requestResult?.data?.errorCode || "Refresh error."});
+            return;
+        }
+
+        const requestToken = requestResult.data?.data?.accessToken;
+
+        if (requestToken) {
+            const decodedJwt = decodeJwt(requestToken);
+            set({permission: decodedJwt?.permission, token: requestToken, isAuth: true, errorMessage: null});
+        }
+
+        set({isLoading: false});
     }
 }), {
     name: 'auth-storage',
-    storage: createJSONStorage(() => sessionStorage),
-    partialize: state => ({isAuth: state.isAuth, token: state.token})
+    version: 1,
+    storage: createJSONStorage(() => sessionStorage)
 }));
