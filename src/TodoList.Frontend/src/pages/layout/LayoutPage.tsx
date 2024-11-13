@@ -3,7 +3,7 @@ import MyHeader from "@/components/layout/my-header.tsx";
 import Content from "@/components/layout/content.tsx";
 import MyFooter from "@/components/layout/my-footer.tsx";
 
-const Layout: FC = () => {
+const LayoutPage: FC = () => {
 
     return (
         <div className="flex flex-col h-screen">
@@ -14,4 +14,4 @@ const Layout: FC = () => {
     );
 };
 
-export default Layout;
+export default LayoutPage;

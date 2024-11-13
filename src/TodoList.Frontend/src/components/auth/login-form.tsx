@@ -18,11 +18,14 @@ import {toast} from 'sonner'
 import {LoginValues} from "@/types/store/Auth.ts";
 import CardWrapper from "@/components/auth/card-wrapper.tsx";
 import {useNavigate} from "react-router-dom";
-import {useAuth} from "@/common/hooks/useAuth.ts";
+import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
+import {useAuthState} from "@/common/hooks/useAuthState.ts";
+import {useAuthSlice} from "@/store/authSlice.ts";
 
 const LoginForm: FC = () => {
 
-    const {login, errorMessage, isLoading} = useAuth();
+    const {login} = useAuthAction();
+    const { isLoading} = useAuthState();
     const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -34,7 +37,7 @@ const LoginForm: FC = () => {
         }
     });
 
-    const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
+    const handleSubmitBtn = async (values: z.infer<typeof loginFormSchema>) => {
 
         const loginValues: LoginValues = {
             userName: values.userName,
@@ -49,10 +52,10 @@ const LoginForm: FC = () => {
 
             await login(loginValues);
 
-            const currentErrorMessage = errorMessage;
+            const currentErrorMessage = useAuthSlice.getState().errorMessage;
 
             if (currentErrorMessage) {
-                toast.error(currentErrorMessage || 'Unexpected error.');
+                toast.error(currentErrorMessage || "Unexpected error.");
                 return;
             }
 
@@ -77,7 +80,7 @@ const LoginForm: FC = () => {
             backButtonLabel="Dont't have an account? Register here."
         >
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(handleSubmitBtn)} className="space-y-6">
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
@@ -131,7 +134,7 @@ const LoginForm: FC = () => {
                             )}
                         />
                         <div>
-                            <Button type="submit" className="w-full text-base" disabled={isLoading}>Log in</Button>
+                            <Button type="submit" className="w-full text-base" disabled={!isLoading}>Log in</Button>
                         </div>
                     </div>
                 </form>

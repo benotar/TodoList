@@ -1,7 +1,7 @@
 import {FC} from "react";
 
 
-const Home: FC = () => {
+const HomePage: FC = () => {
     return (
         <>
             Home Page
@@ -9,4 +9,4 @@ const Home: FC = () => {
     );
 };
 
-export default Home;
+export default HomePage;

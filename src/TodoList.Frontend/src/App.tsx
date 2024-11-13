@@ -1,20 +1,22 @@
 import {FC} from "react";
-import Layout from "@/pages/layout/layout.tsx";
-import Home from "@/pages/layout//home.tsx";
-import NotFound from "@/pages/layout/not-found.tsx";
+import LayoutPage from "@/pages/layout/LayoutPage.tsx";
+import HomePage from "@/pages/layout/HomePage.tsx";
+import NotFoundPage from "@/pages/layout/NotFoundPage.tsx";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Login from "@/pages/auth/login/page.tsx";
-import Register from "@/pages/auth/register/page.tsx";
+import LoginPage from "@/pages/auth/login/LoginPage.tsx";
+import RegisterPage from "@/pages/auth/register/RegisterPage.tsx";
+import LogoutPage from "@/pages/auth/logout/LogoutPage.tsx";
 
 const App: FC = () => {
     return(
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<Layout/>}>
-                    <Route index element={<Home/>}/>
-                    <Route path='login' element={<Login/>}/>
-                    <Route path='register' element={<Register/>}/>
-                    <Route path='*' element={<NotFound/>}/>
+                <Route path="/" element={<LayoutPage/>}>
+                    <Route index element={<HomePage/>}/>
+                    <Route path="login" element={<LoginPage/>}/>
+                    <Route path="register" element={<RegisterPage/>}/>
+                    <Route path="logout" element={<LogoutPage/>}/>
+                    <Route path="*" element={<NotFoundPage/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

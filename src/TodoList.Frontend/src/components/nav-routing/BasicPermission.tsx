@@ -6,7 +6,6 @@ const BasicPermission: FC = () => {
         <>
             <Link to='/todo' className="mr-5"><span>Todo</span></Link>
             <Link to='/logout' className="mr-5"><span>Logout</span></Link>
-
         </>
     );
 

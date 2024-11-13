@@ -3,13 +3,13 @@ import {Link} from "react-router-dom";
 import ThemeSwitch from "@/components/theme/theme-switch.tsx";
 import BasicPermission from "@/components/nav-routing/BasicPermission.tsx";
 import Unauthorized from "@/components/nav-routing/Unauthorized.tsx";
-import {useAuth} from "@/common/hooks/useAuth.ts";
 import {Permission} from "@/types/store/Auth.ts";
 import AdvancedPermission from "@/components/nav-routing/AdvancedPermission.tsx";
+import {useAuthState} from "@/common/hooks/useAuthState.ts";
 
 const MyHeader: FC = () => {
 
-    const {isAuth, permission} = useAuth();
+    const {isAuth, permission} = useAuthState();
 
     return (
 
