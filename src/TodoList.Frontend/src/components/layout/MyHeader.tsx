@@ -1,11 +1,24 @@
 import {FC} from "react";
 import {Link} from "react-router-dom";
-import ThemeSwitch from "@/components/theme/ThemeSwitch.tsx";
+import ThemeToggle from "@/components/theme/ThemeToggle.tsx";
 import BasicPermission from "@/components/nav-routing/BasicPermission.tsx";
 import Unauthorized from "@/components/nav-routing/Unauthorized.tsx";
 import {Permission} from "@/types/store/Auth.ts";
 import AdvancedPermission from "@/components/nav-routing/AdvancedPermission.tsx";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
+
+import {EllipsisVertical} from 'lucide-react';
+
+import {Button} from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu"
+import {Label} from "@/components/ui/label.tsx";
+
 
 const MyHeader: FC = () => {
 
@@ -13,15 +26,31 @@ const MyHeader: FC = () => {
 
     return (
 
-        <header className="bg-header text-header-foreground flex justify-between p-4">
-            <Link to='/'><span>Todo List</span></Link>
+        <header className="bg-header text-header-foreground flex justify-between p-4 items-center">
+            <Link to='/'><Label className="cursor-pointer">Todo List</Label></Link>
+
             <div className="flex justify-between px-4 items-center">
-                {isAuth ?
-                    permission === Permission.Advanced ?
-                        <AdvancedPermission/>
-                        : <BasicPermission/>
-                    : <Unauthorized/>}
-                <ThemeSwitch/>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <EllipsisVertical/>
+                            <span className="sr-only">Burger menu</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-header">
+                        {
+                            !isAuth
+                                ? <Unauthorized/>
+                                : permission === Permission.Advanced
+                                    ? <AdvancedPermission/>
+                                    : <BasicPermission/>
+                        }
+                        <DropdownMenuSeparator/>
+                        <DropdownMenuItem>
+                            <ThemeToggle/>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </header>
     );

@@ -1,11 +1,16 @@
 import {FC} from "react";
 import {Link} from "react-router-dom";
+import {Label} from "@/components/ui/label.tsx";
+import {DropdownMenuItem, DropdownMenuSeparator} from "@/components/ui/dropdown-menu.tsx";
 import BasicPermission from "@/components/nav-routing/BasicPermission.tsx";
 
 const AdvancedPermission: FC = () => {
     return (
         <>
-            <Link to='/admin' className="mr-5"><span>Admin</span></Link>
+            <DropdownMenuItem>
+                <Link to='/admin'><Label className="cursor-pointer">Admin</Label></Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator/>
             <BasicPermission/>
         </>
     );

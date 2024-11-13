@@ -12,10 +12,13 @@ const HomePage: FC = () => {
 
     return (
         <div>
-            {isAuth
-                ? permission === Permission.Advanced
-                    ? <AdvancedHomePage/> : <BasicHomePage/>
-                : <UnauthorizedHomePage/>}
+            {
+                !isAuth
+                    ? <UnauthorizedHomePage/>
+                    : permission === Permission.Advanced
+                        ? <AdvancedHomePage/>
+                        : <BasicHomePage/>
+            }
         </div>
     );
 };
