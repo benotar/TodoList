@@ -1,5 +1,5 @@
 import {FC} from "react";
-import CardWrapper from "@/components/auth/card-wrapper.tsx";
+import CardWrapper from "@/components/auth/CardWrapper.tsx";
 import {
     Form,
     FormControl,
@@ -21,7 +21,7 @@ const RegisterForm: FC = () => {
     const form = useForm({
         resolver: zodResolver(registerFormSchema),
         defaultValues: {
-            username: '',
+            userName: '',
             password: '',
             name: ''
         }
@@ -43,7 +43,7 @@ const RegisterForm: FC = () => {
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
-                            name="username"
+                            name="userName"
                             render={({field}) => (
                                 <FormItem>
                                     <FormLabel>Username</FormLabel>

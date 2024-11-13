@@ -1,6 +1,6 @@
 import {FC} from "react";
 import {Link} from "react-router-dom";
-import ThemeSwitch from "@/components/theme/theme-switch.tsx";
+import ThemeSwitch from "@/components/theme/ThemeSwitch.tsx";
 import BasicPermission from "@/components/nav-routing/BasicPermission.tsx";
 import Unauthorized from "@/components/nav-routing/Unauthorized.tsx";
 import {Permission} from "@/types/store/Auth.ts";

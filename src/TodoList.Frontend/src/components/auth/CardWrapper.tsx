@@ -5,8 +5,8 @@ import {
     CardHeader,
     CardFooter
 } from "@/components/ui/card.tsx" ;
-import AuthHeader from "@/components/auth/auth-header.tsx";
-import BackButton from "@/components/auth/back-button.tsx";
+import AuthHeader from "@/components/auth/AuthHeader.tsx";
+import BackButton from "@/components/auth/BackButton.tsx";
 
 type CardWrapperProps = {
     label: string;

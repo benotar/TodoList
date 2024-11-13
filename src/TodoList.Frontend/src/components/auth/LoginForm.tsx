@@ -16,7 +16,7 @@ import {loginFormSchema} from '@/schema/index.ts';
 import {v4 as uuidv4} from 'uuid';
 import {toast} from 'sonner'
 import {LoginValues} from "@/types/store/Auth.ts";
-import CardWrapper from "@/components/auth/card-wrapper.tsx";
+import CardWrapper from "@/components/auth/CardWrapper.tsx";
 import {useNavigate} from "react-router-dom";
 import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
