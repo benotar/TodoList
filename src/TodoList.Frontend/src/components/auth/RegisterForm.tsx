@@ -1,5 +1,5 @@
 import {FC} from "react";
-import CardWrapper from "@/components/auth/CardWrapper.tsx";
+import AuthCardWrapper from "@/components/auth/AuthCardWrapper.tsx";
 import {
     Form,
     FormControl,
@@ -32,7 +32,7 @@ const RegisterForm: FC = () => {
     }
 
     return (
-        <CardWrapper
+        <AuthCardWrapper
             label="Create an account"
             title="Register"
             backButtonLink="/login"
@@ -97,7 +97,7 @@ const RegisterForm: FC = () => {
                     </div>
                 </form>
             </Form>
-        </CardWrapper>
+        </AuthCardWrapper>
     );
 };
 

@@ -5,10 +5,10 @@ import {
     CardHeader,
     CardFooter
 } from "@/components/ui/card.tsx" ;
-import AuthHeader from "@/components/auth/AuthHeader.tsx";
-import BackButton from "@/components/auth/BackButton.tsx";
+import AuthCardHeader from "@/components/auth/AuthCardHeader.tsx";
+import AuthBackButton from "@/components/auth/AuthBackButton.tsx";
 
-type CardWrapperProps = {
+type AuthCardWrapperProps = {
     label: string;
     title: string;
     backButtonLink: string;
@@ -16,26 +16,26 @@ type CardWrapperProps = {
     children: ReactNode;
 }
 
-const CardWrapper: FC<CardWrapperProps> = ({
+const AuthCardWrapper: FC<AuthCardWrapperProps> = ({
                                                label,
                                                title,
                                                backButtonLink,
                                                backButtonLabel,
                                                children
-                                           }: CardWrapperProps) => {
+                                           }: AuthCardWrapperProps) => {
     return (
         <Card className="w-full max-w-lg shadow-md">
             <CardHeader>
-                <AuthHeader label={label} title={title}/>
+                <AuthCardHeader title={title} description={label}/>
             </CardHeader>
             <CardContent>
                 {children}
             </CardContent>
             <CardFooter>
-                <BackButton label={backButtonLabel} link={backButtonLink}/>
+                <AuthBackButton label={backButtonLabel} link={backButtonLink}/>
             </CardFooter>
         </Card>
     );
 };
 
-export default CardWrapper;
+export default AuthCardWrapper;

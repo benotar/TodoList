@@ -7,7 +7,7 @@ type BackButtonProps = {
     link: string;
 }
 
-const BackButton: FC<BackButtonProps> = ({label, link}: BackButtonProps) => {
+const AuthBackButton: FC<BackButtonProps> = ({label, link}: BackButtonProps) => {
     return (
         <Button variant="link" className="font-normal w-full" size="default" asChild>
             <Link to={link}>
@@ -17,4 +17,4 @@ const BackButton: FC<BackButtonProps> = ({label, link}: BackButtonProps) => {
     );
 };
 
-export default BackButton;
+export default AuthBackButton;

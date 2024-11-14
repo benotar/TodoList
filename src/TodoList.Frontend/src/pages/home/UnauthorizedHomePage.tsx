@@ -1,13 +1,18 @@
 import {FC} from "react";
-import {Button} from "@/components/ui/button.tsx";
+import HomeCardWrapper from "@/components/home/HomeCardWrapper.tsx";
+import LinkButton from "@/components/shared/LinkButton.tsx";
 
-const UnauthorizedHomePage: FC =  () => {
+const UnauthorizedHomePage: FC = () => {
     return (
-        <div>
-           <h1>Welcome!</h1>
-            <Button>Log in</Button>
-            <Button>Create account</Button>
-        </div>
+       <HomeCardWrapper
+           title="Welcome to Your Personal Todos Manager!"
+           description="Easily organize your tasks, ideas, and todo lists with our intuitive system. Begin managing your todos today!"
+       >
+           <div className="flex flex-col justify-center items-center gap-y-5">
+               <LinkButton label={"Already have an account? Login here."} link={"/login"}/>
+               <LinkButton label={"Don't have an account? Register here."} link={"/register"}/>
+           </div>
+       </HomeCardWrapper>
     );
 };
 

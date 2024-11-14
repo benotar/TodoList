@@ -16,7 +16,7 @@ import {loginFormSchema} from '@/schema/index.ts';
 import {v4 as uuidv4} from 'uuid';
 import {toast} from 'sonner'
 import {LoginValues} from "@/types/store/Auth.ts";
-import CardWrapper from "@/components/auth/CardWrapper.tsx";
+import AuthCardWrapper from "@/components/auth/AuthCardWrapper.tsx";
 import {useNavigate} from "react-router-dom";
 import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
@@ -73,11 +73,11 @@ const LoginForm: FC = () => {
 
     return (
 
-        <CardWrapper
+        <AuthCardWrapper
             label="Login to your account"
             title="Login"
             backButtonLink="/register"
-            backButtonLabel="Dont't have an account? Register here."
+            backButtonLabel="Don't have an account? Register here."
         >
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmitBtn)} className="space-y-6">
@@ -139,7 +139,7 @@ const LoginForm: FC = () => {
                     </div>
                 </form>
             </Form>
-        </CardWrapper>
+        </AuthCardWrapper>
 
 
     );
