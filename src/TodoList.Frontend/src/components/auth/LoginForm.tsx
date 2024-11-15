@@ -134,7 +134,7 @@ const LoginForm: FC = () => {
                             )}
                         />
                         <div>
-                            <Button type="submit" className="w-full text-base" disabled={!isLoading}>Log in</Button>
+                            <Button type="submit" className="w-full text-base mt-2" disabled={!isLoading}>Log in</Button>
                         </div>
                     </div>
                 </form>

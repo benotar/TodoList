@@ -92,7 +92,7 @@ const RegisterForm: FC = () => {
                             )}
                         />
                         <div>
-                            <Button type="submit" className="w-full text-base">Log in</Button>
+                            <Button type="submit" className="w-full text-base mt-2">Log in</Button>
                         </div>
                     </div>
                 </form>
