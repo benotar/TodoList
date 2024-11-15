@@ -12,7 +12,7 @@ const $api: AxiosInstance = axios.create({
 
 $api.interceptors.request.use(config => {
 
-    console.log('interceptor request.');
+    console.log("Interceptor request.");
 
     const {token} = useAuthStore.getState();
 
@@ -29,13 +29,13 @@ $api.interceptors.request.use(config => {
 
 $api.interceptors.response.use(response => response, async error => {
 
-    console.log('interceptor response.');
+    console.log("Interceptor response.");
 
     const originalRequest = error.config;
 
     const errorResponse = error.response;
 
-    if(!error){
+    if(!errorResponse){
 
         console.error('the request did not reach the server or the server did not respond.');
 

@@ -27,17 +27,23 @@ export const useTodoStore = create<TodoSlice>((set) => ({
 
         console.log("Todo fetchAll");
 
-        set({isLoading: true});
+        set({...initialTodoState, isLoading: true});
 
-        const requestResult = await $api.get<Result<FetchTodoResponse[]>>(ENDPOINTS.TODO.GET_TODOS);
+        try {
+            const requestResult = await $api.get<Result<FetchTodoResponse[]>>(ENDPOINTS.TODO.GET_TODOS);
 
-        if (!requestResult?.data?.isSucceed) {
-            set({errorMessage: requestResult?.data?.errorCode || "Fetch Todos error."});
-            return;
+            if (!requestResult?.data?.isSucceed) {
+                set({...initialTodoState, errorMessage: requestResult?.data?.errorCode || "Fetch Todos error."});
+                return;
+            }
+
+            set({...initialTodoState, todos: requestResult.data.data!});
+
+        } catch (error: unknown) {
+
+            console.log("Error in todos fetch: ", error);
+
+            set({...initialTodoState, errorMessage: error.message})
         }
-
-        set({todos: requestResult.data.data!});
-
-        set({isLoading: false});
     }
 }));

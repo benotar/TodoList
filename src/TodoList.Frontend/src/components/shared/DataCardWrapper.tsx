@@ -1,9 +1,10 @@
 import {FC, ReactNode} from "react";
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card.tsx";
 import LinkButton from "@/components/shared/LinkButton.tsx";
+import DataCardHeader from "@/components/shared/DataCardHeader.tsx";
 
 type DataCardWrapperProps = {
-    header: ReactNode;
+    header: string;
     children: ReactNode;
 }
 
@@ -11,7 +12,7 @@ const DataCardWrapper: FC<DataCardWrapperProps> = ({header, children}: DataCardW
     return (
         <Card className="w-full shadow-md">
             <CardHeader>
-                {header}
+                <DataCardHeader title={header}/>
             </CardHeader>
             <CardContent>
                 {children}
