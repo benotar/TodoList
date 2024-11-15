@@ -39,12 +39,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    // CORS
+    app.UseCors(corsConfig.PolicyName);
+    
+    // Auth
     app.UseAuthentication();
-
     app.UseAuthorization();
 
+    // Logger
     app.UseSerilogRequestLogging();
+
+    // Exceptions handling
+    app.UseExceptionHandler();
     
+    // Swagger
     app.UseSwagger();
     app.UseSwaggerUI(config =>
     {
@@ -52,16 +60,16 @@ var app = builder.Build();
 
         config.SwaggerEndpoint("swagger/v1/swagger.json", "TodoList API");
     });
-
-    app.UseExceptionHandler();
-
-    app.UseCors(corsConfig.PolicyName);
     
+    // Controller routing
     app.MapControllers();
 
+    // Standard route for the home page
     app.MapGet("/", () => $"Welcome to the Home Page TodoList API!\nUTC Time: {DateTime.UtcNow}");
 
+    // Server startup login
     Log.Information($"Server started on '{app.Environment.EnvironmentName}' environment.");
 
+    // Launching the program
     app.Run();
 }
