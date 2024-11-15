@@ -11,7 +11,7 @@ const HomePage: FC = () => {
     const {isAuth, permission} = useAuthState();
 
     return (
-        <div>
+        <>
             {
                 !isAuth
                     ? <UnauthorizedHomePage/>
@@ -19,7 +19,7 @@ const HomePage: FC = () => {
                         ? <AdvancedHomePage/>
                         : <BasicHomePage/>
             }
-        </div>
+        </>
     );
 };
 
