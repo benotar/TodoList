@@ -3,7 +3,7 @@ import {create} from "zustand";
 import {persist, createJSONStorage} from 'zustand/middleware';
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
 import {LoginResponse, Result} from "@/types/models/response/AuthResponse.ts";
-import api from "@/common/axios.ts";
+import $api from "@/common/axios.ts";
 import {ENDPOINTS} from "@/common/endpoints.ts";
 import {decodeJwt} from "@/common/jwt/decode.ts";
 
@@ -19,16 +19,16 @@ const initialAuthState: AuthSlice = {
     refresh: async () => {},
 };
 
-export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
+export const useAuthStore = create<AuthSlice>()(persist((set) => ({
     ...initialAuthState,
 
     register: async (by: Register): Promise<void> => {
 
-        console.log('Register');
+        console.log("Register");
 
         set({isLoading: true});
 
-        const requestResult = await api.post<Result<void>>(ENDPOINTS.AUTH.REGISTER, by);
+        const requestResult = await $api.post<Result<void>>(ENDPOINTS.AUTH.REGISTER, by);
 
         if (!requestResult?.data?.isSucceed) {
             set({errorMessage: requestResult?.data?.errorCode || "Register error."});
@@ -40,11 +40,11 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
 
     login: async (by: Login): Promise<void> => {
 
-        console.log('Login');
+        console.log("Login");
 
         set({isLoading: true});
 
-        const requestResult = await api.post<Result<LoginResponse>>(ENDPOINTS.AUTH.LOGIN, by);
+        const requestResult = await $api.post<Result<LoginResponse>>(ENDPOINTS.AUTH.LOGIN, by);
 
         if (!requestResult?.data?.isSucceed) {
             set({errorMessage: requestResult?.data?.errorCode || "Login error."});
@@ -62,11 +62,12 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
     },
 
     logout: async (): Promise<void> => {
-        console.log('Logout');
+
+        console.log("Logout");
 
         set({isLoading: true});
 
-        const requestResult = await api.post<Result<void>>(ENDPOINTS.AUTH.LOGOUT);
+        const requestResult = await $api.post<Result<void>>(ENDPOINTS.AUTH.LOGOUT);
 
         if (!requestResult?.data?.isSucceed) {
             set({errorMessage: requestResult?.data?.errorCode || "Logout error."});
@@ -78,11 +79,11 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
 
     refresh: async (): Promise<void> => {
 
-        console.log('Refresh');
+        console.log("Refresh");
 
         set({isLoading: true});
 
-        const requestResult = await api.post<Result<LoginResponse>>(ENDPOINTS.TOKEN);
+        const requestResult = await $api.post<Result<LoginResponse>>(ENDPOINTS.TOKEN);
 
         if (!requestResult?.data?.isSucceed) {
             set({errorMessage: requestResult?.data?.errorCode || "Refresh error."});
@@ -99,7 +100,7 @@ export const useAuthSlice = create<AuthSlice>()(persist((set) => ({
         set({isLoading: false});
     }
 }), {
-    name: 'auth-storage',
+    name: "auth-storage",
     version: 1,
     storage: createJSONStorage(() => sessionStorage)
 }));

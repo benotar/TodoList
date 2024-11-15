@@ -20,7 +20,7 @@ import AuthCardWrapper from "@/components/auth/AuthCardWrapper.tsx";
 import {useNavigate} from "react-router-dom";
 import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
-import {useAuthSlice} from "@/store/authSlice.ts";
+import {useAuthStore} from "@/store/authStore.ts";
 
 const LoginForm: FC = () => {
 
@@ -52,7 +52,7 @@ const LoginForm: FC = () => {
 
             await login(loginValues);
 
-            const currentErrorMessage = useAuthSlice.getState().errorMessage;
+            const currentErrorMessage = useAuthStore.getState().errorMessage;
 
             if (currentErrorMessage) {
                 toast.error(currentErrorMessage || "Unexpected error.");

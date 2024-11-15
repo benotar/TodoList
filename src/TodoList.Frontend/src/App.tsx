@@ -6,6 +6,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import LoginPage from "@/pages/auth/login/LoginPage.tsx";
 import RegisterPage from "@/pages/auth/register/RegisterPage.tsx";
 import LogoutPage from "@/pages/auth/logout/LogoutPage.tsx";
+import TodoPage from "@/pages/todo/TodoPage.tsx";
 
 const App: FC = () => {
     return(
@@ -16,6 +17,7 @@ const App: FC = () => {
                     <Route path="login" element={<LoginPage/>}/>
                     <Route path="register" element={<RegisterPage/>}/>
                     <Route path="logout" element={<LogoutPage/>}/>
+                    <Route path="todo" element={<TodoPage/>}/>
                     <Route path="*" element={<NotFoundPage/>}/>
                 </Route>
             </Routes>

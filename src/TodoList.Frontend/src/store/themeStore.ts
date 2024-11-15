@@ -7,7 +7,7 @@ const initialThemeState: ThemeSlice = {
     setTheme: () => {}
 };
 
-export const useThemeSlice = create<ThemeSlice>()(
+export const useThemeStore = create<ThemeSlice>()(
     persist(
         (set) => ({
             ...initialThemeState,

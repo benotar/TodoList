@@ -22,9 +22,9 @@ export type AuthActions = {
 
 export type AuthSlice = AuthState & AuthActions;
 
+
 export type LoginValues = {
     userName: string;
     password: string;
     fingerprint: string;
 };
-

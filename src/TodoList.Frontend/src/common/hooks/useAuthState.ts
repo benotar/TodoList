@@ -1,4 +1,4 @@
-import {useAuthSlice} from "@/store/authSlice.ts";
+import {useAuthStore} from "@/store/authStore.ts";
 import {useShallow} from "zustand/shallow";
 
 export const useAuthState = () => {
@@ -8,7 +8,7 @@ export const useAuthState = () => {
         token,
         errorMessage,
         isLoading,
-    } = useAuthSlice(useShallow((state) => ({
+    } = useAuthStore(useShallow((state) => ({
         isAuth: state.isAuth,
         permission: state.permission,
         token: state.token,

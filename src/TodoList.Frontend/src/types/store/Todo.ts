@@ -1,14 +1,15 @@
 import {CreateTodo, UpdateTodo} from "@/types/models/request/TodoRequest.ts";
-import {Todo} from "@/types/entities/Todo.ts";
+import {FetchTodoResponse} from "@/types/models/response/TodoResponse.ts";
 
 export type TodoState = {
-    todos: Todo[];
+    todos: FetchTodoResponse[];
     errorMessage: string | null;
     isLoading: boolean;
 };
 
 export type TodoActions = {
-    get: () => Promise<void>;
+    // fetchById: () => Promise<void>;
+    fetchAll: () => Promise<void>;
     create: (by: CreateTodo) => Promise<void>;
     update: (by: UpdateTodo) => Promise<void>;
     delete: (todoId: string) => Promise<void>;

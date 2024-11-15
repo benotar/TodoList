@@ -25,8 +25,7 @@ const MyHeader: FC = () => {
     const {isAuth, permission} = useAuthState();
 
     return (
-
-        <header className="bg-header text-header-foreground flex justify-between p-4 items-center">
+        <header className="bg-header text-header-foreground flex justify-between p-4 items-center w-full">
             <Link to='/'><Label className="cursor-pointer">Todo List</Label></Link>
 
             <div className="flex justify-between px-4 items-center">

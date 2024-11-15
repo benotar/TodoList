@@ -3,7 +3,7 @@ import {Navigate} from "react-router-dom";
 import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
 import {toast} from "sonner";
-import {useAuthSlice} from "@/store/authSlice.ts";
+import {useAuthStore} from "@/store/authStore.ts";
 
 const LogoutPage: FC = () => {
 
@@ -17,7 +17,7 @@ const LogoutPage: FC = () => {
 
                 await logout();
 
-                const currentErrorMessage = useAuthSlice.getState().errorMessage;
+                const currentErrorMessage = useAuthStore.getState().errorMessage;
 
                 if (currentErrorMessage) {
                     toast.error(currentErrorMessage || "Unexpected error.");
