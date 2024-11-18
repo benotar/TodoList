@@ -21,11 +21,12 @@ import {useNavigate} from "react-router-dom";
 import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
 import {useAuthStore} from "@/store/authStore.ts";
+import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 
 const LoginForm: FC = () => {
 
     const {login} = useAuthAction();
-    const { isLoading} = useAuthState();
+    const {isLoading} = useAuthState();
     const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -45,30 +46,25 @@ const LoginForm: FC = () => {
             fingerprint: uuidv4()
         };
 
-        console.log('Login handling');
+        console.log("Login handling");
         console.table(loginValues);
 
-        try {
+        await login(loginValues);
 
-            await login(loginValues);
+        const currentErrorMessage = useAuthStore.getState().errorMessage;
 
-            const currentErrorMessage = useAuthStore.getState().errorMessage;
+        if (currentErrorMessage) {
 
-            if (currentErrorMessage) {
-                toast.error(currentErrorMessage || "Unexpected error.");
-                return;
-            }
+            toast.error(currentErrorMessage || ErrorCode.UnknownError);
 
-            toast.success("You are successfully logged in.");
-
-            navigate('/');
-        } catch (error: unknown) {
-            console.log('Error catch: ', error);
-
-            toast.error('An error occurred on the server.');
-        } finally {
-            form.reset();
+            return;
         }
+
+        toast.success("You are successfully logged in.");
+
+        navigate("/");
+
+        form.reset();
     };
 
     return (
@@ -134,7 +130,9 @@ const LoginForm: FC = () => {
                             )}
                         />
                         <div>
-                            <Button type="submit" className="w-full text-base mt-2" disabled={!isLoading}>Log in</Button>
+                            <Button type="submit" className="w-full text-base mt-2" disabled={isLoading}>
+                                {isLoading ? 'Logging in...' : 'Log in'}
+                            </Button>
                         </div>
                     </div>
                 </form>

@@ -1,43 +1,39 @@
-import {FC, useEffect, useState} from "react";
+import {FC, useEffect} from "react";
 import {Navigate} from "react-router-dom";
 import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
 import {toast} from "sonner";
 import {useAuthStore} from "@/store/authStore.ts";
+import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 
 const LogoutPage: FC = () => {
 
     const {logout} = useAuthAction();
     const {isAuth} = useAuthState();
-    const [isLoggedOut, setIsLoggedOut] = useState(false);
 
     useEffect(() => {
+
         const handleLogout = async (): Promise<void> => {
-            try {
 
-                await logout();
+            await logout();
 
-                const currentErrorMessage = useAuthStore.getState().errorMessage;
+            const currentErrorMessage = useAuthStore.getState().errorMessage;
 
-                if (currentErrorMessage) {
-                    toast.error(currentErrorMessage || "Unexpected error.");
-                    return;
-                }
+            if (currentErrorMessage) {
 
-                toast.success("You have successfully logged out.");
+                toast.error(currentErrorMessage || ErrorCode.UnknownError);
 
-                setIsLoggedOut(true);
-            } catch (error: unknown) {
-                console.log('Error catch: ', error);
-
-                toast.error('An error occurred on the server.');
+                return;
             }
+
+            toast.success("You have successfully logged out.");
         }
 
-        if (isAuth && !isLoggedOut) {
+        if (isAuth) {
             void handleLogout();
         }
-    }, [isAuth, logout, isLoggedOut]);
+
+    }, [isAuth, logout]);
 
     return (
         <Navigate to={"/"}/>

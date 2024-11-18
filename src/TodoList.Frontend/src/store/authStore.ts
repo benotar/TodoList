@@ -1,26 +1,22 @@
-import {AuthSlice} from "@/types/store/Auth.ts";
+import {AuthSlice, AuthState} from "@/types/store/Auth.ts";
 import {create} from "zustand";
 import {persist, createJSONStorage} from 'zustand/middleware';
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
-import {LoginResponse, Result} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode, LoginResponse, RefreshResponse, Result} from "@/types/models/response/AuthResponse.ts";
 import $api from "@/common/axios.ts";
 import {ENDPOINTS} from "@/common/endpoints.ts";
 import {decodeJwt} from "@/common/jwt/decode.ts";
 
-const initialAuthState: AuthSlice = {
+const initState: AuthState = {
     isAuth: false,
     permission: null,
     token: null,
     errorMessage: null,
     isLoading: false,
-    register: async () => {},
-    login: async () => {},
-    logout: async () => {},
-    refresh: async () => {},
 };
 
-export const useAuthStore = create<AuthSlice>()(persist((set) => ({
-    ...initialAuthState,
+export const useAuthStore = create<AuthSlice>()(persist((set, get) => ({
+    ...initState,
 
     register: async (by: Register): Promise<void> => {
 
@@ -28,14 +24,34 @@ export const useAuthStore = create<AuthSlice>()(persist((set) => ({
 
         set({isLoading: true});
 
-        const requestResult = await $api.post<Result<void>>(ENDPOINTS.AUTH.REGISTER, by);
+        try {
+            const serverResponse = await $api.post<Result<void>>(ENDPOINTS.AUTH.REGISTER, by);
 
-        if (!requestResult?.data?.isSucceed) {
-            set({errorMessage: requestResult?.data?.errorCode || "Register error."});
-            return;
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponseData || !serverResponseData.isSucceed) {
+
+                console.log("Register failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                const {clearAuthAndSetErrorMessage} = get();
+
+                clearAuthAndSetErrorMessage(ErrorCode.RegisterFailed);
+
+                return;
+            }
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Register exception: ", error.message);
+            }
+
+            const {clearAuthAndSetErrorMessage} = get();
+
+            clearAuthAndSetErrorMessage(ErrorCode.UnknownError);
+
+        } finally {
+            set({isLoading: false});
         }
-
-        set({isLoading: false});
     },
 
     login: async (by: Login): Promise<void> => {
@@ -44,21 +60,43 @@ export const useAuthStore = create<AuthSlice>()(persist((set) => ({
 
         set({isLoading: true});
 
-        const requestResult = await $api.post<Result<LoginResponse>>(ENDPOINTS.AUTH.LOGIN, by);
+        try {
+            const serverResponse = await $api.post<Result<LoginResponse>>(ENDPOINTS.AUTH.LOGIN, by);
 
-        if (!requestResult?.data?.isSucceed) {
-            set({errorMessage: requestResult?.data?.errorCode || "Login error."});
-            return;
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponseData || !serverResponseData.isSucceed) {
+
+                console.log("Login failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                const {clearAuthAndSetErrorMessage} = get();
+
+                clearAuthAndSetErrorMessage(ErrorCode.AuthenticationFailed);
+
+                return;
+            }
+
+            const accessToken = serverResponseData.data?.accessToken;
+
+            if (accessToken) {
+
+                const decodedJwt = decodeJwt(accessToken);
+
+                set({...initState, token: accessToken, permission: decodedJwt?.permission, isAuth: true});
+            }
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Login exception: ", error.message);
+            }
+
+            const {clearAuthAndSetErrorMessage} = get();
+
+            clearAuthAndSetErrorMessage(ErrorCode.UnknownError);
+
+        } finally {
+            set({isLoading: false});
         }
-
-        const requestToken = requestResult.data?.data?.accessToken;
-
-        if (requestToken) {
-            const decodedJwt = decodeJwt(requestToken);
-            set({permission: decodedJwt?.permission, token: requestToken, isAuth: true, errorMessage: null});
-        }
-
-        set({isLoading: false});
     },
 
     logout: async (): Promise<void> => {
@@ -67,14 +105,33 @@ export const useAuthStore = create<AuthSlice>()(persist((set) => ({
 
         set({isLoading: true});
 
-        const requestResult = await $api.post<Result<void>>(ENDPOINTS.AUTH.LOGOUT);
+        try {
+            const serverResponse = await $api.post<Result<void>>(ENDPOINTS.AUTH.LOGOUT);
 
-        if (!requestResult?.data?.isSucceed) {
-            set({errorMessage: requestResult?.data?.errorCode || "Logout error."});
-            return;
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponse || !serverResponseData.isSucceed) {
+
+                console.log("Log out failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+            }
+
+            const {clearAuth} = get();
+
+            clearAuth();
+
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Log out exception: ", error.message);
+            }
+
+            const {clearAuth} = get();
+
+            clearAuth();
+
+        } finally {
+            set({isLoading: false});
         }
-
-        set({isAuth: false, token: null, errorMessage: null, permission: null});
     },
 
     refresh: async (): Promise<void> => {
@@ -83,24 +140,58 @@ export const useAuthStore = create<AuthSlice>()(persist((set) => ({
 
         set({isLoading: true});
 
-        const requestResult = await $api.post<Result<LoginResponse>>(ENDPOINTS.TOKEN);
+        try {
+            const serverResponse = await $api.post<Result<RefreshResponse>>(ENDPOINTS.TOKEN);
 
-        if (!requestResult?.data?.isSucceed) {
-            set({errorMessage: requestResult?.data?.errorCode || "Refresh error."});
-            return;
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponseData || !serverResponseData.isSucceed) {
+
+                console.log("Refresh failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                const {clearAuthAndSetErrorMessage} = get();
+
+                clearAuthAndSetErrorMessage(ErrorCode.AuthenticationFailed);
+
+                return;
+            }
+
+            const accessToken = serverResponseData.data?.accessToken;
+
+            if (accessToken) {
+                const decodedJwt = decodeJwt(accessToken);
+                set({...initState, token: accessToken, permission: decodedJwt?.permission, isAuth: true});
+            }
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Refresh exception: ", error.message);
+            }
+
+            const {clearAuthAndSetErrorMessage} = get();
+
+            clearAuthAndSetErrorMessage(ErrorCode.UnknownError);
+
+        } finally {
+            set({isLoading: false});
         }
+    },
 
-        const requestToken = requestResult.data?.data?.accessToken;
+    clearAuthAndSetErrorMessage: (errorCore: ErrorCode): void => {
+        set({
+            ...initState,
+            errorMessage: errorCore
+        });
+    },
 
-        if (requestToken) {
-            const decodedJwt = decodeJwt(requestToken);
-            set({permission: decodedJwt?.permission, token: requestToken, isAuth: true, errorMessage: null});
-        }
-
-        set({isLoading: false});
+    clearAuth: (): void => {
+        set({
+            ...initState
+        });
     }
 }), {
     name: "auth-storage",
     version: 1,
-    storage: createJSONStorage(() => sessionStorage)
+    storage: createJSONStorage(() => sessionStorage),
+    partialize: (state) => ({isAuth: state.isAuth, permission: state.permission})
 }));

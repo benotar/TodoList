@@ -28,7 +28,7 @@ enum AdminActions {
 enum AuthActions {
     Register ='register',
     Login = 'login',
-    Logout = 'logout'
+    Logout = 'logoutg'
 }
 enum TodoActions  {
     GetById = 'get-by-id',
