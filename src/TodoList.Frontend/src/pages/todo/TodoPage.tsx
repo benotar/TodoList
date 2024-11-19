@@ -1,9 +1,9 @@
 import {FC} from "react";
 import TodosTable from "@/components/todo/TodosTable.tsx";
-
 import DataCardWrapper from "@/components/shared/DataCardWrapper.tsx";
 
 const TodoPage: FC = () => {
+
     return (
         <DataCardWrapper
             header={

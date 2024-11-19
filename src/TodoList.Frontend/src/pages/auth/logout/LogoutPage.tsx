@@ -36,7 +36,7 @@ const LogoutPage: FC = () => {
     }, [isAuth, logout]);
 
     return (
-        <Navigate to={"/"}/>
+        <Navigate to={"/login"}/>
     );
 };
 
