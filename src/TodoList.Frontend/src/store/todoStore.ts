@@ -1,11 +1,11 @@
 import {TodoSlice} from "@/types/store/Todo.ts";
 import {create} from "zustand";
 import {ENDPOINTS} from "@/common/endpoints.ts";
-import {Result} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode, Result} from "@/types/models/response/AuthResponse.ts";
 import $api from "@/common/axios.ts";
 import {FetchTodoResponse} from "@/types/models/response/TodoResponse.ts";
 
-const initialTodoState: TodoSlice = {
+const initState: TodoSlice = {
     todos: [],
     errorMessage: null,
     isLoading: false,
@@ -17,33 +17,54 @@ const initialTodoState: TodoSlice = {
     update: async () => {
     },
     delete: async () => {
+    },
+    clearStore: () => {
     }
 };
 
-export const useTodoStore = create<TodoSlice>((set) => ({
-    ...initialTodoState,
+export const useTodoStore = create<TodoSlice>((set, get) => ({
+    ...initState,
 
     fetchAll: async (): Promise<void> => {
 
-        console.log("Todo fetchAll");
+        console.log("Todo Fetch All");
 
-        set({...initialTodoState, isLoading: true});
+        set({isLoading: true});
 
         try {
-            const requestResult = await $api.get<Result<FetchTodoResponse[]>>(ENDPOINTS.TODO.GET_TODOS);
+            const serverResponse = await $api.get<Result<FetchTodoResponse[]>>(ENDPOINTS.TODO.GET_TODOS);
 
-            if (!requestResult?.data?.isSucceed) {
-                set({...initialTodoState, errorMessage: requestResult?.data?.errorCode || "Fetch Todos error."});
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponse || !serverResponseData.isSucceed || !serverResponseData.data) {
+
+                console.log("Todo Fetch All failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
                 return;
             }
 
-            set({...initialTodoState, todos: requestResult.data.data!});
+            set({
+                todos: serverResponseData.data
+            });
 
-        } catch (error: unknown) {
+        } catch (error) {
 
-            console.log("Error in todos fetch: ", error);
+            if (error instanceof Error) {
+                console.log("Log out exception: ", error.message);
+            }
 
-            set({...initialTodoState, errorMessage: error.message})
+            const {clearStore} = get();
+
+            clearStore();
+
+        } finally {
+            set({isLoading: false});
         }
+    },
+
+    clearStore: (): void => {
+        set({
+            ...initState
+        });
     }
 }));

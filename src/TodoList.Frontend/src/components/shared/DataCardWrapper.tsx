@@ -10,7 +10,7 @@ type DataCardWrapperProps = {
 
 const DataCardWrapper: FC<DataCardWrapperProps> = ({header, children}: DataCardWrapperProps) => {
     return (
-        <Card className="w-full shadow-md">
+        <Card className="shadow-md container">
             <CardHeader>
                 <DataCardHeader title={header}/>
             </CardHeader>

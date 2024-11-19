@@ -13,6 +13,7 @@ export type TodoActions = {
     create: (by: CreateTodo) => Promise<void>;
     update: (by: UpdateTodo) => Promise<void>;
     delete: (todoId: string) => Promise<void>;
+    clearStore: () => void;
 };
 
 
