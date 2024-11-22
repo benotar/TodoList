@@ -23,4 +23,4 @@ export const useAuthState = () => {
         errorMessage,
         isLoading,
     };
-}
+};
