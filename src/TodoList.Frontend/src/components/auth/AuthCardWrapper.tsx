@@ -24,7 +24,7 @@ const AuthCardWrapper: FC<AuthCardWrapperProps> = ({
                                                children
                                            }: AuthCardWrapperProps) => {
     return (
-        <Card className="w-full max-w-lg shadow-md">
+        <Card className="w-2/3">
             <CardHeader>
                 <AuthCardHeader title={title} description={label}/>
             </CardHeader>

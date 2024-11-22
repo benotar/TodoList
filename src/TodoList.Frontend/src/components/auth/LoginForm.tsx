@@ -19,14 +19,12 @@ import {LoginValues} from "@/types/store/Auth.ts";
 import AuthCardWrapper from "@/components/auth/AuthCardWrapper.tsx";
 import {useNavigate} from "react-router-dom";
 import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
-import {useAuthState} from "@/common/hooks/useAuthState.ts";
 import {useAuthStore} from "@/store/authStore.ts";
 import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 
 const LoginForm: FC = () => {
 
     const {login} = useAuthAction();
-    const {isLoading} = useAuthState();
     const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -61,9 +59,7 @@ const LoginForm: FC = () => {
         }
 
         toast.success("You are successfully logged in.");
-
         navigate("/");
-
         form.reset();
     };
 
@@ -76,8 +72,8 @@ const LoginForm: FC = () => {
             backButtonLabel="Don't have an account? Register here."
         >
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmitBtn)} className="space-y-6">
-                    <div className="space-y-4">
+                <form onSubmit={form.handleSubmit(handleSubmitBtn)}>
+                    <div className="space-y-2">
                         <FormField
                             control={form.control}
                             name='userName'
@@ -130,8 +126,8 @@ const LoginForm: FC = () => {
                             )}
                         />
                         <div>
-                            <Button type="submit" className="w-full text-base mt-2" disabled={isLoading}>
-                                {isLoading ? 'Logging in...' : 'Log in'}
+                            <Button type="submit" size="sm" className="w-full text-base mt-2">
+                                Log in
                             </Button>
                         </div>
                     </div>

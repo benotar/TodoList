@@ -39,8 +39,8 @@ const RegisterForm: FC = () => {
             backButtonLabel="Already have an account? Login here."
         >
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <div className="space-y-2">
                         <FormField
                             control={form.control}
                             name="userName"
@@ -92,7 +92,9 @@ const RegisterForm: FC = () => {
                             )}
                         />
                         <div>
-                            <Button type="submit" className="w-full text-base mt-2">Log in</Button>
+                            <Button type="submit" size="sm" className="w-full text-base mt-2">
+                                Register
+                            </Button>
                         </div>
                     </div>
                 </form>

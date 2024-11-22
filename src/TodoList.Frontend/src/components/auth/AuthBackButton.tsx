@@ -9,8 +9,15 @@ type BackButtonProps = {
 
 const AuthBackButton: FC<BackButtonProps> = ({label, link}: BackButtonProps) => {
     return (
-        <Button variant="link" className="font-normal w-full" size="default" asChild>
-            <Link to={link}>
+        <Button
+            className="font-normal text-wrap text-center"
+            variant="link"
+            size="sm"
+            asChild
+        >
+            <Link
+                to={link}
+            >
                 {label}
             </Link>
         </Button>
