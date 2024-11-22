@@ -25,10 +25,10 @@ const MyHeader: FC = () => {
     const {isAuth, permission} = useAuthState();
 
     return (
-        <header className="bg-header text-header-foreground flex justify-between p-4 items-center w-full">
-            <Link to='/'><Label className="cursor-pointer">Todo List</Label></Link>
+        <header className="bg-header flex justify-between items-center px-2.5 py-2">
 
-            <div className="flex justify-between px-4 items-center">
+            <Link to='/'><Label className="cursor-pointer">Todo List</Label></Link>
+            <div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">

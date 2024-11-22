@@ -10,8 +10,15 @@ type LinkButtonProps = {
 
 const LinkButton: FC<LinkButtonProps> = ({label, link}: LinkButtonProps) => {
     return (
-        <Button variant="ghost" className="px-10 py-2" size="default" asChild>
-            <Link to={link} >
+        <Button
+            variant="ghost"
+            className="w-10/12"
+            size="sm"
+            asChild
+        >
+            <Link
+                to={link}
+            >
                 {label}
             </Link>
         </Button>

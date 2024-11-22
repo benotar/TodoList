@@ -14,11 +14,11 @@ const LayoutPage: FC = () => {
     }
 
     return (
-            <div className="flex flex-col w-full h-screen items-center justify-center">
-                <MyHeader/>
-                <Content/>
-                <MyFooter/>
-            </div>
+        <div className="flex flex-col min-h-screen">
+            <MyHeader/>
+            <Content/>
+            <MyFooter/>
+        </div>
     );
 };
 

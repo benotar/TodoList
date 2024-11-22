@@ -6,7 +6,7 @@ const Content: FC = () => {
 
 
     return (
-        <main className="container flex-auto flex justify-center items-center flex-col mx-auto px-10">
+        <main className="flex flex-auto items-center justify-center">
             <Outlet/>
         </main>
     );
