@@ -5,10 +5,10 @@ import HomeCardWrapper from "@/components/home/HomeCardWrapper.tsx";
 const BasicHomePage: FC =  () => {
     return (
         <HomeCardWrapper
-            title="Basic Dashboard"
-            description="Manage your todos. Keep track of all activities and maintain a well-organized todo environment for your team."
+            title="Welcome back!"
+            description="Manage your todos"
         >
-            <div className="flex flex-col justify-center items-center gap-y-5">
+            <div className="flex justify-center items-center">
                 <LinkButton label={"Manage todos"} link={"/todo"}/>
             </div>
         </HomeCardWrapper>

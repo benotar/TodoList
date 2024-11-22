@@ -5,8 +5,8 @@ import LinkButton from "@/components/shared/LinkButton.tsx";
 const UnauthorizedHomePage: FC = () => {
     return (
         <HomeCardWrapper
-            title="Welcome to Your Personal Todos Manager!"
-            description="Begin managing your todos today!"
+            title="Welcome to Todos Manager!"
+            description="Begin managing your todos!"
         >
             <div className="flex gap-x-5">
                 <LinkButton label={"Login"} link={"/login"}/>

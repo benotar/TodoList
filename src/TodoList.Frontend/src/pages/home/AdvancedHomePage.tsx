@@ -6,11 +6,11 @@ const AdvancedHomePage: FC =  () => {
     return (
         <HomeCardWrapper
             title="Admin Dashboard"
-            description="Manage users and todos. Keep track of all activities and maintain a well-organized todo environment for your team."
+            description="Manage users and todos"
         >
-            <div className="flex flex-col justify-center items-center gap-y-5">
-                <LinkButton label={"View Admin Management"} link={"/admin"}/>
-                <LinkButton label={"Manage todos"} link={"/todo"}/>
+            <div className="flex gap-x-5">
+                <LinkButton label={"Admin "} link={"/admin"}/>
+                <LinkButton label={"Todos"} link={"/todo"}/>
             </div>
         </HomeCardWrapper>
     );
