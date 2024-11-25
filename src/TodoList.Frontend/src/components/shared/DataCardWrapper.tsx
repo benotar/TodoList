@@ -8,9 +8,12 @@ type DataCardWrapperProps = {
     children: ReactNode;
 }
 
-const DataCardWrapper: FC<DataCardWrapperProps> = ({header, children}: DataCardWrapperProps) => {
+const DataCardWrapper: FC<DataCardWrapperProps> = ({
+                                                       header,
+                                                       children
+                                                   }: DataCardWrapperProps) => {
     return (
-        <Card className="shadow-md container">
+        <Card className="w-2/3 md:w-1/2 xl:w-1/4 2xl:w-3/12">
             <CardHeader>
                 <DataCardHeader title={header}/>
             </CardHeader>

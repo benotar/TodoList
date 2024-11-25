@@ -8,6 +8,12 @@ export default {
   ],
   theme: {
   	extend: {
+		screens: {
+			// my custom md breakpoint
+			'my-md': '500px',
+			'lgx' : '1440px',
+			'2k' : '2560px'
+		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

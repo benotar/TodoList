@@ -15,17 +15,15 @@ const HomePage: FC = () => {
     }, [isAuth]);
 
     return (
-        <div className="container">
-            <div className="flex flex-col items-center">
-                {
-                    !isAuth
-                        ? <UnauthorizedHomePage/>
-                        : permission === Permission.Advanced
-                            ? <AdvancedHomePage/>
-                            : <BasicHomePage/>
-                }
-            </div>
-        </div>
+        <>
+            {
+                !isAuth
+                    ? <UnauthorizedHomePage/>
+                    : permission === Permission.Advanced
+                        ? <AdvancedHomePage/>
+                        : <BasicHomePage/>
+            }
+        </>
     );
 };
 
