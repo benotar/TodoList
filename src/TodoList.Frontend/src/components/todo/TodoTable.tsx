@@ -4,6 +4,8 @@ import {
     getCoreRowModel,
     useReactTable,
     getPaginationRowModel,
+    ColumnFiltersState,
+    getFilteredRowModel
 } from "@tanstack/react-table";
 
 import {
@@ -16,25 +18,36 @@ import {
 } from "@/components/ui/table.tsx";
 
 import {Button} from "@/components/ui/button.tsx";
+import {useState} from "react";
+import {TodoTableToolbar} from "@/components/todo/TodoTableToolbar.tsx";
 
-type DataTableProps<TData, TValue> = {
+type TodoTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
 }
 
-export function DataTable<TData, TValue>({
+export function TodoTable<TData, TValue>({
                                              columns,
                                              data,
-                                         }: DataTableProps<TData, TValue>) {
+                                         }: TodoTableProps<TData, TValue>) {
+
+    const[columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
     const table = useReactTable({
         data,
         columns,
+        state: {
+            columnFilters
+        },
+        onColumnFiltersChange: setColumnFilters,
+        getFilteredRowModel: getFilteredRowModel(),
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
     })
 
     return (
-        <div className="flex flex-col items-center justify-center gap-2">
+        <div className="space-y-4">
+            <TodoTableToolbar table={table} />
             {/* Table */}
             <div className="rounded-md border w-full">
                 <Table>
@@ -81,7 +94,7 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
 
-        {/* Pagination */}
+            {/* Pagination */}
             <div className="flex items-center justify-end space-x-2 py-4">
                 <Button
                     variant="outline"

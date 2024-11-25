@@ -2,12 +2,16 @@ import {FC} from "react";
 
 type DataCardHeaderProps = {
     title: string;
+    description: string;
 }
 
-const DataCardHeader: FC<DataCardHeaderProps> = ({title}: DataCardHeaderProps) => {
+const DataCardHeader: FC<DataCardHeaderProps> = ({title, description}: DataCardHeaderProps) => {
     return (
-        <div className="container flex flex-col gap-y-4 items-center justify-center">
-            <h1 className="text-3xl font-bold">{title}</h1>
+        <div className="flex flex-col gap-y-4 items-start ml-2 mb-2">
+            <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
+            <p className="text-muted-foreground">
+                {description}
+            </p>
         </div>
     );
 };

@@ -5,17 +5,22 @@ import DataCardHeader from "@/components/shared/DataCardHeader.tsx";
 
 type DataCardWrapperProps = {
     header: string;
+    description: string;
     children: ReactNode;
 }
 
 const DataCardWrapper: FC<DataCardWrapperProps> = ({
                                                        header,
+                                                       description,
                                                        children
                                                    }: DataCardWrapperProps) => {
     return (
         <Card className="w-2/3 md:w-1/2 xl:w-1/4 2xl:w-3/12">
             <CardHeader>
-                <DataCardHeader title={header}/>
+                <DataCardHeader
+                    title={header}
+                    description={description}
+                />
             </CardHeader>
             <CardContent>
                 {children}

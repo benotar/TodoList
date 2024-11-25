@@ -26,3 +26,10 @@ export const registerFormSchema = z.object({
         message: 'Please enter your name.'
     })
 });
+
+export const todoTableSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    status: z.string(),
+    priority: z.string(),
+});
