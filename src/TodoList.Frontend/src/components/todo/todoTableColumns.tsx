@@ -15,6 +15,9 @@ import {
 
 import {TodoTableRowActions} from "@/components/todo/TodoTableRowActions.tsx";
 import {DataTableColumnHeader} from "@/components/shared/DataTableColumnHeader.tsx";
+import {todoTableSchema} from "@/schema";
+import TodoCompleted from "@/components/todo/TodoCompleted.tsx";
+
 
 
 export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
@@ -24,7 +27,8 @@ export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
             <DataTableColumnHeader column={column} title="Id"/>
         ),
         cell: ({row}) => {
-            const guid = row.getValue("todoId") as string;
+            const todos = todoTableSchema.parse(row.original);
+            const guid = todos.todoId;
             const shortGuid = `${guid.slice(0, 8)} ... ${guid.slice(-4)}`;
 
             return (
@@ -49,7 +53,28 @@ export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
     },
     {
         accessorKey: "isCompleted",
-        header: "Status"
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Completed"/>
+        ),
+        cell: ({row}) => {
+            const todos = todoTableSchema.parse(row.original);
+
+            return (
+                // <div className="ml-5">
+                //     <Checkbox
+                //         checked={todos.isCompleted}
+                //         onCheckedChange={(value) => alert(value)}
+                //         className="translate-y-[2px] ml-5"
+                //     />
+                // </div>
+
+                <TodoCompleted
+                    isCompleted={todos.isCompleted}
+                    todoId = {todos.todoId}
+                    className={"ml-6 translate-y-[2px]"}
+                />
+            );
+        }
     },
     {
         id: "actions",

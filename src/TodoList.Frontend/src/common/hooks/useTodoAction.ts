@@ -3,12 +3,15 @@ import {useTodoStore} from "@/store/todoStore.ts";
 
 export const useTodoAction = () => {
     const {
-        fetchAll
+        fetchAll,
+        toggle
     } = useTodoStore(useShallow((state) => ({
-        fetchAll: state.fetchAll
+        fetchAll: state.fetchAll,
+        toggle: state.toggle
     })));
 
     return {
-        fetchAll
+        fetchAll,
+        toggle
     };
 };
