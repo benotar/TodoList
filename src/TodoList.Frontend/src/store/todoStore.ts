@@ -100,7 +100,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
             clearStore();
 
             return null;
-            
+
         } finally {
             set({isLoading: false});
         }

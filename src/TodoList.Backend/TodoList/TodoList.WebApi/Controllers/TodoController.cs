@@ -23,7 +23,7 @@ public class TodoController : BaseController
     public TodoController(ITodoService todoService) => _todoService = todoService;
 
     /// <summary>
-    /// Retrieves a todo item by its ID.
+    /// Retrieve a todo item by its ID.
     /// </summary>
     /// <param name="requestModel">The request model containing the unique identifier of the todo item.</param>
     /// <response code="200">Todo item retrieved successfully.</response>
@@ -34,13 +34,7 @@ public class TodoController : BaseController
     ///
     /// **Example Request:**
     /// 
-    /// GET http://localhost:5000/todo/get-by-id
-    ///
-    /// ```json
-    /// {
-    ///    "todoId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    /// }
-    /// ```
+    /// GET http://localhost:5000/todo/get-by-id?todoId=3fa85f64-5717-4562-b3fc-2c963f66afa6
     /// 
     /// **Example Response:**
     /// 
@@ -61,7 +55,7 @@ public class TodoController : BaseController
     [ProducesResponseType(typeof(Result<GetTodoByIdResponseModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Result<GetTodoByIdResponseModel>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(Result<CustomValidationProblemDetails>), StatusCodes.Status422UnprocessableEntity)]
-    public async Task<Result<GetTodoByIdResponseModel>> GetById([FromBody]GetTodoByIdRequestModel requestModel)
+    public async Task<Result<GetTodoByIdResponseModel>> GetById([FromQuery]GetTodoByIdRequestModel requestModel)
     {
         var todoResult = await _todoService.GetByIdAsync(requestModel.TodoId, UserId);
 
@@ -81,7 +75,7 @@ public class TodoController : BaseController
     }
 
     /// <summary>
-    /// Retrieves all todo items for the current user.
+    /// Retrieve all todo items for the current user.
     /// </summary>
     /// <response code="200">List of todo items retrieved successfully.</response>
     /// <response code="401">Unauthorized. The user is not authenticated.</response>
@@ -135,7 +129,7 @@ public class TodoController : BaseController
     }
 
     /// <summary>
-    /// Creates a new todo item.
+    /// Create a new todo item.
     /// </summary>
     /// <param name="request">The request model containing the details of the todo item.</param>
     /// <response code="200">Todo item created successfully.</response>
@@ -168,7 +162,7 @@ public class TodoController : BaseController
     }
 
     /// <summary>
-    /// Updates an existing todo item.
+    /// Update an existing todo item.
     /// </summary>
     /// <param name="request">The request model containing the updated details of the todo item.</param>
     /// <response code="200">Todo item updated successfully.</response>
@@ -201,7 +195,7 @@ public class TodoController : BaseController
     }
 
     /// <summary>
-    /// Deletes a todo item by its ID.
+    /// Delete a todo item by its ID.
     /// </summary>
     /// <param name="request">The request model containing the ID of the todo item to be deleted.</param>
     /// <response code="200">Todo item deleted successfully.</response>
@@ -231,7 +225,7 @@ public class TodoController : BaseController
     }
 
     /// <summary>
-    /// Toggles the completion status of a todo item.
+    /// Toggle the completion status of a todo item.
     /// </summary>
     /// <param name="request">The request model containing the ID of the todo item to toggle.</param>
     /// <response code="200">Todo item completion status toggled successfully.</response>

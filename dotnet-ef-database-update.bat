@@ -1,3 +1,5 @@
+@echo off
+
 setlocal enabledelayedexpansion
 
 REM Generate two random GUIDs and concatenate them to get a 64-character key
