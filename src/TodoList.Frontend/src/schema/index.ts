@@ -28,8 +28,7 @@ export const registerFormSchema = z.object({
 });
 
 export const todoTableSchema = z.object({
-    id: z.string(),
+    todoId: z.string(),
     title: z.string(),
-    status: z.string(),
-    priority: z.string(),
+    isCompleted: z.boolean(),
 });

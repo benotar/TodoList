@@ -2,14 +2,15 @@ import {Table} from "@tanstack/react-table";
 import { X } from "lucide-react"
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {DataTableViewOptions} from "@/components/shared/DataTableViewOptions.tsx";
 
 type TodoTableToolbarProps<TData> = {
-    table: Table<TData>
+    table: Table<TData>;
 }
 
 export function TodoTableToolbar<TData>({
                                             table
-                                        }: TodoTableToolbarProps) {
+                                        }: TodoTableToolbarProps<TData>) {
 
     const isFiltering = table.getState().columnFilters.length > 0;
 
@@ -35,6 +36,7 @@ export function TodoTableToolbar<TData>({
                     </Button>
                 )}
             </div>
+            <DataTableViewOptions table={table} />
         </div>
     );
 }

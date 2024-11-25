@@ -15,7 +15,7 @@ const DataCardWrapper: FC<DataCardWrapperProps> = ({
                                                        children
                                                    }: DataCardWrapperProps) => {
     return (
-        <Card className="w-2/3 md:w-1/2 xl:w-1/4 2xl:w-3/12">
+        <Card className="w-10/12">
             <CardHeader>
                 <DataCardHeader
                     title={header}
