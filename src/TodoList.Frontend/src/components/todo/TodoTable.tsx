@@ -1,11 +1,16 @@
 import {
     ColumnDef,
+    ColumnFiltersState,
+    SortingState,
+    VisibilityState,
     flexRender,
     getCoreRowModel,
-    useReactTable,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
+    getFilteredRowModel,
     getPaginationRowModel,
-    ColumnFiltersState,
-    getFilteredRowModel
+    getSortedRowModel,
+    useReactTable,
 } from "@tanstack/react-table";
 
 import {
@@ -17,9 +22,9 @@ import {
     TableRow,
 } from "@/components/ui/table.tsx";
 
-import {Button} from "@/components/ui/button.tsx";
 import {useState} from "react";
 import {TodoTableToolbar} from "@/components/todo/TodoTableToolbar.tsx";
+import {DataTablePagination} from "@/components/shared/DataTablePagination.tsx";
 
 type TodoTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[]
@@ -30,26 +35,39 @@ export function TodoTable<TData, TValue>({
                                              columns,
                                              data,
                                          }: TodoTableProps<TData, TValue>) {
-
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const[columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [sorting, setSorting] = useState<SortingState>([]);
+
 
     const table = useReactTable({
         data,
         columns,
         state: {
-            columnFilters
+            sorting,
+            columnVisibility,
+            columnFilters,
         },
+        enableRowSelection: true,
+        onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
-        getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
         getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
     })
 
     return (
         <div className="space-y-4">
+
+            {/*Table toolbar*/}
             <TodoTableToolbar table={table} />
+
             {/* Table */}
-            <div className="rounded-md border w-full">
+            <div className="rounded-md border">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -78,7 +96,9 @@ export function TodoTable<TData, TValue>({
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            {flexRender(
+                                                cell.column.columnDef.cell, cell.getContext()
+                                            )}
                                         </TableCell>
                                     ))}
                                 </TableRow>
@@ -95,24 +115,7 @@ export function TodoTable<TData, TValue>({
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    Next
-                </Button>
-            </div>
+            <DataTablePagination table={table}/>
         </div>
     )
 }

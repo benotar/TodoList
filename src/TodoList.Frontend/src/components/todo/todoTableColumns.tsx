@@ -58,7 +58,9 @@ export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
         cell: ({row}) => <TodoCompleted
             row={row}
             className="ml-6 translate-y-[2px]"
-        />
+        />,
+        enableSorting: false,
+        enableHiding: true
     },
     {
         id: "actions",
