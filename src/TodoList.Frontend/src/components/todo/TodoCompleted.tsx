@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {HTMLAttributes, useState} from "react";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {CheckedState} from "@radix-ui/react-checkbox";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
@@ -8,12 +8,15 @@ import {useTodoStore} from "@/store/todoStore.ts";
 import {Row} from "@tanstack/react-table";
 import {todoTableSchema} from "@/schema";
 
-type TodoCompletedProps<TData> = {
-    row: Row<TData>
+type TodoCompletedProps<TData> = HTMLAttributes<HTMLDivElement> & {
+    row: Row<TData>;
 }
 
 
-export function TodoCompleted<TData>({row}: TodoCompletedProps<TData>) {
+export function TodoCompleted<TData>({
+                                         row,
+                                         className
+                                     }: TodoCompletedProps<TData>) {
 
     const todo = todoTableSchema.parse(row.original);
 
@@ -44,6 +47,7 @@ export function TodoCompleted<TData>({row}: TodoCompletedProps<TData>) {
         <Checkbox
             checked={checked}
             onCheckedChange={(value) => handleChecked(value)}
+            className={className}
         />
     );
 }

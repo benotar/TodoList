@@ -23,7 +23,7 @@ export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
     {
         accessorKey: "todoId",
         header: ({column}) => (
-            <DataTableColumnHeader column={column} title="Id"/>
+            <DataTableColumnHeader column={column} title="Id" className="ml-2"/>
         ),
         cell: ({row}) => {
             const todos = todoTableSchema.parse(row.original);
@@ -48,14 +48,17 @@ export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
     },
     {
         accessorKey: "title",
-        header: "Title"
+        header: ({column}) => (
+          <DataTableColumnHeader column={column} title="Title"/>
+        ),
     },
     {
         accessorKey: "isCompleted",
-        header: ({column}) => (
-            <DataTableColumnHeader column={column} title="Completed"/>
-        ),
-        cell: ({row}) =>  <TodoCompleted row={row}/>
+        header: ({column}) => <DataTableColumnHeader column={column} title="Completed"/>,
+        cell: ({row}) => <TodoCompleted
+            row={row}
+            className="ml-6 translate-y-[2px]"
+        />
     },
     {
         id: "actions",
