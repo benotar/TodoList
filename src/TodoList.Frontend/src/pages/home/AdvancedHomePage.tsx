@@ -8,7 +8,7 @@ const AdvancedHomePage: FC =  () => {
             title="Admin Dashboard"
             description="Manage users and todos"
         >
-            <div className="flex gap-x-5">
+            <div className="flex justify-center items-center gap-x-5">
                 <LinkButton label={"Admin "} link={"/admin"}/>
                 <LinkButton label={"Todos"} link={"/todo"}/>
             </div>

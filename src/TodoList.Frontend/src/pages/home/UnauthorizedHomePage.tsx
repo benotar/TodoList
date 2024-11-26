@@ -8,7 +8,7 @@ const UnauthorizedHomePage: FC = () => {
             title="Welcome to Todos Manager!"
             description="Begin managing your todos!"
         >
-            <div className="flex gap-x-5">
+            <div className="flex justify-center items-center gap-x-5">
                 <LinkButton label={"Login"} link={"/login"}/>
                 <LinkButton label={"Register"} link={"/register"}/>
             </div>

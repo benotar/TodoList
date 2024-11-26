@@ -12,7 +12,7 @@ const LinkButton: FC<LinkButtonProps> = ({label, link}: LinkButtonProps) => {
     return (
         <Button
             variant="ghost"
-            className="w-10/12"
+            className="w-1/4"
             size="sm"
             asChild
         >

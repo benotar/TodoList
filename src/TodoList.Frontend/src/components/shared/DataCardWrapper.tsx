@@ -15,17 +15,17 @@ const DataCardWrapper: FC<DataCardWrapperProps> = ({
                                                        children
                                                    }: DataCardWrapperProps) => {
     return (
-        <Card className="w-10/12">
-            <CardHeader>
+        <Card className="w-full">
+            <CardHeader className="flex justify-center items-center">
                 <DataCardHeader
                     title={header}
                     description={description}
                 />
             </CardHeader>
-            <CardContent>
+            <CardContent >
                 {children}
             </CardContent>
-            <CardFooter className="flex items-center justify-center">
+            <CardFooter className="flex justify-center items-center">
                 <LinkButton label={"Go to Home page"} link={"/"}/>
             </CardFooter>
         </Card>

@@ -24,14 +24,14 @@ const AuthCardWrapper: FC<AuthCardWrapperProps> = ({
                                                children
                                            }: AuthCardWrapperProps) => {
     return (
-        <Card className="w-2/3 sm:w-[43%] lg:w-[35%] lgx:w-[24%] 2xl:w-3/12 2k:w-[13%]">
+        <Card className="w-[85%] sm:w-[47%] lg:w-[35.2%] lgx:w-[25%] 2xl:w-[25%] 2k:w-[15%]">
             <CardHeader>
                 <AuthCardHeader title={title} description={label}/>
             </CardHeader>
             <CardContent>
                 {children}
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-center items-center">
                 <AuthBackButton label={backButtonLabel} link={backButtonLink}/>
             </CardFooter>
         </Card>

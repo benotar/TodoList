@@ -61,7 +61,7 @@ export function TodoTable<TData, TValue>({
     })
 
     return (
-        <div className="space-y-4">
+        <div className="flex flex-col w-full space-y-4">
 
             {/*Table toolbar*/}
             <TodoTableToolbar table={table} />

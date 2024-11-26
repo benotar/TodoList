@@ -14,7 +14,7 @@ type HomeCardWrapperProps = {
 
 const HomeCardWrapper: FC<HomeCardWrapperProps> = ({title, description, children}:HomeCardWrapperProps) => {
     return (
-        <Card className="w-2/3 sm:w-[43%] lg:w-[35%] lgx:w-[24%] 2xl:w-3/12 2k:w-[13%]">
+        <Card className="w-[72.9%] sm:w-[40.4%] lg:w-[30.2%] lgx:w-[21.5%] 2xl:w-[20%] 2k:w-[11%]">
             <CardHeader>
                 <HomeCardHeader title={title} description={description}/>
             </CardHeader>
