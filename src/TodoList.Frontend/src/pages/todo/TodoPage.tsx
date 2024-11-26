@@ -11,7 +11,7 @@ import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
 const TodoPage: FC = () => {
 
     const {fetchAll} = useTodoAction();
-    const {todos, errorMessage, isToggled} = useTodoState();
+    const {todos, errorMessage} = useTodoState();
 
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const TodoPage: FC = () => {
             toast.error(currentErrorMessage || ErrorCode.UnknownError);
         }
 
-    }, [fetchAll, errorMessage, isToggled]);
+    }, [fetchAll, errorMessage]);
 
 
     return (
