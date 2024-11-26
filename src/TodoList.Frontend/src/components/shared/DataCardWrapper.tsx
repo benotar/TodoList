@@ -15,7 +15,7 @@ const DataCardWrapper: FC<DataCardWrapperProps> = ({
                                                        children
                                                    }: DataCardWrapperProps) => {
     return (
-        <Card className="w-full">
+        <Card className="w-[90%] sm:w-[85%] lg:w-[75%] lgx:w-[53.3%] 2xl:w-[40%]">
             <CardHeader className="flex justify-center items-center">
                 <DataCardHeader
                     title={header}
