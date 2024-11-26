@@ -14,7 +14,7 @@ export type TodoActions = {
     create: (by: CreateTodo) => Promise<void>;
     update: (by: UpdateTodo) => Promise<void>;
     delete: (todoId: string) => Promise<void>;
-    toggle:(todoId: string) => Promise<void>;
+    toggle: (todoId: string) => Promise<boolean>;
     clearStore: () => void;
 };
 

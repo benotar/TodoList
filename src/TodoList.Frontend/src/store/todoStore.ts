@@ -21,8 +21,7 @@ const initState: TodoSlice = {
     },
     delete: async (): Promise<void> => {
     },
-    toggle: async (): Promise<void> => {
-    },
+    toggle: async (): Promise<boolean> => false,
     clearStore: (): void => {
     }
 };
@@ -74,9 +73,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
         set({isLoading: true});
 
         try {
-            const serverResponse = await $api.get<Result<Todo>>(ENDPOINTS.TODO.GET_BY_ID, {
-                params: {id: todoId},
-            });
+            const serverResponse = await $api.get<Result<Todo>>(ENDPOINTS.TODO.GET_BY_ID(todoId));
 
             const serverResponseData = serverResponse?.data;
 
@@ -106,14 +103,17 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
         }
     },
 
-    toggle: async (): Promise<void> => {
+    toggle: async (todoId: string): Promise<boolean> => {
 
         console.log("Todo Toggle");
 
         set({isLoading: true});
 
         try {
-            const serverResponse = await $api.get<Result<void>>(ENDPOINTS.TODO.TOGGLE);
+
+            const serverResponse = await $api.put<Result<void>>(ENDPOINTS.TODO.TOGGLE, {
+                todoId
+            });
 
             const serverResponseData = serverResponse?.data;
 
@@ -121,8 +121,10 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
                 console.log("Todo Toggle failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
 
-                return;
+                return false;
             }
+
+            return true;
 
         } catch (error) {
 
@@ -130,12 +132,16 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
                 console.log("Todo Toggle exception: ", error.message);
             }
 
-            const {clearStore} = get();
+            // const {clearStore} = get();
+            //
+            // clearStore();
 
-            clearStore();
+            return false;
 
         } finally {
-            set({isLoading: false});
+            set({
+                isLoading: false
+            });
         }
     },
 

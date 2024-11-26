@@ -4,14 +4,14 @@ import {toast} from "sonner";
 import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 import {TodoTable} from "@/components/todo/TodoTable.tsx";
 import {TodoTableColumns} from "@/components/todo/todoTableColumns.tsx";
-import {useTodoState} from "@/common/hooks/useTodoState.tsx";
+import {useTodoState} from "@/common/hooks/useTodoState.ts";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
 
 
 const TodoPage: FC = () => {
 
     const {fetchAll} = useTodoAction();
-    const {todos, errorMessage} = useTodoState();
+    const {todos, errorMessage, isToggled} = useTodoState();
 
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const TodoPage: FC = () => {
             toast.error(currentErrorMessage || ErrorCode.UnknownError);
         }
 
-    }, [fetchAll, errorMessage]);
+    }, [fetchAll, errorMessage, isToggled]);
 
 
     return (

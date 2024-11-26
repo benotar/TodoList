@@ -16,8 +16,7 @@ import {
 import {TodoTableRowActions} from "@/components/todo/TodoTableRowActions.tsx";
 import {DataTableColumnHeader} from "@/components/shared/DataTableColumnHeader.tsx";
 import {todoTableSchema} from "@/schema";
-import TodoCompleted from "@/components/todo/TodoCompleted.tsx";
-
+import {TodoCompleted} from "@/components/todo/TodoCompleted.tsx";
 
 
 export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
@@ -56,25 +55,7 @@ export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
         header: ({column}) => (
             <DataTableColumnHeader column={column} title="Completed"/>
         ),
-        cell: ({row}) => {
-            const todos = todoTableSchema.parse(row.original);
-
-            return (
-                // <div className="ml-5">
-                //     <Checkbox
-                //         checked={todos.isCompleted}
-                //         onCheckedChange={(value) => alert(value)}
-                //         className="translate-y-[2px] ml-5"
-                //     />
-                // </div>
-
-                <TodoCompleted
-                    isCompleted={todos.isCompleted}
-                    todoId = {todos.todoId}
-                    className={"ml-6 translate-y-[2px]"}
-                />
-            );
-        }
+        cell: ({row}) =>  <TodoCompleted row={row}/>
     },
     {
         id: "actions",

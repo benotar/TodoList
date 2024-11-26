@@ -1,51 +1,49 @@
-import {FC, useState} from "react";
+import {useState} from "react";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {CheckedState} from "@radix-ui/react-checkbox";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
 import {toast} from "sonner";
 import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 import {useTodoStore} from "@/store/todoStore.ts";
+import {Row} from "@tanstack/react-table";
+import {todoTableSchema} from "@/schema";
 
-type TodoCompletedProps = {
-    isCompleted: boolean;
-    todoId: string;
-    className?: string;
+type TodoCompletedProps<TData> = {
+    row: Row<TData>
 }
 
 
-const TodoCompleted: FC<TodoCompletedProps> = ({
-                                                   isCompleted,
-                                                   todoId,
-                                                   className = ""
-                                               }: TodoCompletedProps) => {
+export function TodoCompleted<TData>({row}: TodoCompletedProps<TData>) {
 
-    const [todoIsCompleted, setTodoIsCompleted] = useState<CheckedState>(isCompleted);
+    const todo = todoTableSchema.parse(row.original);
+
+    const [checked, setChecked] = useState(todo.isCompleted);
+
     const {toggle} = useTodoAction();
 
-    const handleChecked = async (value: CheckedState, todoId: string) => {
+    const handleChecked = async (value: CheckedState) => {
 
         console.log("Toggle handling");
 
-        await toggle(todoId);
+        const isToggled = await toggle(todo.todoId);
 
-        const currentErrorMessage = useTodoStore.getState().errorMessage;
+        if (isToggled) {
 
-        if (currentErrorMessage) {
+            setChecked(value as boolean);
 
-            toast.error(currentErrorMessage || ErrorCode.UnknownError);
+            toast.success("Success!");
 
             return;
         }
 
+        const currentErrorMessage = useTodoStore.getState().errorMessage;
+        toast.error(currentErrorMessage ?? ErrorCode.UnknownError);
     }
 
     return (
         <Checkbox
-            checked={todoIsCompleted}
-            onCheckedChange={(value) => handleChecked(value, todoId)}
-            className={className}
+            checked={checked}
+            onCheckedChange={(value) => handleChecked(value)}
         />
     );
 }
-
-export default TodoCompleted;

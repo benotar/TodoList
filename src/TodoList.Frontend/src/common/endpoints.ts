@@ -60,7 +60,7 @@ export const ENDPOINTS = {
         LOGOUT: buildUrl(SubPaths.Auth, AuthActions.Logout)
     },
     TODO: {
-        GET_BY_ID: buildUrl(SubPaths.Todo, TodoActions.GetById),
+        GET_BY_ID : (todoId: string) => `${BASE_URL}/${SubPaths.Todo}/${TodoActions.GetById}?todoId=${todoId}`,
         GET_TODOS: buildUrl(SubPaths.Todo, TodoActions.GetTodos),
         CREATE: buildUrl(SubPaths.Todo, TodoActions.Create),
         UPDATE: buildUrl(SubPaths.Todo, TodoActions.Update),

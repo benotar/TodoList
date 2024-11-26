@@ -4,14 +4,17 @@ import {useTodoStore} from "@/store/todoStore.ts";
 export const useTodoState = () => {
     const {
         todos,
-        errorMessage
+        errorMessage,
+        isToggled
     } = useTodoStore(useShallow((state) => ({
         todos: state.todos,
         errorMessage: state.errorMessage,
+        isToggled: state.isToggled
     })));
 
     return {
         todos,
-        errorMessage
+        errorMessage,
+        isToggled
     };
 };
