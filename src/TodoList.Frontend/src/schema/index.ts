@@ -34,3 +34,8 @@ export const todoTableSchema = z.object({
 });
 
 export type Task = z.infer<typeof  todoTableSchema>;
+
+export const createTodoSchema = z.object({
+    title: z.string().min(3, "Title must be at least 3 characters long"),
+    isCompleted: z.boolean()
+});

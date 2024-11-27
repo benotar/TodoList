@@ -8,6 +8,7 @@ import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
 import {Task, todoTableSchema} from "@/schema";
 import {z} from "zod"
 import {useTodoState} from "@/common/hooks/useTodoState.ts";
+import CreateTodoDialog from "@/components/todo/CreateTodoDialog.tsx";
 
 const TodoPage: FC = () => {
 
@@ -44,6 +45,7 @@ const TodoPage: FC = () => {
         <DataCardWrapper
             header={"Hi there!"}
             description={"Here's a list of your tasks!"}
+            footerChildren={ <CreateTodoDialog/>}
         >
             <TodoTable
                 data={data}
