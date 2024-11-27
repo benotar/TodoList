@@ -1,5 +1,5 @@
 import {FC, useEffect, useState} from "react";
-import DataCardWrapper from "@/components/shared/DataCardWrapper.tsx";
+import DataCardWrapper from "@/components/reusable/DataCardWrapper.tsx";
 import {toast} from "sonner";
 import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 import {TodoTable} from "@/components/todo/TodoTable.tsx";

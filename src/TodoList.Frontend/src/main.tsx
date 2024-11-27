@@ -4,7 +4,7 @@ import App from './App.tsx';
 import './index.css';
 import ThemeProvider from "@/components/theme/ThemeProvider.tsx";
 import {Toaster} from 'sonner';
-import ConfirmationDialog from "@/components/shared/ConfirmationDialog.tsx";
+import ConfirmationDialog from "@/components/reusable/ConfirmationDialog.tsx";
 
 createRoot(document.getElementById('root')!).render(
     // <StrictMode>

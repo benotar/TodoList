@@ -2,7 +2,7 @@ import {Table} from "@tanstack/react-table";
 import { X } from "lucide-react"
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {DataTableViewOptions} from "@/components/shared/DataTableViewOptions.tsx";
+import {DataTableViewOptions} from "@/components/reusable/DataTableViewOptions.tsx";
 
 type TodoTableToolbarProps<TData> = {
     table: Table<TData>;

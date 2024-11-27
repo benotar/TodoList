@@ -1,6 +1,6 @@
 import {FC} from "react";
 import HomeCardWrapper from "@/components/home/HomeCardWrapper.tsx";
-import LinkButton from "@/components/shared/LinkButton.tsx";
+import LinkButton from "@/components/reusable/LinkButton.tsx";
 
 const UnauthorizedHomePage: FC = () => {
     return (

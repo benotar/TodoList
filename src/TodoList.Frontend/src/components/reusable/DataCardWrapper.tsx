@@ -1,10 +1,12 @@
-import {FC, ReactNode} from "react";
+import {FC, ReactNode, useState} from "react";
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card.tsx";
-import LinkButton from "@/components/shared/LinkButton.tsx";
-import DataCardHeader from "@/components/shared/DataCardHeader.tsx";
-import CreateRecordDialog from "@/components/shared/CreateRecordDialog.tsx";
+import LinkButton from "@/components/reusable/LinkButton.tsx";
+import DataCardHeader from "@/components/reusable/DataCardHeader.tsx";
+import CreateRecordDialog from "@/components/reusable/CreateRecordDialog.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
+import {CheckedState} from "@radix-ui/react-checkbox";
 
 type DataCardWrapperProps = {
     header: string;
@@ -17,6 +19,14 @@ const DataCardWrapper: FC<DataCardWrapperProps> = ({
                                                        description,
                                                        children
                                                    }: DataCardWrapperProps) => {
+
+    const [title, setTitle] = useState<string>("");
+    const [isCompleted, setIsCompleted] = useState<CheckedState>(false);
+
+    const handleCreate = async () => {
+        alert(`${title}, ${isCompleted}`);
+    }
+
     return (
         <Card className="w-[90%] sm:w-[85%] lg:w-[75%] lgx:w-[53.3%] 2xl:w-[40%]">
             <CardHeader className="flex justify-start items-start">
@@ -35,27 +45,27 @@ const DataCardWrapper: FC<DataCardWrapperProps> = ({
                     titleModal={"lock"}
                     descriptionModal={"lock"}
                     onActionLabel={"lock"}
+                    handleCreate={handleCreate}
                 >
-                    <div className="flex flex-col space-y-5">
-                        <div className="flex items-center justify-center space-x-5">
+                    <div className="flex flex-col justify-start items-start space-y-5">
+                        <div className="w-full flex flex-col items-start justify-start space-y-2">
                             <Label htmlFor="title">
                                 Title
                             </Label>
                             <Input
                                 id="title"
-                                value={"title"}
-                                // onChange={(event) => setTitle(event.target.value)}
+                                value={title}
+                                onChange={(event) => setTitle(event.target.value)}
                             />
                         </div>
-                        <div className="flex  items-center justify-center space-x-5 ">
-                            <Label htmlFor="title">
+                        <div className="flex items-start justify-start space-x-5">
+                            <Label htmlFor="completed">
                                 Completed
                             </Label>
-                            <Input
-                                id="title"
-                                value={"title"}
-                                // onChange={(event) => setTitle(event.target.value)}
-                            />
+                            <Checkbox
+                                checked={isCompleted}
+                                onCheckedChange={(value) => setIsCompleted(value)}
+                                id="completed"/>
                         </div>
                     </div>
                 </CreateRecordDialog>

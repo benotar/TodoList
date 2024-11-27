@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import {TodoTableRowActions} from "@/components/todo/TodoTableRowActions.tsx";
-import {DataTableColumnHeader} from "@/components/shared/DataTableColumnHeader.tsx";
+import {DataTableColumnHeader} from "@/components/reusable/DataTableColumnHeader.tsx";
 import {Task, todoTableSchema} from "@/schema";
 import {TodoCompleted} from "@/components/todo/TodoCompleted.tsx";
 import {Label} from "@/components/ui/label.tsx";

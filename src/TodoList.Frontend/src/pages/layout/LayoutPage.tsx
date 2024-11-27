@@ -3,7 +3,7 @@ import MyHeader from "@/components/layout/MyHeader.tsx";
 import Content from "@/components/layout/Content.tsx";
 import MyFooter from "@/components/layout/MyFooter.tsx";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
-import Loader from "@/components/shared/Loader.tsx";
+import Loader from "@/components/reusable/Loader.tsx";
 
 const LayoutPage: FC = () => {
 

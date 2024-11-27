@@ -19,23 +19,22 @@ type CreateTodoDialogProps = {
     titleModal: string;
     descriptionModal: string;
     onActionLabel: string;
+    handleCreate: () => Promise<void>;
     children: ReactNode;
 }
 
 const CreateRecordDialog: FC<CreateTodoDialogProps> = ({
-                                                         titleDialog,
-                                                         descriptionDialog,
-                                                         titleModal,
-                                                         descriptionModal,
-                                                         onActionLabel,
-                                                         children
-                                                     }) => {
+                                                           titleDialog,
+                                                           descriptionDialog,
+                                                           titleModal,
+                                                           descriptionModal,
+                                                           onActionLabel,
+                                                           children,
+                                                           handleCreate
+                                                       }) => {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const {openConfirmation} = useConfirmationAction();
 
-    const handleCreate = async () => {
-       alert("Handle Create");
-    }
 
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

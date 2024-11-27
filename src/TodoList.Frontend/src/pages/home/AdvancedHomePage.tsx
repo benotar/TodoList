@@ -1,5 +1,5 @@
 import {FC} from "react";
-import LinkButton from "@/components/shared/LinkButton.tsx";
+import LinkButton from "@/components/reusable/LinkButton.tsx";
 import HomeCardWrapper from "@/components/home/HomeCardWrapper.tsx";
 
 const AdvancedHomePage: FC =  () => {

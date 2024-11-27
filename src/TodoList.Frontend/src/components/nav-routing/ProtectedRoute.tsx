@@ -1,7 +1,7 @@
 import {FC, ReactElement} from "react";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
 import {Navigate} from "react-router-dom";
-import Loader from "@/components/shared/Loader.tsx";
+import Loader from "@/components/reusable/Loader.tsx";
 
 type ProtectedRouteProps = {
     element: ReactElement;

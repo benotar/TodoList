@@ -24,7 +24,7 @@ import {
 
 import {useState} from "react";
 import {TodoTableToolbar} from "@/components/todo/TodoTableToolbar.tsx";
-import {DataTablePagination} from "@/components/shared/DataTablePagination.tsx";
+import {DataTablePagination} from "@/components/reusable/DataTablePagination.tsx";
 
 type TodoTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[]
