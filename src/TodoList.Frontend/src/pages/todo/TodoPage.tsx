@@ -1,31 +1,44 @@
-import {FC, useEffect} from "react";
+import {FC, useEffect, useState} from "react";
 import DataCardWrapper from "@/components/shared/DataCardWrapper.tsx";
 import {toast} from "sonner";
 import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 import {TodoTable} from "@/components/todo/TodoTable.tsx";
 import {TodoTableColumns} from "@/components/todo/todoTableColumns.tsx";
-import {useTodoState} from "@/common/hooks/useTodoState.ts";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
-
+import {Task, todoTableSchema} from "@/schema";
+import {z} from "zod"
+import {useTodoState} from "@/common/hooks/useTodoState.ts";
 
 const TodoPage: FC = () => {
 
     const {fetchAll} = useTodoAction();
-    const {todos, errorMessage} = useTodoState();
+    const {errorMessage, todos} = useTodoState();
+    const [data, setData] = useState<Task[]>([]);
 
 
     useEffect(() => {
 
-        void fetchAll();
+        const fetchData = async () => {
 
-        const currentErrorMessage = errorMessage;
+            const isFetched = await fetchAll();
 
-        if (currentErrorMessage) {
-            toast.error(currentErrorMessage || ErrorCode.UnknownError);
+            if (!isFetched) {
+                toast.error(errorMessage || ErrorCode.UnknownError);
+            }
         }
-
+        void fetchData();
     }, [fetchAll, errorMessage]);
 
+    useEffect(() => {
+        try {
+            const validatedData = z.array(todoTableSchema).parse(todos);
+            setData(validatedData);
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log("Todos z parse exception: ", error.message);
+            }
+        }
+    }, [todos]);
 
     return (
         <DataCardWrapper
@@ -33,8 +46,9 @@ const TodoPage: FC = () => {
             description={"Here's a list of your tasks!"}
         >
             <TodoTable
-                data={todos}
+                data={data}
                 columns={TodoTableColumns}
+                key={data.map(todo => todo.todoId).join("-")}
             />
         </DataCardWrapper>
     );

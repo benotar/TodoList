@@ -1,4 +1,4 @@
-import {HTMLAttributes, useState} from "react";
+import {HTMLAttributes} from "react";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {CheckedState} from "@radix-ui/react-checkbox";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
@@ -20,22 +20,19 @@ export function TodoCompleted<TData>({
 
     const todo = todoTableSchema.parse(row.original);
 
-    const [checked, setChecked] = useState(todo.isCompleted);
+    // const [checked, setChecked] = useState(todo.isCompleted);
 
     const {toggle} = useTodoAction();
 
-    const handleChecked = async (value: CheckedState) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const handleChecked = async (_: CheckedState) => {
 
         console.log("Toggle handling");
 
         const isToggled = await toggle(todo.todoId);
 
         if (isToggled) {
-
-            setChecked(value as boolean);
-
             toast.success("Success!");
-
             return;
         }
 
@@ -45,7 +42,7 @@ export function TodoCompleted<TData>({
 
     return (
         <Checkbox
-            checked={checked}
+            checked={todo.isCompleted}
             onCheckedChange={(value) => handleChecked(value)}
             className={className}
         />

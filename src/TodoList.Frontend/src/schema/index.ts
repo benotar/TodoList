@@ -32,3 +32,5 @@ export const todoTableSchema = z.object({
     title: z.string(),
     isCompleted: z.boolean(),
 });
+
+export type Task = z.infer<typeof  todoTableSchema>;

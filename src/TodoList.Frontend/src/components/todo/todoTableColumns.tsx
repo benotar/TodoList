@@ -2,9 +2,6 @@ import {
     ColumnDef,
 } from "@tanstack/react-table";
 
-import {
-    FetchTodoResponse
-} from "@/types/models/response/TodoResponse.ts";
 
 import {
     Tooltip,
@@ -15,11 +12,11 @@ import {
 
 import {TodoTableRowActions} from "@/components/todo/TodoTableRowActions.tsx";
 import {DataTableColumnHeader} from "@/components/shared/DataTableColumnHeader.tsx";
-import {todoTableSchema} from "@/schema";
+import {Task, todoTableSchema} from "@/schema";
 import {TodoCompleted} from "@/components/todo/TodoCompleted.tsx";
 
 
-export const TodoTableColumns: ColumnDef<FetchTodoResponse>[] = [
+export const TodoTableColumns: ColumnDef<Task>[] = [
     {
         accessorKey: "todoId",
         header: ({column}) => (

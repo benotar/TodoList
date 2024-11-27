@@ -10,9 +10,9 @@ export type TodoState = {
 
 export type TodoActions = {
     fetchById: (todoId: string) => Promise<Todo | null>;
-    fetchAll: () => Promise<void>;
+    fetchAll: () => Promise<boolean>;
     create: (by: CreateTodo) => Promise<void>;
-    update: (by: UpdateTodo) => Promise<void>;
+    update: (by: UpdateTodo) => Promise<boolean>;
     delete: (todoId: string) => Promise<void>;
     toggle: (todoId: string) => Promise<boolean>;
     clearStore: () => void;

@@ -5,16 +5,19 @@ export const useTodoAction = () => {
     const {
         fetchAll,
         fetchById,
-        toggle
+        toggle,
+        update
     } = useTodoStore(useShallow((state) => ({
         fetchAll: state.fetchAll,
         fetchById: state.fetchById,
-        toggle: state.toggle
+        toggle: state.toggle,
+        update: state.update
     })));
 
     return {
         fetchAll,
         fetchById,
-        toggle
+        toggle,
+        update
     };
 };

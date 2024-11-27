@@ -6,7 +6,6 @@ export type CreateTodo = {
 
 export type UpdateTodo = {
     todoId: string;
-    userId: string;
-    newTitle: string;
-    newDescription: string;
+    title: string;
+    isCompleted: boolean;
 }

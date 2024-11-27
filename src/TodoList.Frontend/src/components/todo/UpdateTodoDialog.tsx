@@ -14,6 +14,10 @@ import {Input} from "@/components/ui/input.tsx";
 import {todoTableSchema} from "@/schema";
 import {Row} from "@tanstack/react-table";
 import {useConfirmationAction} from "@/common/hooks/useConfirmationAction.ts";
+import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
+import {toast} from "sonner";
+import {useTodoStore} from "@/store/todoStore.ts";
+import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 
 type UpdateTodoDialogProps<TData> = {
     titleModal: string;
@@ -31,37 +35,54 @@ export function UpdateTodoDialog<TData>({
 
     const todo = todoTableSchema.parse(row.original);
     const [title, setTitle] = useState<string>(todo.title);
+    const {update} = useTodoAction();
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
     const {openConfirmation} = useConfirmationAction();
 
-    const handleUpdate = () => {
-        alert(title);
+    const handleUpdate = async () => {
+        const updateData = {
+            todoId: todo.todoId,
+            title,
+            isCompleted: todo.isCompleted
+        };
+
+        const isUpdated = await update(updateData);
+
+        if (isUpdated) {
+            toast.success("Success!");
+            setIsDialogOpen(false);
+            return;
+        }
+
+        const currentErrorMessage = useTodoStore.getState().errorMessage;
+        toast.error(currentErrorMessage ?? ErrorCode.UnknownError);
     }
 
     return (
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Edit</Button>
+                <Button
+                    variant="outline"
+                    onClick={() => setIsDialogOpen(true)}
+                >Edit</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
+                <DialogHeader className="flex justify-center items-center space-y-3">
                     <DialogTitle>Edit todo</DialogTitle>
                     <DialogDescription>
                         Make changes to your todo here. Click save when you're done.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="title" className="text-right">
-                            Title
-                        </Label>
-                        <Input
-                            id="title"
-                            value={title}
-                            className="col-span-3"
-                            onChange={(event) => setTitle(event.target.value)}
-                        />
-                    </div>
+                <div className="flex items-center justify-center space-x-5">
+                    <Label htmlFor="title">
+                        Title
+                    </Label>
+                    <Input
+                        id="title"
+                        value={title}
+                        onChange={(event) => setTitle(event.target.value)}
+                    />
                 </div>
                 <DialogFooter>
                     <Button onClick={() => {
