@@ -49,14 +49,14 @@ export function UpdateTodoDialog<TData>({
 
         const isUpdated = await update(updateData);
 
-        if (isUpdated) {
-            toast.success("Success!");
-            setIsDialogOpen(false);
+        if (!isUpdated) {
+            const currentErrorMessage = useTodoStore.getState().errorMessage;
+            toast.error(currentErrorMessage ?? ErrorCode.UnknownError);
             return;
         }
 
-        const currentErrorMessage = useTodoStore.getState().errorMessage;
-        toast.error(currentErrorMessage ?? ErrorCode.UnknownError);
+        toast.success("Success!");
+        setIsDialogOpen(false);
     }
 
     return (

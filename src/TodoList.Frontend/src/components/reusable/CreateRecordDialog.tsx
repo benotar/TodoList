@@ -1,4 +1,4 @@
-import {FC, ReactNode, useState} from "react";
+import {FC, ReactNode} from "react";
 import {
     Dialog,
     DialogContent,
@@ -19,7 +19,9 @@ type CreateTodoDialogProps = {
     titleModal: string;
     descriptionModal: string;
     onActionLabel: string;
-    handleCreate: () => Promise<void>;
+    handleCreate: () => Promise<void>
+    isDialogOpen: boolean;
+    setIsDialogOpen: (isDialogOpen: boolean) => void;
     children: ReactNode;
 }
 
@@ -30,16 +32,19 @@ const CreateRecordDialog: FC<CreateTodoDialogProps> = ({
                                                            descriptionModal,
                                                            onActionLabel,
                                                            children,
-                                                           handleCreate
+                                                           handleCreate,
+                                                           isDialogOpen,
+                                                           setIsDialogOpen
                                                        }) => {
-    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const {openConfirmation} = useConfirmationAction();
-
 
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
+                <Button
+                    variant="outline"
+                    onClick={() => setIsDialogOpen(true)}
+                >
                     Create a new entry
                 </Button>
             </DialogTrigger>

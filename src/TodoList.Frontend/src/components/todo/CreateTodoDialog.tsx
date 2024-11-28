@@ -6,21 +6,38 @@ import CreateRecordDialog from "@/components/reusable/CreateRecordDialog.tsx";
 import {CheckedState} from "@radix-ui/react-checkbox";
 import {createTodoSchema} from "@/schema";
 import {z} from "zod";
+import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
+import {toast} from "sonner";
+import {useTodoStore} from "@/store/todoStore.ts";
 
 const CreateTodoDialog: FC = () => {
 
+    const {create} = useTodoAction();
     const [title, setTitle] = useState<string>("");
     const [isCompleted, setIsCompleted] = useState<CheckedState>(false);
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
 
     const handleCreate = async () => {
         try {
-            const newTodo = createTodoSchema.parse({title, isCompleted});
 
-            alert(newTodo);
+            const newTodoData = createTodoSchema.parse({title, isCompleted});
+
+            const isCreated = await create(newTodoData);
+
+            if (!isCreated) {
+
+                toast.warning(useTodoStore.getState().errorMessage);
+
+                return
+            }
+
+            toast.success("Success!");
+            setIsDialogOpen(false);
         } catch (error) {
 
-            if(error instanceof  z.ZodError) {
-                alert("Validation Error: " + error.errors.map(err => err.message).join(", "));
+            if (error instanceof z.ZodError) {
+                toast.error(`${error.errors.map(err => err.message).join(", ")}.`);
             }
         }
     }
@@ -33,6 +50,8 @@ const CreateTodoDialog: FC = () => {
             descriptionModal={"Review the task details before confirming creation."}
             onActionLabel={"Yes, create"}
             handleCreate={handleCreate}
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
         >
             <div className="flex flex-col justify-start items-start space-y-5">
                 <div className="w-full flex flex-col items-start justify-start space-y-2">

@@ -5,7 +5,7 @@ import {ErrorCode, Result} from "@/types/models/response/AuthResponse.ts";
 import $api from "@/common/axios.ts";
 import {FetchTodoResponse} from "@/types/models/response/TodoResponse.ts";
 import {Todo} from "@/types/entities/Todo.ts";
-import {UpdateTodo} from "@/types/models/request/TodoRequest.ts";
+import {CreateTodo, UpdateTodo} from "@/types/models/request/TodoRequest.ts";
 
 const initState: TodoSlice = {
     todos: [],
@@ -15,8 +15,7 @@ const initState: TodoSlice = {
         return null;
     },
     fetchAll: async (): Promise<boolean> => false,
-    create: async (): Promise<void> => {
-    },
+    create: async (): Promise<boolean> => false,
     update: async (): Promise<boolean> => false,
     delete: async (): Promise<void> => {
     },
@@ -67,6 +66,59 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
             clearStore();
 
             return false;
+
+        } finally {
+            set({isLoading: false});
+        }
+    },
+
+    create: async (by: CreateTodo): Promise<boolean> => {
+
+        console.log("Todo Create");
+
+        set({isLoading: true});
+
+        try {
+            const serverResponse = await $api.post<Result<void>>(ENDPOINTS.TODO.CREATE, by);
+
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponse || !serverResponseData.isSucceed || !serverResponseData.data) {
+
+                console.log("Todo Create failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                if (serverResponseData.errorCode === ErrorCode.TodoAlreadyExists) {
+
+                    set({
+                        errorMessage: serverResponseData.errorCode
+                    });
+
+                    return false;
+                }
+
+                set({
+                    errorMessage: ErrorCode.RequestFailed
+                });
+
+                return false;
+            }
+
+            set({
+                todos: serverResponseData.data
+            });
+
+            await get().fetchAll();
+
+            return true;
+
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Todo Create exception: ", error.message);
+            }
+
+            return false;
+
         } finally {
             set({isLoading: false});
         }
@@ -85,7 +137,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
             if (!serverResponse || !serverResponseData.isSucceed || !serverResponseData.data) {
 
-                console.log("Todo Fetch All failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+                console.log("Todo Fetch By Id failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
 
                 return null;
             }
@@ -95,12 +147,8 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
         } catch (error) {
 
             if (error instanceof Error) {
-                console.log("Todo Fetch All exception: ", error.message);
+                console.log("Todo Fetch By Id exception: ", error.message);
             }
-
-            const {clearStore} = get();
-
-            clearStore();
 
             return null;
 
@@ -127,7 +175,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
                 console.log("Todo Update failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
 
-                if(serverResponseData.errorCode === ErrorCode.DataIsTheSame)  {
+                if (serverResponseData.errorCode === ErrorCode.DataIsTheSame) {
                     set({
                         errorMessage: serverResponseData.errorCode
                     })
