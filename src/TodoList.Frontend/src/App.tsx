@@ -8,6 +8,7 @@ import RegisterPage from "@/pages/auth/register/RegisterPage.tsx";
 import LogoutPage from "@/pages/auth/logout/LogoutPage.tsx";
 import TodoPage from "@/pages/todo/TodoPage.tsx";
 import ProtectedRoute from "@/components/nav-routing/ProtectedRoute.tsx";
+import AdminPage from "@/pages/admin/AdminPage.tsx";
 
 const App: FC = () => {
     return(
@@ -19,6 +20,7 @@ const App: FC = () => {
                     <Route path="register" element={<RegisterPage/>}/>
                     <Route path="logout" element={<LogoutPage/>}/>
                     <Route path="todo" element={<ProtectedRoute element={<TodoPage/>}/> }/>
+                    <Route path="admin" element={<ProtectedRoute element={<AdminPage/>}/>}/>
                     <Route path="*" element={<NotFoundPage/>}/>
                 </Route>
             </Routes>
