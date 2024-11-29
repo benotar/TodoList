@@ -22,19 +22,21 @@ import {
     TableRow,
 } from "@/components/ui/table.tsx";
 
-import {useState} from "react";
-import {TodoTableToolbar} from "@/components/todo/TodoTableToolbar.tsx";
 import {DataTablePagination} from "@/components/reusable/DataTablePagination.tsx";
+import {useState} from "react";
+import {UsersTableToolbar} from "@/components/admin/UsersTableToolbar.tsx";
 
-type TodoTableProps<TData, TValue> = {
+
+type UsersTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
 }
 
-export function TodoTable<TData, TValue>({
-                                             columns,
-                                             data,
-                                         }: TodoTableProps<TData, TValue>) {
+export function UsersTable<TData, TValue> ({
+                                               columns,
+                                               data
+                                           }: UsersTableProps<TData, TValue>) {
+
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -64,7 +66,7 @@ export function TodoTable<TData, TValue>({
         <div className="flex flex-col w-full space-y-4">
 
             {/*Table toolbar*/}
-            <TodoTableToolbar table={table}/>
+            <UsersTableToolbar table={table}/>
 
             {/* Table */}
             <div className="rounded-md border">
@@ -117,5 +119,5 @@ export function TodoTable<TData, TValue>({
             {/* Pagination */}
             <DataTablePagination table={table}/>
         </div>
-    )
+    );
 }

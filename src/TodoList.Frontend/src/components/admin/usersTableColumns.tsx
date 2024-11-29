@@ -10,22 +10,21 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import {TodoTableRowActions} from "@/components/todo/TodoTableRowActions.tsx";
+import {UsersTableRowActions} from "@/components/admin/UsersTableRowActions.tsx";
 import {DataTableColumnHeader} from "@/components/reusable/DataTableColumnHeader.tsx";
-import {TodoTask, todoTableSchema} from "@/schema";
-import {TodoCompleted} from "@/components/todo/TodoCompleted.tsx";
+import {usersTableSchema, UserTable} from "@/schema";
 import {Label} from "@/components/ui/label.tsx";
 
 
-export const todoTableColumns: ColumnDef<TodoTask>[] = [
+export const usersTableColumns: ColumnDef<UserTable>[] = [
     {
-        accessorKey: "todoId",
+        accessorKey: "userId",
         header: ({column}) => (
             <DataTableColumnHeader column={column} title="Id" className="ml-2"/>
         ),
         cell: ({row}) => {
-            const todo = todoTableSchema.parse(row.original);
-            const guid = todo.todoId;
+            const user = usersTableSchema.parse(row.original);
+            const guid = user.userId;
             const shortGuid = `${guid.slice(0, 8)} ... ${guid.slice(-4)}`;
 
             return (
@@ -45,32 +44,43 @@ export const todoTableColumns: ColumnDef<TodoTask>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "title",
+        accessorKey: "userName",
         header: ({column}) => (
-          <DataTableColumnHeader column={column} title="Title"/>
+            <DataTableColumnHeader column={column} title="UserName"/>
         ),
         cell: ({row}) => {
-            const todo = todoTableSchema.parse(row.original);
 
-            if(todo.isCompleted) {
-                return <Label className="line-through">{todo.title}</Label>
-            }
+            const user = usersTableSchema.parse(row.original);
 
-            return <Label>{todo.title}</Label>
+            return <Label>{user.userName}</Label>
         }
     },
     {
-        accessorKey: "isCompleted",
-        header: ({column}) => <DataTableColumnHeader column={column} title="Completed"/>,
-        cell: ({row}) => <TodoCompleted
-            row={row}
-            className="ml-6 translate-y-[2px]"
-        />,
-        enableSorting: true,
-        enableHiding: true
+        accessorKey: "name",
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Name"/>
+        ),
+        cell: ({row}) => {
+
+            const user = usersTableSchema.parse(row.original);
+
+            return <Label>{user.name}</Label>
+        }
+    },
+    {
+        accessorKey: "permission",
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Permission"/>
+        ),
+        cell: ({row}) => {
+
+            const user = usersTableSchema.parse(row.original);
+
+            return <Label>{user.permission}</Label>
+        }
     },
     {
         id: "actions",
-        cell: ({row}) => <TodoTableRowActions row={row}/>,
+        cell: ({row}) => <UsersTableRowActions row={row}/>,
     },
 ];

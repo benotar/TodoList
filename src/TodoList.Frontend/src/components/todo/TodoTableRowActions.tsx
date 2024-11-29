@@ -14,7 +14,6 @@ export function TodoTableRowActions<TData>({row}: TodoTableRowActionsProps<TData
 
     const todo = todoTableSchema.parse(row.original);
 
-
     return (
         <div className="flex space-x-2">
             <UpdateTodoDialog

@@ -3,9 +3,9 @@ import DataCardWrapper from "@/components/reusable/DataCardWrapper.tsx";
 import {toast} from "sonner";
 import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
 import {TodoTable} from "@/components/todo/TodoTable.tsx";
-import {TodoTableColumns} from "@/components/todo/todoTableColumns.tsx";
+import {todoTableColumns} from "@/components/todo/todoTableColumns.tsx";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
-import {Task, todoTableSchema} from "@/schema";
+import {TodoTask, todoTableSchema} from "@/schema";
 import {z} from "zod"
 import {useTodoState} from "@/common/hooks/useTodoState.ts";
 import CreateTodoDialog from "@/components/todo/CreateTodoDialog.tsx";
@@ -14,7 +14,7 @@ const TodoPage: FC = () => {
 
     const {fetchAll} = useTodoAction();
     const {errorMessage, todos} = useTodoState();
-    const [data, setData] = useState<Task[]>([]);
+    const [data, setData] = useState<TodoTask[]>([]);
 
 
     useEffect(() => {
@@ -49,7 +49,7 @@ const TodoPage: FC = () => {
         >
             <TodoTable
                 data={data}
-                columns={TodoTableColumns}
+                columns={todoTableColumns}
                 key={data.map(todo => todo.todoId).join("-")}
             />
         </DataCardWrapper>

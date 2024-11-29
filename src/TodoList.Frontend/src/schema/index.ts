@@ -33,9 +33,18 @@ export const todoTableSchema = z.object({
     isCompleted: z.boolean(),
 });
 
-export type Task = z.infer<typeof  todoTableSchema>;
+export type TodoTask = z.infer<typeof todoTableSchema>;
 
 export const createTodoSchema = z.object({
     title: z.string().min(3, "Title must be at least 3 characters long"),
     isCompleted: z.boolean()
 });
+
+export const usersTableSchema = z.object({
+    userId: z.string(),
+    userName: z.string(),
+    name: z.string(),
+    permission: z.string(),
+});
+
+export type UserTable = z.infer<typeof usersTableSchema>;

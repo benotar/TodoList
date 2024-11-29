@@ -5,6 +5,8 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs";
+import {UsersTable} from "@/components/admin/UsersTable.tsx";
+import {usersTableColumns} from "@/components/admin/usersTableColumns.tsx";
 
 const AdminTabs: FC = () => {
     return (
@@ -17,7 +19,21 @@ const AdminTabs: FC = () => {
                 <TabsTrigger value="all-todos">All Todos</TabsTrigger>
             </TabsList>
             <TabsContent value="users">
-                Table users
+                <UsersTable
+                    columns={usersTableColumns}
+                    data={[{
+                        userId: "userId1",
+                        userName: "userName1",
+                        name: "name1",
+                        permission: "permission1"
+                    },
+                        {
+                            userId: "userId2",
+                            userName: "userName2",
+                            name: "name2",
+                            permission: "permission2"
+                        }]}
+                />
             </TabsContent>
             <TabsContent value="all-todos">
                 Table todos
