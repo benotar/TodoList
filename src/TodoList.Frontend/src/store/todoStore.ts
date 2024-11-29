@@ -10,7 +10,7 @@ import {CreateTodo, UpdateTodo} from "@/types/models/request/TodoRequest.ts";
 const initState: TodoSlice = {
     todos: [],
     errorMessage: null,
-    isLoading: false,
+    isLoadingTodo: false,
     fetchById: async (): Promise<Todo | null> => {
         return null;
     },
@@ -30,7 +30,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
         console.log("Todo Fetch All");
 
-        set({isLoading: true});
+        set({isLoadingTodo: true});
 
         try {
             const serverResponse = await $api.get<Result<FetchTodoResponse[]>>(ENDPOINTS.TODO.GET_TODOS);
@@ -67,7 +67,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
             return false;
 
         } finally {
-            set({isLoading: false});
+            set({isLoadingTodo: false});
         }
     },
 
@@ -75,7 +75,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
         console.log("Todo Create");
 
-        set({isLoading: true});
+        set({isLoadingTodo: true});
 
         try {
             const serverResponse = await $api.post<Result<void>>(ENDPOINTS.TODO.CREATE, by);
@@ -119,7 +119,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
             return false;
 
         } finally {
-            set({isLoading: false});
+            set({isLoadingTodo: false});
         }
     },
 
@@ -127,7 +127,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
         console.log("Todo Fetch By Id");
 
-        set({isLoading: true});
+        set({isLoadingTodo: true});
 
         try {
             const serverResponse = await $api.get<Result<Todo>>(ENDPOINTS.TODO.GET_BY_ID(todoId));
@@ -152,7 +152,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
             return null;
 
         } finally {
-            set({isLoading: false});
+            set({isLoadingTodo: false});
         }
     },
 
@@ -161,7 +161,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
         console.log("Todo Update");
 
         set({
-            isLoading: true
+            isLoadingTodo: true
         });
 
         try {
@@ -204,7 +204,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
         } finally {
             set({
-                isLoading: false
+                isLoadingTodo: false
             });
         }
     },
@@ -214,7 +214,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
         console.log("Todo Remove");
 
         set({
-            isLoading: true
+            isLoadingTodo: true
         });
 
         try {
@@ -259,7 +259,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
         } finally {
             set({
-                isLoading: false
+                isLoadingTodo: false
             });
         }
     },
@@ -269,7 +269,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
         console.log("Todo Toggle");
 
         set({
-            isLoading: true
+            isLoadingTodo: true
         });
 
         try {
@@ -299,7 +299,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
             return false;
         } finally {
             set({
-                isLoading: false
+                isLoadingTodo: false
             });
         }
     },

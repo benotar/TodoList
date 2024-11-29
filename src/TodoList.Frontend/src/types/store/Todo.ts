@@ -5,7 +5,7 @@ import {Todo} from "@/types/entities/Todo.ts";
 export type TodoState = {
     todos: FetchTodoResponse[];
     errorMessage: string | null;
-    isLoading: boolean;
+    isLoadingTodo: boolean;
 };
 
 export type TodoActions = {

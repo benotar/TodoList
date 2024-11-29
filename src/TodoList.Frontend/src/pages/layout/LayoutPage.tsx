@@ -13,6 +13,7 @@ const LayoutPage: FC = () => {
         return <Loader/>
     }
 
+
     return (
         <div className="flex flex-col min-h-screen">
             <MyHeader/>
