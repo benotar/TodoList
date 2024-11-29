@@ -1,15 +1,10 @@
 import {Row} from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {todoTableSchema} from "@/schema/index.ts";
 
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import {toast} from "sonner";
 import {UpdateTodoDialog} from "@/components/todo/UpdateTodoDialog.tsx";
+import {RemoveTodoDialog} from "@/components/todo/RemoveTodoDialog.tsx";
 
 type TodoTableRowActionsProps<TData> = {
     row: Row<TData>
@@ -17,10 +12,10 @@ type TodoTableRowActionsProps<TData> = {
 
 export function TodoTableRowActions<TData>({row}: TodoTableRowActionsProps<TData>) {
 
-     const todo = todoTableSchema.parse(row.original);
+    const todo = todoTableSchema.parse(row.original);
 
 
-    return(
+    return (
         <div className="flex space-x-2">
             <UpdateTodoDialog
                 titleModal={"Are you absolutely sure?"}
@@ -28,16 +23,12 @@ export function TodoTableRowActions<TData>({row}: TodoTableRowActionsProps<TData
                 onActionLabel={"Save changes"}
                 row={row}
             />
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button variant="outline">Delete</Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-
-                    </DialogHeader>
-                </DialogContent>
-            </Dialog>
+            <RemoveTodoDialog
+                titleModal={"Are you absolutely sure?"}
+                descriptionModal={"This action cannot be undone."}
+                onActionLabel={"Yes, remove"}
+                row={row}
+            />
             <Button variant="ghost"
                     onClick={() => {
                         void navigator.clipboard.writeText(todo.todoId);

@@ -7,13 +7,15 @@ export const useTodoAction = () => {
         create,
         fetchById,
         toggle,
-        update
+        update,
+        remove
     } = useTodoStore(useShallow((state) => ({
         fetchAll: state.fetchAll,
         create: state.create,
         fetchById: state.fetchById,
         toggle: state.toggle,
-        update: state.update
+        update: state.update,
+        remove: state.remove
     })));
 
     return {
@@ -21,6 +23,7 @@ export const useTodoAction = () => {
         create,
         fetchById,
         toggle,
-        update
+        update,
+        remove
     };
 };

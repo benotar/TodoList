@@ -51,7 +51,7 @@ export function UpdateTodoDialog<TData>({
             actionButton={"Edit"}
             actionButtonModal={"Confirm edit"}
             titleDialog={"Edit Todo"}
-            descriptionDialog={"Make changes to your todo here. Click save when you're done."}
+            descriptionDialog={"Make changes to your todo here. Click \"Confirm edit\" when you're done."}
             titleModal={titleModal}
             descriptionModal={descriptionModal}
             onActionLabel={onActionLabel}

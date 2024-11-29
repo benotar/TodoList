@@ -17,8 +17,7 @@ const initState: TodoSlice = {
     fetchAll: async (): Promise<boolean> => false,
     create: async (): Promise<boolean> => false,
     update: async (): Promise<boolean> => false,
-    delete: async (): Promise<void> => {
-    },
+    remove: async (): Promise<boolean> => false,
     toggle: async (): Promise<boolean> => false,
     clearStore: (): void => {
     }
@@ -176,6 +175,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
                 console.log("Todo Update failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
 
                 if (serverResponseData.errorCode === ErrorCode.DataIsTheSame) {
+
                     set({
                         errorMessage: serverResponseData.errorCode
                     })
@@ -198,6 +198,61 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
 
             if (error instanceof Error) {
                 console.log("Todo Update exception: ", error.message);
+            }
+
+            return false;
+
+        } finally {
+            set({
+                isLoading: false
+            });
+        }
+    },
+
+    remove: async (todoId: string): Promise<boolean> => {
+
+        console.log("Todo Remove");
+
+        set({
+            isLoading: true
+        });
+
+        try {
+
+            const serverResponse = await $api.delete<Result<void>>(ENDPOINTS.TODO.DELETE, {
+                data: {todoId}
+            });
+
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponse || !serverResponseData.isSucceed || !serverResponseData.data) {
+
+                console.log("Todo Remove failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                if (serverResponseData.errorCode === ErrorCode.TodoNotFound) {
+
+                    set({
+                        errorMessage: serverResponseData.errorCode
+                    })
+
+                    return false;
+                }
+
+                set({
+                    errorMessage: ErrorCode.RequestFailed
+                })
+
+                return false;
+            }
+
+            await get().fetchAll();
+
+            return true;
+
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Todo Remove exception: ", error.message);
             }
 
             return false;
@@ -241,13 +296,7 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
             if (error instanceof Error) {
                 console.log("Todo Toggle exception: ", error.message);
             }
-
-            // const {clearStore} = get();
-            //
-            // clearStore();
-
             return false;
-
         } finally {
             set({
                 isLoading: false

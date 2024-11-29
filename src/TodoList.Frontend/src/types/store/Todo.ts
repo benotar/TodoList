@@ -13,7 +13,7 @@ export type TodoActions = {
     fetchAll: () => Promise<boolean>;
     create: (by: CreateTodo) => Promise<boolean>;
     update: (by: UpdateTodo) => Promise<boolean>;
-    delete: (todoId: string) => Promise<void>;
+    remove: (todoId: string) => Promise<boolean>;
     toggle: (todoId: string) => Promise<boolean>;
     clearStore: () => void;
 };
