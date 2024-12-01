@@ -13,8 +13,8 @@ import {
 } from "@tanstack/react-table";
 
 import {useState} from "react";
-import {UsersTableToolbar} from "@/components/admin/UsersTableToolbar.tsx";
 import {DataTableWrapper} from "@/components/reusable/DataTableWrapper.tsx";
+import {TodoTableToolbar} from "@/components/todo/TodoTableToolbar.tsx";
 
 type TodoTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[]
@@ -28,8 +28,6 @@ export function TodoTable<TData, TValue>({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
-
-
     const table = useReactTable({
         data,
         columns,
@@ -48,13 +46,12 @@ export function TodoTable<TData, TValue>({
         getSortedRowModel: getSortedRowModel(),
         getFacetedRowModel: getFacetedRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),
-    })
-
+    });
     return (
         <DataTableWrapper
             columns={columns}
             table={table}
-            toolbar={<UsersTableToolbar table={table}/>}
+            toolbar={<TodoTableToolbar table={table}/>}
         />
     );
 }

@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/tabs";
 import {UsersTable} from "@/components/admin/UsersTable.tsx";
 import {usersTableColumns} from "@/components/admin/usersTableColumns.tsx";
+import {todoTableColumns} from "@/components/todo/todoTableColumns.tsx";
+import {TodoTable} from "@/components/todo/TodoTable.tsx";
 
 const AdminTabs: FC = () => {
     return (
@@ -36,7 +38,19 @@ const AdminTabs: FC = () => {
                 />
             </TabsContent>
             <TabsContent value="all-todos">
-                Table todos
+                <TodoTable
+                    columns={todoTableColumns}
+                    data={[{
+                        todoId: "todoId1",
+                        title: "title1",
+                        isCompleted: false
+                    },
+                        {
+                            todoId: "todoId2",
+                            title: "title2",
+                            isCompleted: false
+                        }]}
+                />
             </TabsContent>
         </Tabs>
     );

@@ -18,8 +18,8 @@ import {DataTableWrapper} from "@/components/reusable/DataTableWrapper.tsx";
 
 
 type UsersTableProps<TData, TValue> = {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
 }
 
 export function UsersTable<TData, TValue>({
@@ -30,7 +30,6 @@ export function UsersTable<TData, TValue>({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [sorting, setSorting] = useState<SortingState>([]);
-
 
     const table = useReactTable({
         data,
