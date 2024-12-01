@@ -3,7 +3,6 @@ import {
     ColumnFiltersState,
     SortingState,
     VisibilityState,
-    flexRender,
     getCoreRowModel,
     getFacetedRowModel,
     getFacetedUniqueValues,
@@ -13,18 +12,9 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table.tsx";
-
-import {DataTablePagination} from "@/components/reusable/DataTablePagination.tsx";
 import {useState} from "react";
 import {UsersTableToolbar} from "@/components/admin/UsersTableToolbar.tsx";
+import {DataTableWrapper} from "@/components/reusable/DataTableWrapper.tsx";
 
 
 type UsersTableProps<TData, TValue> = {
@@ -32,10 +22,10 @@ type UsersTableProps<TData, TValue> = {
     data: TData[]
 }
 
-export function UsersTable<TData, TValue> ({
-                                               columns,
-                                               data
-                                           }: UsersTableProps<TData, TValue>) {
+export function UsersTable<TData, TValue>({
+                                              columns,
+                                              data
+                                          }: UsersTableProps<TData, TValue>) {
 
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -63,61 +53,9 @@ export function UsersTable<TData, TValue> ({
     })
 
     return (
-        <div className="flex flex-col w-full space-y-4">
-
-            {/*Table toolbar*/}
-            <UsersTableToolbar table={table}/>
-
-            {/* Table */}
-            <div className="rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell, cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-
-            {/* Pagination */}
-            <DataTablePagination table={table}/>
-        </div>
+        <DataTableWrapper
+            columns={columns}
+            table={table}
+            toolbar={<UsersTableToolbar table={table}/>}/>
     );
 }
