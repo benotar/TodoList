@@ -22,9 +22,6 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM Navigate to the Backend directory
-cd .\src\TodoList.Backend
-
 REM Build Docker container with the generated JWT secret
 docker-compose build --build-arg POSTGRES_DB_USERNAME=admin --build-arg POSTGRES_DB_PASSWORD=admin --build-arg JWT_SECRET=!RAND_JWT_KEY!
 

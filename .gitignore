@@ -484,4 +484,4 @@ $RECYCLE.BIN/
 *.swp
 
 # Jwt keys temp file
-Jwt-Secret-Keys.txt
+build/Jwt-Secret-Keys.txt

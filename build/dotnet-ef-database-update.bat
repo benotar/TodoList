@@ -22,9 +22,6 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM Navigate to the Backend directory
-cd .\src\TodoList.Backend
-
 REM Build Docker container with the generated JWT secret
 docker-compose build --build-arg POSTGRES_DB_USERNAME=admin --build-arg POSTGRES_DB_PASSWORD=admin --build-arg JWT_SECRET=!RAND_JWT_KEY!
 
@@ -32,7 +29,7 @@ REM Start the Postgres container in detached mode (-d) without blocking the term
 docker-compose up postgres -d
 
 REM Navigate to the WebApi directory and restore .NET dependencies
-cd .\TodoList\TodoList.WebApi
+cd ..\src\TodoList.Backend\TodoList\TodoList.WebApi
 dotnet restore
 
 REM Navigate to the Persistence directory and apply EF migrations
@@ -40,7 +37,7 @@ cd ..\TodoList.Persistence
 dotnet ef database update -s ..\TodoList.WebApi\TodoList.WebApi.csproj
 
 REM Go back to the root directory and shut down Docker
-cd ..\..\
+cd ..\..\..\..\build
 docker-compose down
 
 pause
