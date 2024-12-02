@@ -3,7 +3,7 @@ import {ErrorCode} from "@/types/models/response/Errors.ts";
 import {create} from "zustand";
 import $api from "@/common/axios.ts";
 import {Result} from "@/types/models/response/AuthResponse.ts";
-import {FetchTodoResponse} from "@/types/models/response/TodoResponse.ts";
+import {FetchTodoAdminResponse, TodoCameFromServer} from "@/types/models/response/TodoResponse.ts";
 import {ENDPOINTS} from "@/common/endpoints.ts";
 
 const initState: AdminSlice = {
@@ -31,7 +31,7 @@ export const useAdminStore = create<AdminSlice>((set, get) => ({
         set({isLoading: true});
 
         try {
-            const serverResponse = await $api.get<Result<FetchTodoResponse[]>>(ENDPOINTS.ADMIN.GET_TODOS);
+            const serverResponse = await $api.get<Result<TodoCameFromServer[]>>(ENDPOINTS.ADMIN.GET_TODOS);
 
             const serverResponseData = serverResponse?.data;
 
@@ -46,8 +46,15 @@ export const useAdminStore = create<AdminSlice>((set, get) => ({
                 return false;
             }
 
+            const todosWithUserIds: FetchTodoAdminResponse[]  = serverResponseData.data.map(todo => ({
+                todoId: todo.todoId,
+                userId: todo.user.userId,
+                title: todo.title,
+                isCompleted: todo.isCompleted,
+            }));
+
             set({
-                todos: serverResponseData.data
+                todos: todosWithUserIds
             });
 
             return true;
@@ -76,7 +83,7 @@ export const useAdminStore = create<AdminSlice>((set, get) => ({
         set({isLoading: true});
 
         try {
-            const serverResponse = await $api.get<Result<FetchTodoResponse[]>>(ENDPOINTS.ADMIN.GET_USERS);
+            const serverResponse = await $api.get<Result<FetchTodoAdminResponse[]>>(ENDPOINTS.ADMIN.GET_USERS);
 
             const serverResponseData = serverResponse?.data;
 

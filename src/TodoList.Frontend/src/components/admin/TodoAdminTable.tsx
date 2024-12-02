@@ -13,45 +13,43 @@ import {
 } from "@tanstack/react-table";
 
 import {useEffect, useState} from "react";
-import {UsersTableToolbar} from "@/components/admin/UsersTableToolbar.tsx";
 import {DataTableWrapper} from "@/components/reusable/DataTableWrapper.tsx";
-import {usersTableSchema, UserTable} from "@/schema";
+import {todoAdminTableSchema, TodoAdminTask} from "@/schema";
+import {useAdminAction} from "@/common/hooks/useAdminAction.ts";
+import {useAdminState} from "@/common/hooks/useAdminState.ts";
 import {toast} from "sonner";
 import {ErrorCode} from "@/types/models/response/Errors.ts";
 import {z} from "zod";
-import {useAdminAction} from "@/common/hooks/useAdminAction.ts";
-import {useAdminState} from "@/common/hooks/useAdminState.ts";
+import {TodoTableToolbar} from "@/components/todo/TodoTableToolbar.tsx";
 
-
-type UsersTableProps = {
-    columns: ColumnDef<UserTable>[];
+type TodoAdminTableProps = {
+    columns: ColumnDef<TodoAdminTask>[]
 }
 
-export function UsersTable({
-                               columns,
-                           }: UsersTableProps) {
+export function TodoAdminTable({
+                                   columns,
+                               }: TodoAdminTableProps) {
 
-    const {fetchUsers} = useAdminAction();
-    const {errorMessage, users} = useAdminState();
-    const [data, setData] = useState<UserTable[]>([]);
-
+    const {fetchTodos} = useAdminAction();
+    const {errorMessage, todos  } = useAdminState();
+    const [data, setData] = useState<TodoAdminTask[]>([]);
 
     useEffect(() => {
 
         const fetchData = async () => {
 
-            const isFetched = await fetchUsers();
+            const isFetched = await fetchTodos();
 
             if (!isFetched) {
                 toast.error(errorMessage || ErrorCode.UnknownError);
             }
         }
         void fetchData();
-    }, [fetchUsers, errorMessage]);
+    }, [fetchTodos, errorMessage]);
 
     useEffect(() => {
         try {
-            const validatedData = z.array(usersTableSchema).parse(users);
+            const validatedData = z.array(todoAdminTableSchema).parse(todos);
 
             setData(validatedData);
 
@@ -60,7 +58,7 @@ export function UsersTable({
                 console.log("Todos z parse exception: ", error.message);
             }
         }
-    }, [users]);
+    }, [todos]);
 
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -90,6 +88,6 @@ export function UsersTable({
         <DataTableWrapper
             columns={columns}
             table={table}
-            toolbar={<UsersTableToolbar table={table}/>}/>
+            toolbar={<TodoTableToolbar table={table}/>}/>
     );
 }

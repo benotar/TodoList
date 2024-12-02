@@ -5,22 +5,17 @@ import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
 import {toast} from "sonner";
 import {ErrorCode} from "@/types/models/response/Errors.ts";
 import {useTodoStore} from "@/store/todoStore.ts";
-import {Row} from "@tanstack/react-table";
-import {todoTableSchema} from "@/schema";
+import {FetchTodoAdminResponse, FetchTodoResponse} from "@/types/models/response/TodoResponse.ts";
 
-type TodoCompletedProps<TData> = HTMLAttributes<HTMLDivElement> & {
-    row: Row<TData>;
+type TodoCompletedProps = HTMLAttributes<HTMLDivElement> & {
+    todo: FetchTodoAdminResponse | FetchTodoResponse;
 }
 
 
-export function TodoCompleted<TData>({
-                                         row,
-                                         className
-                                     }: TodoCompletedProps<TData>) {
-
-    const todo = todoTableSchema.parse(row.original);
-
-    // const [checked, setChecked] = useState(todo.isCompleted);
+export function TodoCompleted({
+                                  todo,
+                                  className
+                              }: TodoCompletedProps) {
 
     const {toggle} = useTodoAction();
 

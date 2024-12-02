@@ -15,7 +15,7 @@ export function TodoTableToolbar<TData>({
     return (
         <DataTableToolbar
             table={table}
-            placeholder={`Filter users by ${filterFieldNames.forPlaceholder}`}
+            placeholder={`Filter by ${filterFieldNames.forPlaceholder}`}
             filterField={filterFieldNames.forFilter}
         />
     );

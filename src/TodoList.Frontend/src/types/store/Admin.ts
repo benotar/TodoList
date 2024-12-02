@@ -1,10 +1,10 @@
-import {FetchTodoResponse} from "@/types/models/response/TodoResponse.ts";
+import {FetchTodoAdminResponse} from "@/types/models/response/TodoResponse.ts";
 import {DeleteUser, Register, UpdatePermission, UpdateUser} from "@/types/models/request/UserRequest.ts";
 import {FetchUserResponse} from "@/types/models/response/UsersResponse.ts";
 import {ErrorCode} from "@/types/models/response/Errors.ts";
 
 export type AdminState = {
-    todos: FetchTodoResponse[];
+    todos: FetchTodoAdminResponse[];
     users: FetchUserResponse[];
     errorMessage: ErrorCode | null;
     isLoading: boolean;

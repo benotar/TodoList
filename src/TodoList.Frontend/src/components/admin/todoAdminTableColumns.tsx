@@ -12,19 +12,19 @@ import {
 
 import {TodoTableRowActions} from "@/components/todo/TodoTableRowActions.tsx";
 import {DataTableColumnHeader} from "@/components/reusable/DataTableColumnHeader.tsx";
-import {TodoTask, todoTableSchema} from "@/schema";
+import {todoAdminTableSchema, TodoAdminTask} from "@/schema";
 import {TodoCompleted} from "@/components/todo/TodoCompleted.tsx";
 import {Label} from "@/components/ui/label.tsx";
 
 
-export const todoTableColumns: ColumnDef<TodoTask>[] = [
+export const todoAdminTableColumns: ColumnDef<TodoAdminTask>[] = [
     {
         accessorKey: "todoId",
         header: ({column}) => (
             <DataTableColumnHeader column={column} title="Id" className="ml-2"/>
         ),
         cell: ({row}) => {
-            const todo = todoTableSchema.parse(row.original);
+            const todo = todoAdminTableSchema.parse(row.original);
             const guid = todo.todoId;
             const shortGuid = `${guid.slice(0, 8)} ... ${guid.slice(-4)}`;
 
@@ -45,14 +45,39 @@ export const todoTableColumns: ColumnDef<TodoTask>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "title",
+        accessorKey: "userId",
         header: ({column}) => (
-          <DataTableColumnHeader column={column} title="Title"/>
+            <DataTableColumnHeader column={column} title="User ID"/>
         ),
         cell: ({row}) => {
-            const todo = todoTableSchema.parse(row.original);
 
-            if(todo.isCompleted) {
+            const todo = todoAdminTableSchema.parse(row.original);
+            const guid = todo.todoId;
+            const shortGuid = `${guid.slice(0, 8)} ... ${guid.slice(-4)}`;
+
+            return (
+                <div className="font-semibold px-2 py-1">
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>{shortGuid}</TooltipTrigger>
+                            <TooltipContent>
+                                <Label>{shortGuid}</Label>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
+            );
+        }
+    },
+    {
+        accessorKey: "title",
+        header: ({column}) => (
+            <DataTableColumnHeader column={column} title="Title"/>
+        ),
+        cell: ({row}) => {
+            const todo = todoAdminTableSchema.parse(row.original);
+
+            if (todo.isCompleted) {
                 return <Label className="line-through">{todo.title}</Label>
             }
 
@@ -63,7 +88,7 @@ export const todoTableColumns: ColumnDef<TodoTask>[] = [
         accessorKey: "isCompleted",
         header: ({column}) => <DataTableColumnHeader column={column} title="Completed"/>,
         cell: ({row}) => {
-            const todo = todoTableSchema.parse(row.original);
+            const todo = todoAdminTableSchema.parse(row.original);
 
             return <TodoCompleted
                 todo={todo}

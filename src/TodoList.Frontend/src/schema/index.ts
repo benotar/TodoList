@@ -48,3 +48,12 @@ export const usersTableSchema = z.object({
 });
 
 export type UserTable = z.infer<typeof usersTableSchema>;
+
+export const todoAdminTableSchema = z.object({
+    todoId: z.string(),
+    userId: z.string(),
+    title: z.string(),
+    isCompleted: z.boolean(),
+});
+
+export type TodoAdminTask = z.infer<typeof todoAdminTableSchema>;

@@ -1,9 +1,9 @@
 import {CreateTodo, UpdateTodo} from "@/types/models/request/TodoRequest.ts";
-import {FetchTodoResponse} from "@/types/models/response/TodoResponse.ts";
+import {FetchTodoAdminResponse} from "@/types/models/response/TodoResponse.ts";
 import {Todo} from "@/types/entities/Todo.ts";
 
 export type TodoState = {
-    todos: FetchTodoResponse[];
+    todos: FetchTodoAdminResponse[];
     errorMessage: string | null;
     isLoadingTodo: boolean;
 };
