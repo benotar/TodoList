@@ -2,7 +2,8 @@ import {
     ColumnDef,
 } from "@tanstack/react-table";
 
-
+import { Check } from 'lucide-react';
+import { LayoutList } from 'lucide-react';
 import {
     Tooltip,
     TooltipContent,
@@ -10,11 +11,11 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import {TodoTableRowActions} from "@/components/todo/TodoTableRowActions.tsx";
 import {DataTableColumnHeader} from "@/components/reusable/DataTableColumnHeader.tsx";
 import {todoAdminTableSchema, TodoAdminTask} from "@/schema";
-import {TodoCompleted} from "@/components/todo/TodoCompleted.tsx";
 import {Label} from "@/components/ui/label.tsx";
+import {TodoCompletedEnum} from "@/types/data/TodoCompletedEnum.ts";
+import {TodoAdminTableRowActions} from "@/components/admin/TodoAdminTableRowActions.tsx";
 
 
 export const todoAdminTableColumns: ColumnDef<TodoAdminTask>[] = [
@@ -90,16 +91,23 @@ export const todoAdminTableColumns: ColumnDef<TodoAdminTask>[] = [
         cell: ({row}) => {
             const todo = todoAdminTableSchema.parse(row.original);
 
-            return <TodoCompleted
-                todo={todo}
-                className="ml-6 translate-y-[2px]"
-            />
+            if (todo.isCompleted) {
+                return <Label className="flex items-center flex-center line-throug">
+                    <Check size={"18px"} color={"greenyellow"} className="mr-1"/>
+                    {TodoCompletedEnum.CompletedTrue}
+                </Label>
+            }
+
+            return <Label className="flex items-center flex-center">
+                <LayoutList size={"18px"} color={"red"} className="mr-1"/>
+                {TodoCompletedEnum.CompletedFalse}
+            </Label>
         },
         enableSorting: true,
         enableHiding: true
     },
     {
         id: "actions",
-        cell: ({row}) => <TodoTableRowActions row={row}/>,
+        cell: ({row}) => <TodoAdminTableRowActions row={row}/>,
     },
 ];
