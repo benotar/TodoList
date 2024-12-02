@@ -3,7 +3,6 @@ import LoginForm from "@/components/auth/LoginForm.tsx";
 
 
 const LoginPage: FC = () => {
-
     return <LoginForm/>;
 };
 

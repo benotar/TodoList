@@ -6,7 +6,7 @@ import {Row} from "@tanstack/react-table";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
 import {toast} from "sonner";
 import {useTodoStore} from "@/store/todoStore.ts";
-import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 import ActionRecordDialog from "@/components/reusable/ActionRecordDialog.tsx";
 
 type UpdateTodoDialogProps<TData> = {

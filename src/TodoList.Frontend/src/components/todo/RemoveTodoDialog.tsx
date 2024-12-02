@@ -5,7 +5,7 @@ import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
 import ActionRecordDialog from "@/components/reusable/ActionRecordDialog.tsx";
 import {useTodoStore} from "@/store/todoStore.ts";
 import {toast} from "sonner";
-import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 
 type DeleteTodoDialogProps<TData> = {
     titleModal: string;

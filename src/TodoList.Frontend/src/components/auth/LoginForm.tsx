@@ -20,7 +20,7 @@ import AuthCardWrapper from "@/components/auth/AuthCardWrapper.tsx";
 import {useNavigate} from "react-router-dom";
 import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
 import {useAuthStore} from "@/store/authStore.ts";
-import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 
 const LoginForm: FC = () => {
 

@@ -1,11 +1,12 @@
 import {TodoSlice} from "@/types/store/Todo.ts";
 import {create} from "zustand";
 import {ENDPOINTS} from "@/common/endpoints.ts";
-import {ErrorCode, Result} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 import $api from "@/common/axios.ts";
 import {FetchTodoResponse} from "@/types/models/response/TodoResponse.ts";
 import {Todo} from "@/types/entities/Todo.ts";
 import {CreateTodo, UpdateTodo} from "@/types/models/request/TodoRequest.ts";
+import {Result} from "@/types/models/response/AuthResponse.ts";
 
 const initState: TodoSlice = {
     todos: [],

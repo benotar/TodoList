@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useEffect, useState} from "react";
 import {
     Tabs,
     TabsContent,
@@ -9,8 +9,43 @@ import {UsersTable} from "@/components/admin/UsersTable.tsx";
 import {usersTableColumns} from "@/components/admin/usersTableColumns.tsx";
 import {todoTableColumns} from "@/components/todo/todoTableColumns.tsx";
 import {TodoTable} from "@/components/todo/TodoTable.tsx";
+import {toast} from "sonner";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
+import {z} from "zod";
+import {todoTableSchema, TodoTask} from "@/schema";
+import {useAdminAction} from "@/common/hooks/useAdminAction.ts";
+import {useAdminState} from "@/common/hooks/useAdminState.ts";
 
 const AdminTabs: FC = () => {
+
+    const {fetchTodos} = useAdminAction();
+    const {errorMessage, todos} = useAdminState();
+    const [data, setData] = useState<TodoTask[]>([]);
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+
+            const isFetched = await fetchTodos();
+
+            if (!isFetched) {
+                toast.error(errorMessage || ErrorCode.UnknownError);
+            }
+        }
+        void fetchData();
+    }, [fetchTodos, errorMessage]);
+
+    useEffect(() => {
+        try {
+            const validatedData = z.array(todoTableSchema).parse(todos);
+            setData(validatedData);
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log("Todos z parse exception: ", error.message);
+            }
+        }
+    }, [todos]);
+
     return (
         <Tabs
             defaultValue="users"
@@ -23,33 +58,12 @@ const AdminTabs: FC = () => {
             <TabsContent value="users">
                 <UsersTable
                     columns={usersTableColumns}
-                    data={[{
-                        userId: "userId1",
-                        userName: "userName1",
-                        name: "name1",
-                        permission: "permission1"
-                    },
-                        {
-                            userId: "userId2",
-                            userName: "userName2",
-                            name: "name2",
-                            permission: "permission2"
-                        }]}
                 />
             </TabsContent>
             <TabsContent value="all-todos">
                 <TodoTable
                     columns={todoTableColumns}
-                    data={[{
-                        todoId: "todoId1",
-                        title: "title1",
-                        isCompleted: false
-                    },
-                        {
-                            todoId: "todoId2",
-                            title: "title2",
-                            isCompleted: false
-                        }]}
+                    data={data}
                 />
             </TabsContent>
         </Tabs>

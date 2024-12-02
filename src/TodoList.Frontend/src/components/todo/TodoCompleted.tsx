@@ -3,7 +3,7 @@ import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {CheckedState} from "@radix-ui/react-checkbox";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
 import {toast} from "sonner";
-import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 import {useTodoStore} from "@/store/todoStore.ts";
 import {Row} from "@tanstack/react-table";
 import {todoTableSchema} from "@/schema";

@@ -2,10 +2,11 @@ import {AuthSlice, AuthState} from "@/types/store/Auth.ts";
 import {create} from "zustand";
 import {persist, createJSONStorage} from 'zustand/middleware';
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
-import {ErrorCode, LoginResponse, RefreshResponse, Result} from "@/types/models/response/AuthResponse.ts";
+import {LoginResponse, RefreshResponse, Result} from "@/types/models/response/AuthResponse.ts";
 import $api from "@/common/axios.ts";
 import {ENDPOINTS} from "@/common/endpoints.ts";
 import {decodeJwt} from "@/common/jwt/decode.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 
 const initState: AuthState = {
     isAuth: false,

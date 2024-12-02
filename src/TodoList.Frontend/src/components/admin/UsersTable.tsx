@@ -12,20 +12,55 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {UsersTableToolbar} from "@/components/admin/UsersTableToolbar.tsx";
 import {DataTableWrapper} from "@/components/reusable/DataTableWrapper.tsx";
+import {usersTableSchema, UserTable} from "@/schema";
+import {toast} from "sonner";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
+import {z} from "zod";
+import {useAdminAction} from "@/common/hooks/useAdminAction.ts";
+import {useAdminState} from "@/common/hooks/useAdminState.ts";
 
 
-type UsersTableProps<TData, TValue> = {
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
+type UsersTableProps = {
+    columns: ColumnDef<UserTable>[];
 }
 
-export function UsersTable<TData, TValue>({
+export function UsersTable({
                                               columns,
-                                              data
-                                          }: UsersTableProps<TData, TValue>) {
+                                          }: UsersTableProps) {
+
+    const {fetchUsers} = useAdminAction();
+    const {errorMessage, users} = useAdminState();
+    const [data, setData] = useState<UserTable[]>([]);
+
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+
+            const isFetched = await fetchUsers();
+
+            if (!isFetched) {
+                toast.error(errorMessage || ErrorCode.UnknownError);
+            }
+        }
+        void fetchData();
+    }, [fetchUsers, errorMessage]);
+
+    useEffect(() => {
+        try {
+            const validatedData = z.array(usersTableSchema).parse(users);
+
+            setData(validatedData);
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log("Todos z parse exception: ", error.message);
+            }
+        }
+    }, [users]);
 
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

@@ -4,7 +4,7 @@ import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
 import {useAuthState} from "@/common/hooks/useAuthState.ts";
 import {toast} from "sonner";
 import {useAuthStore} from "@/store/authStore.ts";
-import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 
 const LogoutPage: FC = () => {
 

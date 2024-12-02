@@ -1,7 +1,7 @@
 import {FC, useEffect, useState} from "react";
 import DataCardWrapper from "@/components/reusable/DataCardWrapper.tsx";
 import {toast} from "sonner";
-import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 import {TodoTable} from "@/components/todo/TodoTable.tsx";
 import {todoTableColumns} from "@/components/todo/todoTableColumns.tsx";
 import {useTodoAction} from "@/common/hooks/useTodoAction.ts";
@@ -15,7 +15,6 @@ const TodoPage: FC = () => {
     const {fetchAll} = useTodoAction();
     const {errorMessage, todos} = useTodoState();
     const [data, setData] = useState<TodoTask[]>([]);
-
 
     useEffect(() => {
 

@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from "axios";
 import {BASE_URL} from "@/common/endpoints.ts";
 import {useAuthStore} from "@/store/authStore.ts";
-import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 
 const $api: AxiosInstance = axios.create({
     baseURL: BASE_URL,

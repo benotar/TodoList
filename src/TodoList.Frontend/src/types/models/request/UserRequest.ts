@@ -10,3 +10,18 @@ export type Login = BaseType & {
 export type Register = BaseType & {
     name: string;
 };
+
+export type UpdateUser = {
+    userId: string;
+    userName: string;
+    name: string;
+};
+
+export type UpdatePermission = {
+    userId: string;
+    permission: Permissions;
+};
+
+export type DeleteUser = {
+    userId: string;
+};
