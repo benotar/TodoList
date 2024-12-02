@@ -53,7 +53,7 @@ export const todoAdminTableColumns: ColumnDef<TodoAdminTask>[] = [
         cell: ({row}) => {
 
             const todo = todoAdminTableSchema.parse(row.original);
-            const guid = todo.todoId;
+            const guid = todo.userId;
             const shortGuid = `${guid.slice(0, 8)} ... ${guid.slice(-4)}`;
 
             return (
