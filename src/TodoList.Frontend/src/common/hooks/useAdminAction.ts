@@ -8,14 +8,16 @@ export const useAdminAction = () => {
         createAdmin,
         deleteUser,
         deleteBasicUsers,
-        updateUserPermission
+        updateUserPermission,
+        updateUser
     } = useAdminStore(useShallow((state) => ({
         fetchTodos: state.fetchTodos,
         fetchUsers: state.fetchUsers,
         createAdmin: state.createAdmin,
         deleteUser: state.deleteUser,
         deleteBasicUsers: state.deleteBasicUsers,
-        updateUserPermission: state.updateUserPermission
+        updateUserPermission: state.updateUserPermission,
+        updateUser: state.updateUser
     })));
 
     return {
@@ -24,6 +26,7 @@ export const useAdminAction = () => {
         createAdmin,
         deleteUser,
         deleteBasicUsers,
-        updateUserPermission
+        updateUserPermission,
+        updateUser
     };
 };

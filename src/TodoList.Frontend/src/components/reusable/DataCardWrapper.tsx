@@ -7,7 +7,7 @@ type DataCardWrapperProps = {
     header: string;
     description: string;
     children: ReactNode;
-    footerChildren: ReactNode;
+    footerChildren?: ReactNode;
 }
 
 const DataCardWrapper: FC<DataCardWrapperProps> = ({
@@ -20,7 +20,7 @@ const DataCardWrapper: FC<DataCardWrapperProps> = ({
 
 
     return (
-        <Card className="w-[97%] lg:w-[85%] lgx:w-[60%] 2xl:w-[40%]">
+        <Card className="w-full max-w-lg sm:max-w-3xl mx-auto">
             <CardHeader className="flex justify-start items-start">
                 <DataCardHeader
                     title={header}

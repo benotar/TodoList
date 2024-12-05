@@ -17,7 +17,7 @@ enum SubPaths {
 enum AdminActions {
     CreateAdmin ='create-admin',
     GetUsers = 'get-users',
-    UpdateUser = 'update-users',
+    UpdateUser = 'update-user',
     UpdatePermission = 'update-permission',
     DeleteUser = 'delete-user',
     DeleteUsers = 'delete-users',
@@ -28,7 +28,7 @@ enum AdminActions {
 enum AuthActions {
     Register ='register',
     Login = 'login',
-    Logout = 'logoutg'
+    Logout = 'logout'
 }
 enum TodoActions  {
     GetById = 'get-by-id',

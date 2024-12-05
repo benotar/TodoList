@@ -59,6 +59,7 @@ const CreateTodoDialog: FC = () => {
                         Title
                     </Label>
                     <Input
+                        placeholder="Enter title..."
                         id="title"
                         value={title}
                         onChange={(event) => setTitle(event.target.value)}
