@@ -21,7 +21,3 @@ export type UpdatePermission = {
     userId: string;
     permission: Permissions;
 };
-
-export type DeleteUser = {
-    userId: string;
-};

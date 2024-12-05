@@ -92,13 +92,13 @@ export const todoAdminTableColumns: ColumnDef<TodoAdminTask>[] = [
             const todo = todoAdminTableSchema.parse(row.original);
 
             if (todo.isCompleted) {
-                return <Label className="flex items-center flex-center line-throug">
+                return <Label className="flex justify-start items-center line-through">
                     <Check size={"18px"} color={"greenyellow"} className="mr-1"/>
                     {TodoCompletedEnum.CompletedTrue}
                 </Label>
             }
 
-            return <Label className="flex items-center flex-center">
+            return <Label className="flex justify-start items-center">
                 <LayoutList size={"18px"} color={"red"} className="mr-1"/>
                 {TodoCompletedEnum.CompletedFalse}
             </Label>

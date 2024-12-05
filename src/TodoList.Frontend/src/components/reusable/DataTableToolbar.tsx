@@ -22,7 +22,7 @@ export function DataTableToolbar<TData>({
     const isFiltering = table.getState().columnFilters.length > 0;
 
     return (
-        <div className="flex flex-col justify-center items-center gap-y-4 sm:flex-row">
+        <div className="flex flex-col justify-center items-center space-x-30 gap-y-4 sm:flex-row">
             <div className="flex flex-1 items-start gap-x-2">
                 <Input
                     placeholder={placeholder}

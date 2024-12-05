@@ -15,7 +15,7 @@ const initState: AdminSlice = {
     isLoading: false,
     createAdmin: async (): Promise<boolean> => false,
     deleteAllTodos: async (): Promise<boolean> => false,
-    deleteAllUsers: async (): Promise<boolean> => false,
+    deleteBasicUsers: async (): Promise<boolean> => false,
     deleteUser: async (): Promise<boolean> => false,
     fetchTodos: async (): Promise<boolean> => false,
     fetchUsers: async (): Promise<boolean> => false,
@@ -48,7 +48,7 @@ export const useAdminStore = create<AdminSlice>((set, get) => ({
                 return false;
             }
 
-            const todosWithUserIds: FetchTodoAdminResponse[]  = serverResponseData.data.map(todo => ({
+            const todosWithUserIds: FetchTodoAdminResponse[] = serverResponseData.data.map(todo => ({
                 todoId: todo.todoId,
                 userId: todo.user.userId,
                 title: todo.title,
@@ -166,4 +166,112 @@ export const useAdminStore = create<AdminSlice>((set, get) => ({
             set({isLoading: false});
         }
     },
+
+    deleteUser: async (userId: string): Promise<boolean> => {
+
+        console.log("User Remove");
+
+        set({
+            isLoading: true
+        });
+
+        try {
+
+            const serverResponse = await $api.delete<Result<void>>(ENDPOINTS.ADMIN.DELETE_USER, {
+                data: {userId}
+            });
+
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponse || !serverResponseData.isSucceed || !serverResponseData.data) {
+
+                console.log("User Remove failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                if (serverResponseData.errorCode === ErrorCode.TodoNotFound) {
+
+                    set({
+                        errorMessage: serverResponseData.errorCode
+                    })
+
+                    return false;
+                }
+
+                set({
+                    errorMessage: ErrorCode.RequestFailed
+                })
+
+                return false;
+            }
+
+            await get().fetchUsers();
+
+            return true;
+
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("User Remove exception: ", error.message);
+            }
+
+            return false;
+
+        } finally {
+            set({
+                isLoading: false
+            });
+        }
+    },
+
+    deleteBasicUsers: async (): Promise<boolean> => {
+
+        console.log("Basic Users Remove");
+
+        set({
+            isLoading: true
+        });
+
+        try {
+
+            const serverResponse = await $api.delete<Result<void>>(ENDPOINTS.ADMIN.DELETE_USERS);
+
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponse || !serverResponseData.isSucceed || !serverResponseData.data) {
+
+                console.log("Basic Users failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                if (serverResponseData.errorCode === ErrorCode.TodoNotFound) {
+
+                    set({
+                        errorMessage: serverResponseData.errorCode
+                    })
+
+                    return false;
+                }
+
+                set({
+                    errorMessage: ErrorCode.RequestFailed
+                })
+
+                return false;
+            }
+
+            await get().fetchUsers();
+
+            return true;
+
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Basic Users exception: ", error.message);
+            }
+
+            return false;
+
+        } finally {
+            set({
+                isLoading: false
+            });
+        }
+    }
 }));
