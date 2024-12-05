@@ -1,3 +1,5 @@
+import {Permission} from "@/types/store/Auth.ts";
+
 type BaseType = {
     userName: string;
     password: string;
@@ -19,5 +21,5 @@ export type UpdateUser = {
 
 export type UpdatePermission = {
     userId: string;
-    permission: Permissions;
+    permission: Permission;
 };

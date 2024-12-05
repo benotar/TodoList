@@ -6,7 +6,7 @@ import {Result} from "@/types/models/response/AuthResponse.ts";
 import {FetchTodoAdminResponse, TodoCameFromServer} from "@/types/models/response/TodoResponse.ts";
 import {ENDPOINTS} from "@/common/endpoints.ts";
 import {FetchUserResponse} from "@/types/models/response/UsersResponse.ts";
-import {Register} from "@/types/models/request/UserRequest.ts";
+import {Register, UpdatePermission} from "@/types/models/request/UserRequest.ts";
 
 const initState: AdminSlice = {
     users: [],
@@ -264,6 +264,59 @@ export const useAdminStore = create<AdminSlice>((set, get) => ({
 
             if (error instanceof Error) {
                 console.log("Basic Users exception: ", error.message);
+            }
+
+            return false;
+
+        } finally {
+            set({
+                isLoading: false
+            });
+        }
+    },
+
+    updateUserPermission: async (by: UpdatePermission): Promise<boolean> => {
+
+        console.log("Update User Permission");
+
+        set({
+            isLoading: true
+        });
+
+        try {
+
+            const serverResponse = await $api.post<Result<void>>(ENDPOINTS.ADMIN.UPDATE_PERMISSION, by);
+
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponse || !serverResponseData.isSucceed || !serverResponseData.data) {
+
+                console.log("Update User Permission failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                if (serverResponseData.errorCode === ErrorCode.DataIsTheSame) {
+
+                    set({
+                        errorMessage: serverResponseData.errorCode
+                    })
+
+                    return false;
+                }
+
+                set({
+                    errorMessage: ErrorCode.RequestFailed
+                })
+
+                return false;
+            }
+
+            await get().fetchUsers();
+
+            return true;
+
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Todo Update exception: ", error.message);
             }
 
             return false;

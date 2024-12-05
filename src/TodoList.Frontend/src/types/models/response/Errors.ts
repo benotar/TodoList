@@ -1,4 +1,5 @@
 export enum ErrorCode {
+    SelectPermission = "Please select a permission!",
     InvalidCredentials = "Invalid Credentials",
     UserNotFound = "User Not Found",
     UsernameAlreadyExists = "Username Already Exists",
