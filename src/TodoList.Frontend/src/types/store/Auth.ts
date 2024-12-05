@@ -1,5 +1,5 @@
 import {Login, Register} from "@/types/models/request/UserRequest.ts";
-import {ErrorCode} from "@/types/models/response/AuthResponse.ts";
+import {ErrorCode} from "@/types/models/response/Errors.ts";
 
 export enum Permission {
     Advanced = "Advanced",
@@ -15,7 +15,7 @@ export type AuthState = {
 };
 
 export type AuthActions = {
-    register: (by: Register) => Promise<void>;
+    register: (by: Register) => Promise<boolean>;
     login: (by: Login) => Promise<void>;
     logout: () => Promise<void>;
     refresh: () => Promise<void>;
@@ -25,8 +25,15 @@ export type AuthActions = {
 
 export type AuthSlice = AuthState & AuthActions;
 
-export type LoginValues = {
+export type AuthValues = {
     userName: string;
     password: string;
+}
+
+export type LoginValues = AuthValues & {
     fingerprint: string;
 };
+
+export type RegisterValues = AuthValues & {
+    name: string;
+}

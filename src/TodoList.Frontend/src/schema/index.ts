@@ -10,6 +10,11 @@ const usernameSchema = {
     message: "Username must be 2 to 50 characters long and can only contain letters, numbers, underscores, and dashes."
 };
 
+const nameSchema = {
+    regex: /^[a-zA-Z\s]+$/,
+    message: "Name can only contain letters and spaces."
+}
+
 export const loginFormSchema = z.object({
     userName: z.string().regex(usernameSchema.regex, usernameSchema.message),
     password: z.string().regex(passwordSchema.regex, passwordSchema.message),
@@ -22,9 +27,9 @@ export const loginFormSchema = z.object({
 export const registerFormSchema = z.object({
     userName: z.string().regex(usernameSchema.regex, usernameSchema.message),
     password: z.string().regex(passwordSchema.regex, passwordSchema.message),
-    name: z.string().min(1, {
-        message: 'Please enter your name.'
-    })
+    name: z.string().min(2, {
+        message: "Name must have at least 2 characters."
+    }).regex(nameSchema.regex, nameSchema.message)
 });
 
 export const todoTableSchema = z.object({

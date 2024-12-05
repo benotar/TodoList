@@ -19,7 +19,7 @@ const initState: AuthState = {
 export const useAuthStore = create<AuthSlice>()(persist((set, get) => ({
     ...initState,
 
-    register: async (by: Register): Promise<void> => {
+    register: async (by: Register): Promise<boolean> => {
 
         console.log("Register");
 
@@ -34,21 +34,27 @@ export const useAuthStore = create<AuthSlice>()(persist((set, get) => ({
 
                 console.log("Register failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
 
-                const {clearAuthAndSetErrorMessage} = get();
+                set({
+                    errorMessage: serverResponseData.errorCode
+                });
 
-                clearAuthAndSetErrorMessage(ErrorCode.RegisterFailed);
-
-                return;
+                return false;
             }
+
+            return true;
+
         } catch (error) {
 
             if (error instanceof Error) {
                 console.log("Register exception: ", error.message);
             }
 
-            const {clearAuthAndSetErrorMessage} = get();
+            set({
+                ...initState,
+                errorMessage: ErrorCode.UnknownError
+            });
 
-            clearAuthAndSetErrorMessage(ErrorCode.UnknownError);
+            return false;
 
         } finally {
             set({isLoading: false});
@@ -70,9 +76,9 @@ export const useAuthStore = create<AuthSlice>()(persist((set, get) => ({
 
                 console.log("Login failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
 
-                const {clearAuthAndSetErrorMessage} = get();
-
-                clearAuthAndSetErrorMessage(ErrorCode.AuthenticationFailed);
+                set({
+                    errorMessage: serverResponseData.errorCode
+                });
 
                 return;
             }
@@ -91,9 +97,10 @@ export const useAuthStore = create<AuthSlice>()(persist((set, get) => ({
                 console.log("Login exception: ", error.message);
             }
 
-            const {clearAuthAndSetErrorMessage} = get();
-
-            clearAuthAndSetErrorMessage(ErrorCode.UnknownError);
+            set({
+                ...initState,
+                errorMessage: ErrorCode.UnknownError
+            });
 
         } finally {
             set({isLoading: false});

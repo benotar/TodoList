@@ -14,9 +14,16 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {z} from "zod";
-
+import {RegisterValues} from "@/types/store/Auth.ts";
+import {useAuthAction} from "@/common/hooks/useAuthAction.ts";
+import {useNavigate} from "react-router-dom";
+import {toast} from "sonner";
+import {useAuthStore} from "@/store/authStore.ts";
 
 const RegisterForm: FC = () => {
+
+    const {register} = useAuthAction();
+    const navigate = useNavigate();
 
     const form = useForm({
         resolver: zodResolver(registerFormSchema),
@@ -27,8 +34,29 @@ const RegisterForm: FC = () => {
         }
     });
 
-    const onSubmit = (values: z.infer<typeof registerFormSchema>) => {
-        console.log(values);
+    const handleSubmitBtn = async (values: z.infer<typeof registerFormSchema>) => {
+
+        const registerValues: RegisterValues = {
+            userName: values.userName,
+            password: values.password,
+            name: values.name
+        };
+
+        console.log("Register handling");
+        console.table(registerValues);
+
+        const isRegistered = await register(registerValues);
+
+        if(!isRegistered) {
+
+            toast.warning(useAuthStore.getState().errorMessage);
+
+            return;
+        }
+
+        toast.success("You have successfully created an account.");
+        navigate("/login");
+        form.reset();
     }
 
     return (
@@ -39,7 +67,7 @@ const RegisterForm: FC = () => {
             backButtonLabel="Already have an account? Login here."
         >
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}>
+                <form onSubmit={form.handleSubmit(handleSubmitBtn)}>
                     <div className="space-y-2">
                         <FormField
                             control={form.control}
@@ -62,7 +90,7 @@ const RegisterForm: FC = () => {
                             name='password'
                             render={({field}) => (
                                 <FormItem>
-                                    <FormLabel >Password</FormLabel>
+                                    <FormLabel>Password</FormLabel>
                                     <FormControl>
                                         <Input
                                             type='password'
@@ -79,7 +107,7 @@ const RegisterForm: FC = () => {
                             name='name'
                             render={({field}) => (
                                 <FormItem>
-                                    <FormLabel >Name</FormLabel>
+                                    <FormLabel>Name</FormLabel>
                                     <FormControl>
                                         <Input
                                             type='text'

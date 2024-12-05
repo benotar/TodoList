@@ -29,7 +29,7 @@ const CreateTodoDialog: FC = () => {
 
                 toast.warning(useTodoStore.getState().errorMessage);
 
-                return
+                return;
             }
 
             toast.success("Success!");
