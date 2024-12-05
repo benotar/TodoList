@@ -5,6 +5,8 @@ import $api from "@/common/axios.ts";
 import {Result} from "@/types/models/response/AuthResponse.ts";
 import {FetchTodoAdminResponse, TodoCameFromServer} from "@/types/models/response/TodoResponse.ts";
 import {ENDPOINTS} from "@/common/endpoints.ts";
+import {FetchUserResponse} from "@/types/models/response/UsersResponse.ts";
+import {Register} from "@/types/models/request/UserRequest.ts";
 
 const initState: AdminSlice = {
     users: [],
@@ -83,7 +85,7 @@ export const useAdminStore = create<AdminSlice>((set, get) => ({
         set({isLoading: true});
 
         try {
-            const serverResponse = await $api.get<Result<FetchTodoAdminResponse[]>>(ENDPOINTS.ADMIN.GET_USERS);
+            const serverResponse = await $api.get<Result<FetchUserResponse[]>>(ENDPOINTS.ADMIN.GET_USERS);
 
             const serverResponseData = serverResponse?.data;
 
@@ -112,6 +114,50 @@ export const useAdminStore = create<AdminSlice>((set, get) => ({
 
             set({
                 ...initState
+            });
+
+            return false;
+
+        } finally {
+            set({isLoading: false});
+        }
+    },
+
+    createAdmin: async (by: Register): Promise<boolean> => {
+
+        console.log("Register admin");
+
+        set({isLoading: true});
+
+        try {
+            const serverResponse = await $api.post<Result<void>>(ENDPOINTS.ADMIN.CREATE_ADMIN, by);
+
+            const serverResponseData = serverResponse?.data;
+
+            if (!serverResponseData || !serverResponseData.isSucceed) {
+
+                console.log("Register admin failed: ", serverResponseData.errorCode ?? ErrorCode.RequestFailed);
+
+                set({
+                    errorMessage: serverResponseData.errorCode
+                });
+
+                return false;
+            }
+
+            await get().fetchUsers();
+
+            return true;
+
+        } catch (error) {
+
+            if (error instanceof Error) {
+                console.log("Register admin exception: ", error.message);
+            }
+
+            set({
+                ...initState,
+                errorMessage: ErrorCode.UnknownError
             });
 
             return false;

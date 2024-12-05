@@ -29,6 +29,7 @@ export function TodoTableRowActions<TData>({row}: TodoTableRowActionsProps<TData
                 row={row}
             />
             <Button variant="ghost"
+                    className="h-8"
                     onClick={() => {
                         void navigator.clipboard.writeText(todo.todoId);
                         toast.success("Copied!")

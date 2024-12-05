@@ -103,10 +103,6 @@ export const useTodoStore = create<TodoSlice>((set, get) => ({
                 return false;
             }
 
-            set({
-                todos: serverResponseData.data
-            });
-
             await get().fetchAll();
 
             return true;

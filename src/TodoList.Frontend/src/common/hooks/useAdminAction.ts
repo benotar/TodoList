@@ -4,14 +4,17 @@ import {useAdminStore} from "@/store/adminStore.ts";
 export const useAdminAction = () => {
     const {
         fetchTodos,
-        fetchUsers
+        fetchUsers,
+        createAdmin
     } = useAdminStore(useShallow((state) => ({
         fetchTodos: state.fetchTodos,
-        fetchUsers: state.fetchUsers
+        fetchUsers: state.fetchUsers,
+        createAdmin: state.createAdmin
     })));
 
     return {
         fetchTodos,
-        fetchUsers
+        fetchUsers,
+        createAdmin
     };
 };

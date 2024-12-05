@@ -43,6 +43,8 @@ const ActionRecordDialog: FC<ActionRecordDialogProps> = ({
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
                 <Button
+                    className="h-8"
+                    size="default"
                     variant="outline"
                     onClick={() => setIsDialogOpen(true)}
                 >

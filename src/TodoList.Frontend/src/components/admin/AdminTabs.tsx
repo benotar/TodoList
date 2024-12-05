@@ -15,7 +15,7 @@ const AdminTabs: FC = () => {
     return (
         <Tabs
             defaultValue="users"
-            className="flex flex-col items-center justify-center"
+            className="flex flex-col space-y-5 items-center justify-center"
         >
             <TabsList className="space-x-2">
                 <TabsTrigger value="users">Users</TabsTrigger>
